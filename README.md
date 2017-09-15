@@ -9,7 +9,9 @@ PHP backend for SurveyJS library
 - Start docker container via `docker run -p 8000:80 -d -v <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site surveyjs-php` command
 
 At this point demo surveyjs-php service will be available at the `http://localhost:8000` address
-If everything is ok, you should get `Hello?` at the `http://localhost:8000` address
+If everything is ok, you should see project home page with links to `Survey` and `Editor` pages
+
+For now you can continue with `Survey` page, go through the survey and post results to the cusom service
 
 ### In order to post survey results it is needed to:
 - initialize survey json with a post id
