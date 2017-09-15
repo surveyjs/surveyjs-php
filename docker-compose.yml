@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  surveyjs-php:
+    image: surveyjs-php
+    build: .
+    ports:
+      - 8000:80
