@@ -9,9 +9,9 @@
         exit;
     }
 
-    route('GET', '/', function ($db, $config) {
-        return response("<p>Hello?</p>");
-    });
+    // route('GET', '/', function ($db, $config) {
+    //     return response("<p>Hello?</p>");
+    // });
       
     route('GET', '/hello/:name', function ($args, $db, $config) {
         $json = json_encode("Hello, " . $args['name'] . "!");
@@ -25,8 +25,8 @@
         return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
     });
     
-    #$config = require __DIR__.'/config.php';
-    #$db = createDBConnection($config['db']);
+    // $config = require __DIR__.'/config.php';
+    // $db = createDBConnection($config['db']);
     $config = null;
     $db = null;
     
