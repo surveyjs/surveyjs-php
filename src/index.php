@@ -22,7 +22,7 @@
         $request_body = file_get_contents('php://input');
         $data = json_decode($request_body); // $data is "{ "postId": "...", "surveyResult": "..." }"
         $resultJson = json_encode($data->surveyResult);
-        return response($resultJson, 200, ['content-type' => 'application/json']);
+        return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
     });
     
     #$config = require __DIR__.'/config.php';
