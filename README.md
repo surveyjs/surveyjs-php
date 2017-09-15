@@ -1,5 +1,5 @@
 # surveyjs-php
-PHP backend for SurveyJS library
+Sample PHP backend for SurveyJS library
 
 
 ### Prerequisites
@@ -23,3 +23,4 @@ For now you can continue with `Survey` page, go through the survey and post resu
 ```
     Survey.dxSurveyService.serviceUrl = "http://localhost:8000";
 ```
+These changed are demoinstrated in the [/src/survey.js](https://github.com/surveyjs/surveyjs-php/blob/master/src/survey.js) file of this repo.
