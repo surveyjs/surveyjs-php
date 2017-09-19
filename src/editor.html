@@ -22,9 +22,9 @@
     <div id="editor"></div>
     <script type="text/javascript">
         var editor = new SurveyEditor.SurveyEditor("editor");
-        editor.saveSurveyFunc = function (saveNo, callback) { alert('ok'); callback(saveNo, true) };
+        // editor.saveSurveyFunc = function (saveNo, callback) { alert('ok'); callback(saveNo, true) };
+        // editor.showState = true;
         editor.showOptions = true;
-        editor.showState = true;
         ko.applyBindings(new SurveyEditor.SurveysManager("http://localhost:8000", "a797f29b53f8455e8b3ef317f8904dac", editor), document.getElementById("manage"));
     </script>
 </body>

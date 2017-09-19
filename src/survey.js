@@ -50,6 +50,35 @@ function init() {
 
     model.render("surveyElement");
 
+    function SurveyManager(baseUrl, accessKey) {
+        var self = this;
+        self.selectedSurvey = ko.observable();
+        self.availableSurveys = ko.observableArray();
+
+        self.selectedSurvey.subscribe(function(newValue) {
+            var surveyModel = new Survey.Model(JSON.parse(newValue.survey));
+            window.survey = surveyModel;
+            ko.cleanNode(document.getElementById("surveyElement"));
+            document.getElementById("surveyElement").innerText = "";
+            surveyModel.render("surveyElement");
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', baseUrl + '/getActive?accessKey=' + accessKey);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            var result = xhr.response ? JSON.parse(xhr.response) : {};
+            self.availableSurveys(Object.keys(result).map(function(key) {
+                return {
+                    id: key,
+                    survey: result[key]
+                }
+            }));
+        };
+        xhr.send();
+    }
+
+    ko.applyBindings(new SurveyManager("http://localhost:8000"), document.getElementById("select"));
 }
 
 init();

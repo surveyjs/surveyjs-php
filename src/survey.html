@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://unpkg.com/survey-knockout@0.12.25/survey.css" />
 </head>
 <body>
+    <div>
+        <span>Choose survey to display:</span>
+        <select style="display: inline-block;" id="select" data-bind="options: availableSurveys, optionsText: 'id', value: selectedSurvey,"></select>
+    </div>
     <div id="surveyElement">
     </div>
     <script src="./survey.js"></script>
