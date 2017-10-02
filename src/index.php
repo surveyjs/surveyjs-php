@@ -28,12 +28,12 @@
         return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
     });
     
-    route('GET', '/survey', function ($db, $config) {
-        $surveyId = $_GET['surveyId'];
-        $surveyJson = $db->getSurvey($surveyId);
-        //return response($surveyJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
-        return response($surveyJson, 200, ['content-type' => 'application/json']);
-    });
+    // route('GET', '/survey', function ($db, $config) {
+    //     $surveyId = $_GET['surveyId'];
+    //     $surveyJson = $db->getSurvey($surveyId);
+    //     //return response($surveyJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+    //     return response($surveyJson, 200, ['content-type' => 'application/json']);
+    // });
     
     route('GET', '/getSurvey', function ($db, $config) {
         $surveyId = $_GET['surveyId'];

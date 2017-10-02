@@ -10,21 +10,21 @@ function init() {
     window.survey = model;
     model.render("surveyElement");
     
-    // Load survey by id from url
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', "http://localhost:8000" + '/survey?surveyId=' + surveyId);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onload = function () {
-        var result = JSON.parse(xhr.response);
-        if(!!result) {
-            var surveyModel = new Survey.Model(result);
-            window.survey = surveyModel;
-            ko.cleanNode(document.getElementById("surveyElement"));
-            document.getElementById("surveyElement").innerText = "";
-            surveyModel.render("surveyElement");
-        }
-    };
-    xhr.send();
+    // // Load survey by id from url
+    // var xhr = new XMLHttpRequest();
+    // xhr.open('GET', "http://localhost:8000" + '/survey?surveyId=' + surveyId);
+    // xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    // xhr.onload = function () {
+    //     var result = JSON.parse(xhr.response);
+    //     if(!!result) {
+    //         var surveyModel = new Survey.Model(result);
+    //         window.survey = surveyModel;
+    //         ko.cleanNode(document.getElementById("surveyElement"));
+    //         document.getElementById("surveyElement").innerText = "";
+    //         surveyModel.render("surveyElement");
+    //     }
+    // };
+    // xhr.send();
 }
 
 init();
