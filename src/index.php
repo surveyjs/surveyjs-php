@@ -1,74 +1,9 @@
 <?php
     require 'lib/dispatch.php';
+    require 'dbadapter.php';
 
-    class DBAdapter { 
-
-        public function __construct($config=null){
-        }
-
-        public function getSurveys() {
-            if(isset($_SESSION['SurveyStorage'])) {
-                return unserialize($_SESSION['SurveyStorage']);
-            }
-            return array("MySurvey1" => '{
-                "pages": [
-                 {
-                  "name": "page1",
-                  "elements": [
-                   {
-                    "type": "radiogroup",
-                    "choices": [
-                     "item1",
-                     "item2",
-                     "item3"
-                    ],
-                    "name": "question from survey1"
-                   }
-                  ]
-                 }
-                ]
-               }',
-               "MySurvey2" => '{
-                "pages": [
-                 {
-                  "name": "page1",
-                  "elements": [
-                   {
-                    "type": "checkbox",
-                    "choices": [
-                     "item1",
-                     "item2",
-                     "item3"
-                    ],
-                    "name": "question from survey2"
-                   }
-                  ]
-                 }
-                ]
-               }' );
-        }
+    session_start();
     
-        public function getSurvey($id) {
-            if(isset($_SESSION['SurveyStorage'])) {
-                $storage = unserialize($_SESSION['SurveyStorage']);
-                return $storage[$id];
-            }
-            return null;
-        }
-    
-        public function storeSurvey($id, $json) {
-            $storage = null;
-            if(isset($_SESSION['SurveyStorage'])) {
-                $storage = unserialize($_SESSION['SurveyStorage']);
-            } else {
-                session_start();
-                $storage = array();
-            }
-            $storage[$id] = $json;
-            $_SESSION['SurveyStorage'] = serialize($storage);
-        }
-    }
-
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']) && $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'] == 'POST') {
             header('Access-Control-Allow-Origin: *');
@@ -95,17 +30,23 @@
     
     route('GET', '/survey', function ($db, $config) {
         $surveyId = $_GET['surveyId'];
-        // Code to get survey json by id here
         $surveyJson = $db->getSurvey($surveyId);
-        $resultJson = json_encode($surveyJson);
-        return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        //return response($surveyJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        return response($surveyJson, 200, ['content-type' => 'application/json']);
+    });
+    
+    route('GET', '/getSurvey', function ($db, $config) {
+        $surveyId = $_GET['surveyId'];
+        $surveyJson = $db->getSurvey($surveyId);
+        //return response($surveyJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        return response($surveyJson, 200, ['content-type' => 'application/json']);
     });
     
     route('GET', '/getActive', function ($db, $config) {
         $accessKey = $_GET['accessKey'];
-        // Code to get a list of all active surveys here
         $json = json_encode($db->getSurveys());
-        return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        // return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        return response($json, 200, ['content-type' => 'application/json']);
     });
 
     route('GET', '/api/MySurveys/create', function ($db, $config) {
@@ -113,6 +54,7 @@
         $accessKey = $_GET['accessKey'];
         $id = $name; // It is needed to generate a valid id here
         // Code to create survey description json here
+        $db->storeSurvey($id, "{}");
         $survey = array('Name' => $name, 'Id' => $id);
         $json = json_encode($survey);
         return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);

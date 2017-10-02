@@ -12,14 +12,29 @@
 <body>
     <section>
         <h1>This sample site works with custom SurveyJS service written in PHP</h1>
-        <p>For now you can use the <a href="survey.html">Survey</a> page illustrating how to send survey results to a custom SurveyJS service.</p>
-        <p>We are planning to implement full service functionality for the following pages:</p>
-        <div class="page-link">
-            <a href="survey.html">Survey</a>
-        </div>
-        <div class="page-link">
-            <a href="editor.html">Editor</a>
+        <p>Here you can see the list of available sourveys you can edit and run:</p>
+        <div id="surveys-list">
+            <table>
+                <thead>
+                   <tr>
+                        <td>Name</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: availableSurveys -->
+                    <tr>
+                        <td data-bind="text: id"></td>
+                        <td><a data-bind="attr: { href: 'survey.html?id=' + ko.unwrap(id) }">Run</a> | <a data-bind="attr: { href: 'editor.html?id=' + ko.unwrap(id) }">Edit</a></td>
+                    </tr>
+                <!-- /ko -->
+                </tbody>
+            </table>
+            <div>
+                <button data-bind="click: function() { createSurvey('NewSurvey' + availableSurveys().length, loadSurveys); }">Add</button>
+            </div>
         </div>
     </section>
 </body>
+<script src="index.js"></script>
 </html>

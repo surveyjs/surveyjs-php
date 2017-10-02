@@ -18,14 +18,9 @@
     <link rel="stylesheet" href="https://unpkg.com/surveyjs-editor@0.12.25/surveyeditor.css"/>
 </head>
 <body>
-    <div id="manage" data-bind="template: 'surveys-manage'"></div>
+    <h2><a href="/">Return to the main page</a></h2>
     <div id="editor"></div>
-    <script type="text/javascript">
-        var editor = new SurveyEditor.SurveyEditor("editor");
-        // editor.saveSurveyFunc = function (saveNo, callback) { alert('ok'); callback(saveNo, true) };
-        // editor.showState = true;
-        editor.showOptions = true;
-        ko.applyBindings(new SurveyEditor.SurveysManager("http://localhost:8000", "a797f29b53f8455e8b3ef317f8904dac", editor), document.getElementById("manage"));
     </script>
 </body>
+<script src="./editor.js"></script>
 </html>
