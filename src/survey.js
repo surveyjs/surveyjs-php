@@ -6,7 +6,7 @@ function init() {
 
     var url = new URL(document.URL);
     var surveyId = url.searchParams.get("id");        
-    var model = new Survey.Model({ surveyId: surveyId });
+    var model = new Survey.Model({ surveyId: surveyId, surveyPostId: surveyId });
     window.survey = model;
     model.render("surveyElement");
     
