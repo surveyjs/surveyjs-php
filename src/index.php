@@ -24,8 +24,11 @@
     route('POST', '/post', function ($db, $config) {
         $request_body = file_get_contents('php://input');
         $data = json_decode($request_body); // $data is "{ "postId": "...", "surveyResult": "..." }"
-        $resultJson = json_encode($data->surveyResult);
-        return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        $resultsFromStorage = $db->postResults($data->postId, $data->surveyResult);
+        $resultsFromStorage = $db->getResults($data->postId);
+        $resultJson = json_encode($resultsFromStorage);
+        // return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+        return response($resultJson, 200);
     });
     
     // route('GET', '/survey', function ($db, $config) {
