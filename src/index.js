@@ -20,11 +20,22 @@ function SurveyManager(baseUrl, accessKey) {
 
     self.createSurvey = function(name, onCreate) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', baseUrl + '/api/MySurveys/create?accessKey=' + this.accessKey + "&name=" + name);
+        xhr.open('GET', baseUrl + '/api/MySurveys/create?accessKey=' + accessKey + "&name=" + name);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var result = xhr.response ? JSON.parse(xhr.response) : null
             !!onCreate && onCreate(xhr.status == 200, result, xhr.response);
+        };
+        xhr.send();
+    }
+    
+    self.deleteSurvey = function(id, onDelete) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', baseUrl + '/delete?accessKey=' + accessKey + "&id=" + id);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            var result = xhr.response ? JSON.parse(xhr.response) : null
+            !!onDelete && onDelete(xhr.status == 200, result, xhr.response);
         };
         xhr.send();
     }

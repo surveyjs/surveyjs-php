@@ -62,5 +62,11 @@
             $storage[$id] = $json;
             $_SESSION['SurveyStorage'] = serialize($storage);
         }
+
+        public function deleteSurvey($id) {
+            $storage = $this->getSurveys();
+            unset($storage[$id]);
+            $_SESSION['SurveyStorage'] = serialize($storage);
+        }
     }
 ?>
