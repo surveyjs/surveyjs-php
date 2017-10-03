@@ -5,7 +5,7 @@ Sample PHP backend for SurveyJS library
 ### Prerequisites
 - Install [docker](https://www.docker.com/) on your computer
 - Clone this repository in the `surveyjs-php` folder
-- Build surveyjs-php docker container via `docker build -t surveyjs-php .` command in the `surveyjs-php` folder
+- Build surveyjs-php docker container via `docker build -t surveyjs-php .` command in the `docker/surveyjs-php` folder
 - Start docker container via `docker run -p 8000:80 -d -v <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site surveyjs-php` command
 
 At this point demo surveyjs-php service will be available at the `http://localhost:8000` address.
