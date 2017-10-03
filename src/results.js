@@ -6,7 +6,7 @@ function SurveyManager(baseUrl, accessKey) {
 
     self.loadResults = function () {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', baseUrl + '/results?id=' + surveyId);
+        xhr.open('GET', baseUrl + '/results?postId=' + surveyId);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var result = xhr.response ? JSON.parse(xhr.response) : {};

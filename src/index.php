@@ -81,8 +81,8 @@
     });
     
     route('GET', '/results', function ($db, $config) {
-        $surveyId = $_GET['id'];
-        $resultsFromStorage = $db->getResults($surveyId);
+        $postId = $_GET['postId'];
+        $resultsFromStorage = $db->getResults($postId);
         $resultJson = json_encode($resultsFromStorage);
         //return response($resultJson, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
         return response($resultJson, 200, ['content-type' => 'application/json']);
