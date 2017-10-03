@@ -16,10 +16,10 @@
     //     return response("<p>Hello?</p>");
     // });
       
-    route('GET', '/hello/:name', function ($args, $db, $config) {
-        $json = json_encode("Hello, " . $args['name'] . "!");
-        return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
-    });
+    // route('GET', '/hello/:name', function ($args, $db, $config) {
+    //     $json = json_encode("Hello, " . $args['name'] . "!");
+    //     return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+    // });
 
     route('POST', '/post', function ($db, $config) {
         $request_body = file_get_contents('php://input');
@@ -52,7 +52,7 @@
         return response($json, 200, ['content-type' => 'application/json']);
     });
 
-    route('GET', '/api/MySurveys/create', function ($db, $config) {
+    route('GET', '/create', function ($db, $config) {
         $name = $_GET['name'];
         $accessKey = $_GET['accessKey'];
         $id = $name; // It is needed to generate a valid id here
@@ -63,7 +63,7 @@
         return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
     });
 
-    route('POST', '/api/MySurveys/changeJson', function ($db, $config) {
+    route('POST', '/changeJson', function ($db, $config) {
         $accessKey = $_POST['accessKey'];
         $request_body = file_get_contents('php://input');
         $data = json_decode($request_body); // $data is "{ "Id": "...", "Json": "...", "Text": "..." }"

@@ -6,7 +6,7 @@ var surveyId = url.searchParams.get("id");
 editor.loadSurvey(surveyId);
 editor.saveSurveyFunc = function (saveNo, callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('POST', Survey.dxSurveyService.serviceUrl + '/api/MySurveys/changeJson?accessKey=' + accessKey);
+    xhr.open('POST', Survey.dxSurveyService.serviceUrl + '/changeJson?accessKey=' + accessKey);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.onload = function () {
         var result = xhr.response ? JSON.parse(xhr.response) : null;

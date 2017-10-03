@@ -20,7 +20,7 @@ function SurveyManager(baseUrl, accessKey) {
 
     self.createSurvey = function(name, onCreate) {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', baseUrl + '/api/MySurveys/create?accessKey=' + accessKey + "&name=" + name);
+        xhr.open('GET', baseUrl + '/create?accessKey=' + accessKey + "&name=" + name);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var result = xhr.response ? JSON.parse(xhr.response) : null
