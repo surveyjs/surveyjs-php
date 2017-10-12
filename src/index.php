@@ -1,7 +1,8 @@
 <?php
     require 'lib/dispatch.php';
-    require 'dbadapter.php';
-
+    require 'inmemorydbadapter.php';
+    require 'postgresdbadapter.php';
+    
     session_start();
     
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -55,9 +56,7 @@
     route('GET', '/create', function ($db, $config) {
         $name = $_GET['name'];
         $accessKey = $_GET['accessKey'];
-        $id = $name; // It is needed to generate a valid id here
-        // Code to create survey description json here
-        $db->storeSurvey($id, "{}");
+        $id = $db->addSurvey($name);
         $survey = array('Name' => $name, 'Id' => $id);
         $json = json_encode($survey);
         return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
@@ -91,7 +90,8 @@
     // $config = require __DIR__.'/config.php';
     // $db = createDBConnection($config['db']);
     $config = null;
-    $db = new DBAdapter($config);
+    $db = new InMemoryDBAdapter($config);
+    //$db = new PostgresDBAdapter($config);
     
     dispatch($db, $config);
 ?>

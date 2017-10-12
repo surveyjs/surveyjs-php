@@ -1,6 +1,6 @@
 <?php
 
-    class DBAdapter { 
+    class InMemoryDBAdapter { 
 
         public function __construct($config = null) {
         }
@@ -66,6 +66,11 @@
             return $storage[$id];
         }
     
+        public function addSurvey($name) {
+            $storage = $this->storeSurvey($name, '{}');
+            return $name;
+        }
+
         public function storeSurvey($id, $json) {
             $storage = $this->getSurveys();
             $storage[$id] = $json;

@@ -1,8 +1,19 @@
 version: '2.1'
 
 services:
+  dbsrv:
+    image: postgresql-db 
+    build: ./postgresql-db 
+    ports:
+      - 5432:5432
   surveyjs-php:
     image: surveyjs-php
-    build: .
+    build: ./surveyjs-php
+    depends_on:
+      - dbsrv
+    links:
+      - dbsrv:dataserver
     ports:
       - 8000:80
+    volumes:
+      - C:\Work\surveyjs-php\src\:/var/www/site/

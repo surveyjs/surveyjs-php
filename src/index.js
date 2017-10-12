@@ -4,14 +4,15 @@ function SurveyManager(baseUrl, accessKey) {
 
     self.loadSurveys = function () {
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', baseUrl + '/getActive?surveyId=' + accessKey);
+        xhr.open('GET', baseUrl + '/getActive?accessKey=' + accessKey);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         xhr.onload = function () {
             var result = xhr.response ? JSON.parse(xhr.response) : {};
             self.availableSurveys(Object.keys(result).map(function(key) {
                 return {
                     id: key,
-                    survey: result[key]
+                    name: result[key].name || key,
+                    survey: result[key].json || result[key]
                 }
             }));
         };

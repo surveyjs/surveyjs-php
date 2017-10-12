@@ -24,7 +24,7 @@
                 <tbody>
                 <!-- ko foreach: availableSurveys -->
                     <tr>
-                        <td data-bind="text: id"></td>
+                        <td data-bind="text: name"></td>
                         <td><a data-bind="attr: { href: 'survey.html?id=' + ko.unwrap(id) }">Run</a> | <a data-bind="attr: { href: 'editor.html?id=' + ko.unwrap(id) }">Edit</a> | <a data-bind="attr: { href: 'results.html?id=' + ko.unwrap(id) }">Results</a> | <span data-bind="click: function() { $parent.deleteSurvey(ko.unwrap(id), $parent.loadSurveys); }">Delete</span></td>
                     </tr>
                 <!-- /ko -->
