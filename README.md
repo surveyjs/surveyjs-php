@@ -13,19 +13,15 @@ Sample PHP backend for SurveyJS library
 
 `docker run --name appsrv --link dbsrv:dataserver -p 8000:80 -d -v <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site/ surveyjs-php`
 
-Note: if you are familliar with docker and docker-compose, just run `docker-compose up` from the `docker` folder.
-
-Note: `<ABSOLUTE PATH TO THE SRC FOLDER>` is the path to the `surveyjs-php/src` folder on your computer.
+#### Note: if you are familliar with docker and docker-compose, just run `docker-compose up` from the `docker` folder.
+#### Note: `<ABSOLUTE PATH TO THE SRC FOLDER>` is the path to the `surveyjs-php/src` folder on your computer.
 
 
 At this point demo surveyjs-php service will be available at the `http://localhost:8000` address.
 If everything is ok, you should see project home page with list of available surveys and links to `Survey` and `Editor` pages.
-
-You can continue with survey via `Run` page, go through the survey and post results to the custom service.
-
-You can continue with editor via `Edit` page, change the survey and store survey JSON to the custom service.
-
-Saved survey results are available via `Results` link.
+- You can continue with survey via `Run` page, go through the survey and post results to the custom service.
+- You can continue with editor via `Edit` page, change the survey and store survey JSON to the custom service.
+- Saved survey results are available via `Results` link.
 
 
 ### In order to post survey results it is needed to:
