@@ -16,4 +16,4 @@ services:
     ports:
       - 8000:80
     volumes:
-      - C:\Work\surveyjs-php\src\:/var/www/site/
+      - <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site/
