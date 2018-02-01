@@ -95,4 +95,3 @@
     
     dispatch($db, $config);
 ?>
-<?php header( 'Location: /index.html' ) ;  ?>
