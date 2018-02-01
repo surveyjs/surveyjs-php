@@ -13,9 +13,9 @@
         exit;
     }
 
-    // route('GET', '/', function ($db, $config) {
-    //     return response("<p>Hello?</p>");
-    // });
+    route('GET', '/', function ($db, $config) {
+        header('Location: /index.html');
+    });
       
     // route('GET', '/hello/:name', function ($args, $db, $config) {
     //     $json = json_encode("Hello, " . $args['name'] . "!");
@@ -95,3 +95,4 @@
     
     dispatch($db, $config);
 ?>
+
