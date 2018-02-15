@@ -11,7 +11,7 @@ function getParams() {
 }
 
 function init() {
-  Survey.dxSurveyService.serviceUrl = "https://surveyjs-php.herokuapp.com";
+  Survey.dxSurveyService.serviceUrl = "";
   Survey.defaultBootstrapCss.navigationButton = "btn btn-primary";
   Survey.Survey.cssType = "bootstrap";
 

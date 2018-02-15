@@ -50,6 +50,6 @@ function SurveyManager(baseUrl, accessKey) {
 }
 
 ko.applyBindings(
-  new SurveyManager("https://surveyjs-php.herokuapp.com"),
+  new SurveyManager(""),
   document.getElementById("surveys-list")
 );

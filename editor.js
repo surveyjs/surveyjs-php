@@ -10,7 +10,7 @@ function getParams() {
   return result;
 }
 
-Survey.dxSurveyService.serviceUrl = "https://surveyjs-php.herokuapp.com";
+Survey.dxSurveyService.serviceUrl = "";
 var accessKey = "";
 var editor = new SurveyEditor.SurveyEditor("editor");
 var surveyId = getParams()["id"];
