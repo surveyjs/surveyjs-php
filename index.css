@@ -1,6 +1,28 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
 section {
-    margin: 20px;
+  margin: 2em;
 }
 .page-link {
-    margin: 10px 20px;
+  margin: 1em 2em;
+}
+
+.survey-page-header,
+.survey-page-header .sv_main {
+  background-color: #e7e7e7;
+}
+
+.survey-page-header-content {
+  max-width: 80%;
+  margin: auto;
+  padding: 1.5em;
+}
+
+.survey-page-header-content a {
+  color: white;
+  text-decoration: unset;
 }

@@ -12,11 +12,14 @@ function getParams() {
 
 function init() {
   Survey.dxSurveyService.serviceUrl = "";
-  Survey.defaultBootstrapCss.navigationButton = "btn btn-primary";
-  Survey.Survey.cssType = "bootstrap";
+
+  var css = {
+    root: "sv_main sv_frame sv_default_css"
+  };
 
   var surveyId = getParams()["id"];
   var model = new Survey.Model({ surveyId: surveyId, surveyPostId: surveyId });
+  model.css = css;
   window.survey = model;
   model.render("surveyElement");
 
