@@ -29,4 +29,4 @@ function SurveyManager(baseUrl, accessKey) {
   self.loadResults();
 }
 
-ko.applyBindings(new SurveyManager(""), document.getElementById("results"));
+ko.applyBindings(new SurveyManager(""), document.body);

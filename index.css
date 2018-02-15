@@ -26,3 +26,7 @@ section {
   color: white;
   text-decoration: unset;
 }
+
+.sv_main.sv_frame .sv_container .sv_header {
+  padding-top: 2em;
+}
