@@ -12,19 +12,34 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-debug.js"></script>
-    <script src="https://unpkg.com/survey-knockout@0.12.25"></script>
-    <link rel="stylesheet" href="https://unpkg.com/survey-knockout@0.12.25/survey.css" />
+    <script src="https://unpkg.com/survey-knockout@1.0.8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/survey-knockout@1.0.8/survey.css" />
 
-    <script src="https://unpkg.com/surveyjs-editor@0.12.25"></script>
-    <link rel="stylesheet" href="https://unpkg.com/surveyjs-editor@0.12.25/surveyeditor.css" />
+    <script src="https://unpkg.com/surveyjs-editor@1.0.8"></script>
+    <link rel="stylesheet" href="https://unpkg.com/surveyjs-editor@1.0.8/surveyeditor.css" />
+    <link rel="stylesheet" href="./index.css" />
 </head>
 
 <body>
-    <h2>
-        <a href="/">
-            < Return to the main page</a>
-    </h2>
-    <div id="editor"></div>
+    <div class="survey-page-header">
+        <div class="sv_main survey-page-header-content">
+            <button>
+                <a href="/">&lt&nbspBack</a>
+            </button>
+        </div>
+    </div>
+    <div class="sv_main sv_frame sv_default_css">
+        <div class="sv_custom_header"></div>
+        <div class="sv_container">
+            <div class="sv_header">
+                <h3></h3>
+            </div>
+            <div class="sv_body">
+                <div id="editor"></div>
+            </div>
+        </div>
+    </div>
+
     <script src="./editor.js"></script>
 </body>
 

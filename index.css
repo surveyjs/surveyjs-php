@@ -30,3 +30,12 @@ section {
 .sv_main.sv_frame .sv_container .sv_header {
   padding-top: 2em;
 }
+
+.svd_container .sv_custom_header {
+  display: none;
+}
+
+.sv_main.sv_frame .svd_container .sv_container {
+  max-width: none;
+  padding: unset;
+}
