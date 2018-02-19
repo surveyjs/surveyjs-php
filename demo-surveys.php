@@ -136,7 +136,10 @@ $survey1Json = '{
      }
     ]
    }';
-
+$survey1Results = Array(
+    '{"Quality":{"affordable":"5","better then others":"5","does what it claims":"5","easy to use":"5"},"satisfaction":5,"recommend friends":5,"suggestions":"I am happy!","price to competitors":"Not sure","price":"low","pricelimit":{"mostamount":"100","leastamount":"100"}}',
+    '{"Quality":{"affordable":"3","does what it claims":"2","better then others":"2","easy to use":"3"},"satisfaction":3,"suggestions":"better support","price to competitors":"Not sure","price":"high","pricelimit":{"mostamount":"60","leastamount":"10"}}'
+);
 
 $survey2Name = 'Customer and his/her partner income survey';
 $survey2Json = '{

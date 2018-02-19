@@ -17,7 +17,7 @@ function init() {
     root: "sv_main sv_frame sv_default_css"
   };
 
-  var surveyId = getParams()["id"];
+  var surveyId = decodeURI(getParams()["id"]);
   var model = new Survey.Model({ surveyId: surveyId, surveyPostId: surveyId });
   model.css = css;
   window.survey = model;

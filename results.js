@@ -12,7 +12,7 @@ function getParams() {
 
 function SurveyManager(baseUrl, accessKey) {
   var self = this;
-  self.surveyId = getParams()["id"];
+  self.surveyId = decodeURI(getParams()["id"]);
   self.results = ko.observableArray();
 
   self.loadResults = function() {

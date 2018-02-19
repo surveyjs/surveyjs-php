@@ -28,7 +28,9 @@
         }
     
         public function getResultsObject() {
+            global $survey1Name, $survey1Results;
             $allResults = array();
+            $allResults[$survey1Name] = $survey1Results;
             return $this->getObjectFromStorage('ResultsStorage', $allResults);
         }
     
