@@ -23,7 +23,7 @@
             <div class="sv_body">
                 <div id="surveys-list" class="surveys-list">
                     <section>
-                        <button data-bind="click: function() { createSurvey('NewSurvey' + availableSurveys().length, loadSurveys); }">Add</button>
+                        <button data-bind="click: function() { createSurvey('NewSurvey' + Date.now(), loadSurveys); }">Add</button>
                     </section>
                     <table class="table table-striped">
                         <tbody>

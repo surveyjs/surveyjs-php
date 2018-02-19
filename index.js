@@ -36,7 +36,7 @@ function SurveyManager(baseUrl, accessKey) {
   };
 
   self.deleteSurvey = function(id, onDelete) {
-    if (confirm("Are you Sure?")) {
+    if (confirm("Are you sure?")) {
       var xhr = new XMLHttpRequest();
       xhr.open("GET", baseUrl + "/delete?accessKey=" + accessKey + "&id=" + id);
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
