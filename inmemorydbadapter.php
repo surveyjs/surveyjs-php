@@ -71,6 +71,14 @@
             return $name;
         }
 
+        public function changeName($id, $name) {
+            $storage = $this->getSurveys();
+            $json = $storage[$id];
+            $storage[$name] = $json;
+            unset($storage[$id]);
+            $_SESSION['SurveyStorage'] = serialize($storage);
+        }
+
         public function storeSurvey($id, $json) {
             $storage = $this->getSurveys();
             $storage[$id] = $json;

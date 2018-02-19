@@ -62,6 +62,15 @@
         return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
     });
 
+    route('GET', '/changeName', function ($db, $config) {
+        $name = $_GET['name'];
+        $id = $_GET['id'];
+        $db->changeName($id, $name);
+        $data = array('Id' => $name);
+        $json = json_encode($data);
+        return response($json, 200, ['content-type' => 'application/json', 'Access-Control-Allow-Origin' => '*']);
+    });
+
     route('POST', '/changeJson', function ($db, $config) {
         $accessKey = $_POST['accessKey'];
         $request_body = file_get_contents('php://input');

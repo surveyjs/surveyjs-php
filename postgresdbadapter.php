@@ -88,6 +88,10 @@
             $this->dbh->exec('DELETE FROM surveys WHERE id=\'' . $id . '\'');
         }
 
+        public function changeName($id, $name) {
+            //TODO
+        }
+
         public function postResults($postId, $resultsJson) {
             $sqlQuery = 'insert into results (postid, json) values (\'' . $postId . '\', \'' . $resultsJson . '\')';
             $sql = $this->dbh->query($sqlQuery);
