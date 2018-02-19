@@ -66,10 +66,10 @@ section {
 }
 
 .sv_button_link.sv_button_delete {
-  color: #d90027;
+  color: #ec2626;
 }
 
 .sv_button_link.sv_button_delete:hover {
-  background-color: #d90027;
+  background-color: #ec2626;
   color: #fff;
 }
