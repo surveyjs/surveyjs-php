@@ -36,14 +36,17 @@ function SurveyManager(baseUrl, accessKey) {
   };
 
   self.deleteSurvey = function(id, onDelete) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", baseUrl + "/delete?accessKey=" + accessKey + "&id=" + id);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onload = function() {
-      var result = xhr.response ? JSON.parse(xhr.response) : null;
-      !!onDelete && onDelete(xhr.status == 200, result, xhr.response);
-    };
-    xhr.send();
+    if (confirm("Are you Sure?")) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", baseUrl + "/delete?accessKey=" + accessKey + "&id=" + id);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onload = function() {
+        var result = xhr.response ? JSON.parse(xhr.response) : null;
+        !!onDelete && onDelete(xhr.status == 200, result, xhr.response);
+      };
+      xhr.send();
+      window.location = "/";
+    }
   };
 
   self.loadSurveys();

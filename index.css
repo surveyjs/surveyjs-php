@@ -39,3 +39,37 @@ section {
   max-width: none;
   padding: unset;
 }
+
+.surveys-list table thead td {
+  font-weight: bold;
+}
+
+.surveys-list table td:nth-child(2) {
+  width: 50%;
+}
+
+.sv_button_link {
+  color: #1ab394;
+  width: 100px;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.sv_button_link:hover {
+  background-color: #1ab394;
+  border-color: #1ab394;
+  color: #fff;
+  border-radius: 2px;
+  text-decoration: none;
+}
+
+.sv_button_link.sv_button_delete {
+  color: #d90027;
+}
+
+.sv_button_link.sv_button_delete:hover {
+  background-color: #d90027;
+  color: #fff;
+}
