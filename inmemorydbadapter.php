@@ -1,5 +1,7 @@
 <?php
 
+    include 'demo-surveys.php';
+
     class InMemoryDBAdapter { 
 
         public function __construct($config = null) {
@@ -17,42 +19,11 @@
         }
     
         public function getSurveys() {
-            $surveys = array("MySurvey1" => '{
-                "pages": [
-                 {
-                  "name": "page1",
-                  "elements": [
-                   {
-                    "type": "radiogroup",
-                    "choices": [
-                     "item1",
-                     "item2",
-                     "item3"
-                    ],
-                    "name": "question from survey1"
-                   }
-                  ]
-                 }
-                ]
-               }',
-               "MySurvey2" => '{
-                "pages": [
-                 {
-                  "name": "page1",
-                  "elements": [
-                   {
-                    "type": "checkbox",
-                    "choices": [
-                     "item1",
-                     "item2",
-                     "item3"
-                    ],
-                    "name": "question from survey2"
-                   }
-                  ]
-                 }
-                ]
-               }' );
+            global $survey1Name, $survey1Json;
+            global $survey2Name, $survey2Json;
+            $surveys = array();
+            $surveys[$survey1Name] = $survey1Json;
+            $surveys[$survey2Name] = $survey2Json;
             return $this->getObjectFromStorage('SurveyStorage', $surveys);
         }
     

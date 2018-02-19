@@ -57,12 +57,17 @@ section {
   text-align: center;
 }
 
-.sv_button_link:hover {
+.sv_button_link:hover,
+.sv_button_link:visited:hover {
   background-color: #1ab394;
   border-color: #1ab394;
   color: #fff;
   border-radius: 2px;
   text-decoration: none;
+}
+
+.sv_button_link:visited {
+  color: #1ab394;
 }
 
 .sv_button_link.sv_button_delete {
