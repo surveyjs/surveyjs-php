@@ -82,3 +82,7 @@ section {
 #resultsTable td {
   cursor: pointer;
 }
+
+.sv_body {
+  overflow: scroll;
+}

@@ -707,5 +707,9 @@ $survey2Json = '{
     "showQuestionNumbers": "off",
     "storeOthersAsComment": false
 }';
+$survey2Results = Array(
+    "{\"member_arrray_employer\":[{}],\"partner_arrray_employer\":[{}],\"maritalstatus_c\":\"Married\",\"member_receives_income_from_employment\":\"0\",\"partner_receives_income_from_employment\":\"0\"}",
+    "{\"member_arrray_employer\":[{}],\"partner_arrray_employer\":[{}],\"maritalstatus_c\":\"Single\",\"member_receives_income_from_employment\":\"1\",\"member_type_of_employment\":[\"Self employment\"],\"member_seasonal_intermittent_or_contract_work\":\"0\"}"
+);
 
 ?>

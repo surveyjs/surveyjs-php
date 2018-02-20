@@ -36,7 +36,7 @@ function SurveyManager(baseUrl, accessKey) {
         survey.getAllQuestions().map(function(q) {
           return {
             data: q.name,
-            sTitle: q.title,
+            sTitle: (q.title || "").trim(" ") || q.name,
             mRender: function(rowdata) {
               return (
                 (typeof rowdata === "string"
