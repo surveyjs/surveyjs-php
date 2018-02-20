@@ -78,3 +78,7 @@ section {
   background-color: #ec2626;
   color: #fff;
 }
+
+#resultsTable td {
+  cursor: pointer;
+}

@@ -47,6 +47,13 @@ function SurveyManager(baseUrl, accessKey) {
           };
         })
       );
+      self.columns.push({
+        targets: -1,
+        data: null,
+        sortable: false,
+        defaultContent:
+          "<button style='min-width: 150px;'>Show in Survey</button>"
+      });
       var table = $("#resultsTable").DataTable({
         columns: self.columns(),
         data: self.results()
@@ -54,14 +61,14 @@ function SurveyManager(baseUrl, accessKey) {
 
       var json = new Survey.JsonObject().toJsonObject(survey);
       var windowSurvey = new Survey.SurveyWindow(json);
+      windowSurvey.survey.mode = "display";
+      windowSurvey.survey.title = self.surveyId;
+      windowSurvey.show();
 
-      $(document).on("click", "#resultsTable tr", function(e) {
+      $(document).on("click", "#resultsTable td", function(e) {
         var row_object = table.row(this).data();
-        windowSurvey.survey.mode = "display";
-        windowSurvey.survey.title = self.surveyId;
         windowSurvey.survey.data = row_object;
-        windowSurvey.show();
-        windowSurvey.koExpanded(true);
+        windowSurvey.isExpanded = true;
       });
     };
     xhr.send();
