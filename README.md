@@ -38,4 +38,4 @@ If everything is ok, you should see project home page with list of available sur
 ```
     Survey.dxSurveyService.serviceUrl = "http://localhost:8000";
 ```
-These changed are demoinstrated in the [/src/survey.js](https://github.com/surveyjs/surveyjs-php/blob/master/src/survey.js) file of this repo.
+These changes are demonstrated in the [/src/survey.js](https://github.com/surveyjs/surveyjs-php/blob/master/src/survey.js) file of this repo.
