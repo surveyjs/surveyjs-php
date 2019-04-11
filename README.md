@@ -3,7 +3,7 @@ PHP backend sample for SurveyJS: Survey Library and Survey Creator
 
 ## [SurveyJS Home Page](https://surveyjs.io/Examples/Service/)
 
-## [Live Online Survey + Builder Demo](https://surveyjs-php.herokuapp.com/)
+## [Live Online Survey / Form Builder Demo](https://surveyjs-php.herokuapp.com/)
 
 
 ### Prerequisites
