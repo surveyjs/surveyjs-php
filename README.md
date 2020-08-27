@@ -13,17 +13,9 @@ This demo illustrates how to integrate SurveyJS libraries with PHP backend. This
 ### Prerequisites
 - Install [docker](https://www.docker.com/) on your computer
 - Clone this repository in the `surveyjs-php` folder
-- Build surveyjs-php docker container via `docker build -t surveyjs-php .` command in the `docker/surveyjs-php` folder
-- Build postgresql-db docker container via `docker build -t postgresql-db .` command in the `docker/postgresql-db` folder
-- Start dockers container via the following commands:
-
-`docker run --name dbsrv -p 5432:5432 -d postgresql-db`
-
-`docker run --name appsrv --link dbsrv:dataserver -p 8000:80 -d -v <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site/ surveyjs-php`
-
-#### Note: if you are familliar with docker and docker-compose, just run `docker-compose up` from the `docker` folder.
-#### Note: `<ABSOLUTE PATH TO THE SRC FOLDER>` is the path to the `surveyjs-php/src` folder on your computer.
-
+- Go to `surveyjs-php\docker\docker-compose.yml` and replace `- <ABSOLUTE PATH TO THE SRC FOLDER>:/var/www/site/` with your path.
+  For example: `- E:\projects\surveyjs-php\:/var/www/site/`
+- Run `docker-compose up`
 
 At this point demo surveyjs-php service will be available at the `http://localhost:8000` address.
 If everything is ok, you should see project home page with list of available surveys and links to `Survey` and `Editor` pages.
