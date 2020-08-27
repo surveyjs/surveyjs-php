@@ -18,6 +18,7 @@ This demo illustrates how to integrate SurveyJS libraries with PHP backend. This
 - Go to `surveyjs-php\docker\` folder and run `docker-compose up`
 
 At this point demo surveyjs-php service will be available at the `http://localhost:8000` address.
+
 If everything is ok, you should see project home page with list of available surveys and links to `Survey` and `Editor` pages.
 - You can continue with survey via `Run` page, go through the survey and post results to the custom service.
 - You can continue with Survey Creator via `Edit` page, change the survey and store survey JSON to the custom service.
