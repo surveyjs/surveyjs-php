@@ -1,7 +1,9 @@
 <?php
 
-$survey1Name = 'Product feedback survey';
-$survey1Json = '{
+namespace App\Data;
+
+$GLOBALS['survey1Name'] = 'Product feedback survey';
+$GLOBALS['survey1Json'] = '{
     "pages": [
      {
       "name": "page1",
@@ -136,13 +138,13 @@ $survey1Json = '{
      }
     ]
    }';
-$survey1Results = Array(
+$GLOBALS['survey1Results'] = Array(
     '{"Quality":{"affordable":"5","better then others":"5","does what it claims":"5","easy to use":"5"},"satisfaction":5,"recommend friends":5,"suggestions":"I am happy!","price to competitors":"Not sure","price":"low","pricelimit":{"mostamount":"100","leastamount":"100"}}',
     '{"Quality":{"affordable":"3","does what it claims":"2","better then others":"2","easy to use":"3"},"satisfaction":3,"suggestions":"better support","price to competitors":"Not sure","price":"high","pricelimit":{"mostamount":"60","leastamount":"10"}}'
 );
 
-$survey2Name = 'Customer and his/her partner income survey';
-$survey2Json = '{
+$GLOBALS['survey2Name'] = 'Customer and his/her partner income survey';
+$GLOBALS['survey2Json'] = '{
     "completeText": "Finish",
     "pageNextText": "Continue",
     "pagePrevText": "Previous",
@@ -707,9 +709,11 @@ $survey2Json = '{
     "showQuestionNumbers": "off",
     "storeOthersAsComment": false
 }';
-$survey2Results = Array(
+$GLOBALS['survey2Results'] = Array(
     "{\"member_arrray_employer\":[{}],\"partner_arrray_employer\":[{}],\"maritalstatus_c\":\"Married\",\"member_receives_income_from_employment\":\"0\",\"partner_receives_income_from_employment\":\"0\"}",
     "{\"member_arrray_employer\":[{}],\"partner_arrray_employer\":[{}],\"maritalstatus_c\":\"Single\",\"member_receives_income_from_employment\":\"1\",\"member_type_of_employment\":[\"Self employment\"],\"member_seasonal_intermittent_or_contract_work\":\"0\"}"
 );
+
+$GLOBALS['currentId'] = 3;
 
 ?>
