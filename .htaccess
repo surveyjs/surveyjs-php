@@ -1,5 +1,10 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine on
+<IfModule mod_negotiation.c>
+    Options -MultiViews
+</IfModule>
+    RewriteEngine On
     RewriteCond %{REQUEST_URI} ^(.*)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(.*)$ /public/$1 [NC,L,QSA]
 </IfModule>
