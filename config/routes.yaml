@@ -1,7 +1,5 @@
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller    
+    resource: ../src/Controller/
     type: annotation
 
 kernel:
