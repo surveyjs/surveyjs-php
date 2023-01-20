@@ -2,7 +2,7 @@
 
 This demo shows how to integrate [SurveyJS](https://surveyjs.io/) components with a PHP backend.
 
-[View Demo Online](https://surveyjs-php.herokuapp.com/)
+[View Demo Online](https://surveyjs-php.azurewebsites.net/)
 
 ## Disclaimer
 
