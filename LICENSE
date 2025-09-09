@@ -1,4 +1,4 @@
-This demo illustrates a basic backend integration setup between a sample React application that integrates the SurveyJS Survey Creator and Form Library components, and an PHP server.
+This demo illustrates a basic integration setup between a sample React application that integrates the SurveyJS Survey Creator and Form Library components, and an PHP backend.
 
 Please note that the Survey Creator component is proprietary software and requires a developer licence to be integrated and used in your own application.
 
