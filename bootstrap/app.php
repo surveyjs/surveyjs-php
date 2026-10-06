@@ -34,7 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
 
-        // Bad JSON in a request body is the client's fault
+        // Bad JSON in a request body is the client's fault: answer 400, don't log it as a server error
+        $exceptions->dontReport(JsonException::class);
         $exceptions->render(function (JsonException $e, Request $request) {
             return $request->is('api/*') ? response()->json(['error' => 'The request body is not valid JSON'], 400) : null;
         });

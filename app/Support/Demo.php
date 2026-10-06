@@ -179,6 +179,14 @@ final class Demo
         };
     }
 
+    /** Stored responses to pick from on a step page: [id => "#id · label"]. */
+    public static function records(string $formId, string $labelKey, int $limit = 10): array
+    {
+        return DB::table('responses')->where('form_id', $formId)->orderBy('id')->limit($limit)->get(['id', 'data'])
+            ->mapWithKeys(fn ($row) => [$row->id => "#{$row->id} · ".(json_decode($row->data)->{$labelKey} ?? '')])
+            ->all();
+    }
+
     private static function responses(?string $formId, ?int $id, int $limit = 5): array
     {
         return DB::table('responses')

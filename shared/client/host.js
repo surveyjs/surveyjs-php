@@ -78,11 +78,20 @@ function startEntry(method, url, requestHeaders) {
         row.querySelector('[data-field="status"]').textContent = status === 0 ? "failed" : String(status);
         row.querySelector('[data-field="time"]').textContent = `${Math.round(performance.now() - started)} ms`;
         row.querySelector('[data-field="headers"]').textContent = [...headers, ...extra].join(" · ");
-        row.dataset.state = status >= 200 && status < 400 ? "ok" : "error";
+        row.dataset.state = status >= 100 && status < 400 ? "ok" : "error";
       }
-      if (!demo) scheduleStoredRefresh();
+      if (!demo) {
+        scheduleStoredRefresh();
+        for (const listener of requestListeners) listener({ method: method.toUpperCase(), url: u.pathname + u.search, status });
+      }
     },
   };
+}
+
+const requestListeners = [];
+/** Called after each non-demo request completes with { method, url, status }, for step-specific indicators. */
+export function onRequest(callback) {
+  requestListeners.push(callback);
 }
 
 /** Add a line to the requests log for something that isn't an HTTP request (a WebSocket, a download). */
