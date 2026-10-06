@@ -16,6 +16,7 @@ services:
     App\:
         resource: '../src/'
         exclude:
+            - '../src/Data/PostgresDBAdapter.php'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
