@@ -1,6 +1,7 @@
 {
   "title": "Workspace onboarding",
   "showProgressBar": true,
+  "textUpdateMode": "onTyping",
   "pages": [
     {
       "name": "about-you",

@@ -1,6 +1,6 @@
 {
-  "title": "Insurance claim",
-  "description": "Filed by {user.name} · plan: {user.plan}",
+  "title": "Insurance claim for {user.name} ({user.plan} plan)",
+  "description": "Tell us what happened; we usually answer within two working days.",
   "elements": [
     { "type": "text", "name": "q_email", "valueName": "customer_email", "title": "Email", "inputType": "email", "isRequired": true },
     { "type": "text", "name": "q_amount", "valueName": "amount", "title": "Amount claimed", "inputType": "number", "min": 0 },

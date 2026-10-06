@@ -19,7 +19,8 @@
           ]
         },
         { "type": "text", "name": "claimed_total", "valueName": "amount", "dbColumn": "claims.amount", "title": "Total amount you are claiming", "inputType": "number", "min": 0 },
-        { "type": "comment", "name": "details", "title": "Details" }
+        { "type": "comment", "name": "details", "title": "Details" },
+        { "type": "boolean", "name": "priority_handling", "title": "Priority handling" }
       ]
     }
   ]

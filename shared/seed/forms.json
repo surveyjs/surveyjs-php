@@ -1,6 +1,7 @@
 {
   "contact": "save-response.json",
-  "claim": "load-definition-variables-data.json",
+  "claim": "relational-storage.v1.json",
+  "claim-request": "load-definition-variables-data.json",
   "onboarding": "resume-progress.json",
   "expenses": "store-files.json",
   "visit": "choices-from-web.json",

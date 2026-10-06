@@ -11,6 +11,7 @@
         { "value": "weather", "text": "Storm or flood" }
       ]
     },
-    { "type": "comment", "name": "details", "title": "Details" }
+    { "type": "comment", "name": "details", "title": "Details" },
+    { "type": "boolean", "name": "priority_handling", "title": "Priority handling" }
   ]
 }
