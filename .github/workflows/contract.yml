@@ -1,0 +1,74 @@
+# Checks that this repository still matches the Server Integration page (contract server-integration-v4):
+# the manifest and regions, PHPUnit (every row of the SurveyJS service status mapping, mocked),
+# then the shared contract test twice: without the service, and with it plus the AI stub.
+name: Contract
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.3", "8.5"]
+    name: PHP ${{ matrix.php }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: pdo_sqlite, sqlite3, fileinfo, pcntl, posix
+          coverage: none
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install and set up
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer setup
+
+      - name: Manifest, regions and shared/
+        run: php artisan surveyjs:check --complete
+
+      - name: Code style
+        run: vendor/bin/pint --test
+
+      - name: PHPUnit
+        run: php artisan test
+
+      - name: Contract test without the service
+        run: composer contract
+        env:
+          SERVICE: "off"
+          AI: "off"
+
+      - name: Start the SurveyJS service and the AI stub
+        run: |
+          docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml up -d --build surveyjs ai-stub
+          for i in $(seq 1 60); do
+            curl -sf -X POST -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:3010/schema > /dev/null && break
+            sleep 2
+          done
+
+      - name: Contract test with the service, the AI stub and the IV switches
+        run: composer contract
+        env:
+          SERVICE: "on"
+          AI: stub
+          VALIDATE_RESPONSES: "true"
+          LINT_DEFINITIONS: "true"
+          DEMO_MODE: "true"
+          AI_BASE_URL: http://127.0.0.1:3020/v1
+          AI_API_KEY: stub
+          AI_MODEL: stub
+
+      - name: Service logs
+        if: failure()
+        run: docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml logs surveyjs ai-stub
