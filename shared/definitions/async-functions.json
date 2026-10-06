@@ -1,0 +1,17 @@
+{
+  "title": "Create an account",
+  "checkErrorsMode": "onValueChanged",
+  "calculatedValues": [
+    { "name": "shipping", "expression": "shippingCost({postcode})" }
+  ],
+  "elements": [
+    {
+      "type": "text", "name": "email", "title": "Email", "inputType": "email", "isRequired": true,
+      "validators": [
+        { "type": "expression", "expression": "emailExists({email}) = false", "text": "This email is already registered" }
+      ]
+    },
+    { "type": "text", "name": "postcode", "title": "Postcode", "description": "Try 10115, 10999, 80331 or SW1A 1AA" },
+    { "type": "expression", "name": "shipping_price", "title": "Shipping", "expression": "{shipping}", "displayStyle": "currency", "currency": "EUR" }
+  ]
+}

@@ -1,0 +1,4 @@
+/* Survey Creator's theme, for the Section III and IV.2 pages */
+@import 'survey-core/survey-core.css';
+@import 'survey-creator-core/survey-creator-core.css';
+@import 'survey-creator-core/collaboration.css';

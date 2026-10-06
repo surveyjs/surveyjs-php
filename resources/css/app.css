@@ -1,0 +1,28 @@
+/* Tailwind without its Preflight reset: the forms and Creator keep SurveyJS's own themes,
+   and Preflight would restyle their markup (borders, list styles, inline SVG icons). */
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-sjs: #19b394;
+    --color-sjs-dark: #12957a;
+}
+
+/* The few resets this app's own markup needs; SurveyJS markup is left alone */
+@layer base {
+    body {
+        margin: 0;
+    }
+    [hidden]:where(:not([hidden='until-found'])) {
+        display: none !important;
+    }
+    h1, h2, h3, figure, pre {
+        margin: 0;
+    }
+}

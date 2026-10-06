@@ -1,0 +1,35 @@
+{
+  "contract": "server-integration-v4",
+  "platform": "php",
+  "framework": "laravel",
+  "repo": "surveyjs/surveyjs-php",
+  "branch": "master",
+  "live": "https://surveyjs-php.demos.surveyjs.io",
+  "surveyjsVersion": "3.2.0",
+  "sectionIV": "service",
+  "surveyjsService": "surveyjs/surveyjs-server@db1ac24b5f984511bbac463c890b6b0a3ebd2dc9",
+  "steps": {
+    "I.1": {
+      "slug": "save-response",
+      "anchor": "save",
+      "title": "Save the response",
+      "status": "done",
+      "page": "/examples/save-response",
+      "need": "Always. This is the whole minimum integration.",
+      "licence": "MIT",
+      "endpoints": [
+        "POST /api/responses"
+      ],
+      "files": {
+        "definition": "shared/definitions/save-response.json",
+        "client": "shared/client/save-response.js",
+        "server": "routes/examples/save-response.php",
+        "page": "resources/views/examples/save-response.blade.php"
+      },
+      "regions": [
+        "I.1.client",
+        "I.1.server"
+      ]
+    }
+  }
+}

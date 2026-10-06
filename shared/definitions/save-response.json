@@ -1,0 +1,6 @@
+{
+  "elements": [
+    { "type": "text", "name": "email", "title": "Your email", "inputType": "email", "isRequired": true },
+    { "type": "comment", "name": "message", "title": "How can we help?" }
+  ]
+}

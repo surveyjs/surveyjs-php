@@ -1,0 +1,12 @@
+{
+  "contact": "save-response.json",
+  "claim": "load-definition-variables-data.json",
+  "onboarding": "resume-progress.json",
+  "expenses": "store-files.json",
+  "visit": "choices-from-web.json",
+  "signup": "async-functions.json",
+  "job-sheet": "fill-together.json",
+  "feedback": "dashboard.json",
+  "support": "creator-load-save.json",
+  "work-order": "extract-from-paper.json"
+}

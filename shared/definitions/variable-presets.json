@@ -1,0 +1,8 @@
+{
+  "elements": [
+    {
+      "type": "dropdown", "name": "customerTier", "title": "Customer plan",
+      "choices": ["basic", "premium"]
+    }
+  ]
+}

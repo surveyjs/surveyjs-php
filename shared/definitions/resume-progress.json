@@ -1,0 +1,31 @@
+{
+  "title": "Workspace onboarding",
+  "showProgressBar": true,
+  "pages": [
+    {
+      "name": "about-you",
+      "title": "About you",
+      "elements": [
+        { "type": "text", "name": "full_name", "title": "Full name" },
+        { "type": "text", "name": "job_title", "title": "Job title" }
+      ]
+    },
+    {
+      "name": "company",
+      "title": "Your company",
+      "elements": [
+        { "type": "text", "name": "company", "title": "Company name" },
+        { "type": "dropdown", "name": "team_size", "title": "Team size", "choices": ["1-10", "11-50", "51-200", "200+"] },
+        { "type": "text", "name": "website", "title": "Website", "inputType": "url" }
+      ]
+    },
+    {
+      "name": "goals",
+      "title": "Goals",
+      "elements": [
+        { "type": "checkbox", "name": "goals", "title": "What do you want to do first?", "choices": ["Collect feedback", "Run registrations", "Build quizzes", "Replace paper forms"] },
+        { "type": "comment", "name": "notes", "title": "Anything else?" }
+      ]
+    }
+  ]
+}
