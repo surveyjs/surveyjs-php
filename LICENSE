@@ -1,8 +1,10 @@
-This demo illustrates a basic integration setup between a PHP backend and a sample React application that includes the SurveyJS Survey Creator and Form Library components.
+This demo illustrates a basic integration between a PHP backend and a sample React application that includes SurveyJS Survey Creator and Form Library.
 
-Please note that the Survey Creator component is proprietary software and requires a developer license to be integrated and used in your own application.
+SurveyJS Form Library is available under the MIT license.
 
-For full details, please refer to the SurveyJS Licensing FAQ and the SurveyJS End-User License Agreement (EULA):
+Survey Creator is proprietary software. You can integrate it and evaluate its functionality without a license. Production use requires a commercial license for each developer who works with the SurveyJS APIs or implements the integration.
+
+For full licensing details, please refer to the SurveyJS Licensing FAQ and End-User License Agreement (EULA):
 
 - https://surveyjs.io/faq#licensing
 - https://surveyjs.io/Developer-License-Agreement.pdf
