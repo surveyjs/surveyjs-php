@@ -34,6 +34,12 @@ jobs:
           composer install --no-interaction --prefer-dist
           composer setup
 
+      - name: No PHP 8.4+ syntax, functions or classes
+        if: matrix.php == '8.3'
+        run: |
+          git ls-files '*.php' ':!:*.blade.php' | xargs -n1 php -d display_errors=stderr -l > /dev/null
+          composer php83
+
       - name: Manifest, regions and shared/
         run: php artisan surveyjs:check --complete
 

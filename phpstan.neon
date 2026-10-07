@@ -1,0 +1,22 @@
+# Keeps the code runnable on PHP 8.3, the minimum in composer.json, whichever PHP runs it:
+# PHPStan parses with the 8.3 grammar and reports functions and classes that 8.3 does not have.
+# CI adds `php -l` on 8.3 for the syntax PHPStan still accepts, such as `new Foo()->bar()`.
+parameters:
+    level: 0
+    phpVersion: 80300
+    paths:
+        - app
+        - bootstrap
+        - config
+        - database
+        - public
+        - routes
+        - tests
+        - server.php
+    excludePaths:
+        - bootstrap/cache
+    ignoreErrors:
+        # Artisan::command binds the closure to the command
+        -
+            identifier: variable.undefined
+            path: routes/console.php
