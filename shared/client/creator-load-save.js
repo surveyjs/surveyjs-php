@@ -13,6 +13,7 @@ import { SurveyCreator } from "survey-creator-js";
 const creator = new SurveyCreator({ showTranslationTab: true });
 creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;   // the I.2 endpoint's .definition
 
+creator.autoSaveEnabled = true;   // save after each change; without it, Creator shows a Save button
 creator.saveSurveyFunc = async (saveNo, callback) => {
   const res = await fetch(`/api/forms/${formId}`, {
     method: "PUT",
@@ -20,6 +21,7 @@ creator.saveSurveyFunc = async (saveNo, callback) => {
     body: JSON.stringify(creator.JSON)
   });
   callback(saveNo, res.ok);   // tells Creator whether the save succeeded
+  if (!res.ok) creator.notify((await res.json()).error, "error");   // say why, e.g. 403: no editor rights
 };
 // #endregion
 

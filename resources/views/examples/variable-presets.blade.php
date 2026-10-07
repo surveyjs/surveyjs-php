@@ -9,7 +9,7 @@
 @section('try')
     <li>In <strong>Preview</strong>, switch between the <strong>basic</strong> and <strong>premium</strong> presets: "Call me back within one hour" appears only for premium (<code>visibleIf: {customerTier} = 'premium'</code>).</li>
     <li>Edit a preset (change a value or add one): Requests shows one <code>PUT /api/variable-presets/support</code>. Just switching presets sends nothing.</li>
-    <li>Reload the page: your edit is still there. As <strong>Bob</strong> the <code>PUT</code> answers <code>403</code>.</li>
+    <li>Reload the page: your edit is still there. Saving presets is an editor action, checked by the same <code>Gate::authorize('edit-forms')</code> as <a href="{{ route('example', 'creator-load-save') }}">III.1</a>.</li>
 @endsection
 
 @section('form')

@@ -34,11 +34,6 @@ survey.onComplete.add(async (sender) => {
   });
 });
 
-// Demo only: keep the answers across the demo-user switch (a reload), so the preview is requested again
-const kept = sessionStorage.getItem("demo-store-files");
-if (kept) survey.data = JSON.parse(kept);
-survey.onValueChanged.add((sender) => sessionStorage.setItem("demo-store-files", JSON.stringify(sender.data)));
-survey.onComplete.add(() => sessionStorage.removeItem("demo-store-files"));
 mountSurvey(survey);
 
 // Demo only: what the response would weigh with storeDataAsText: true (computed here, never posted)
@@ -55,6 +50,6 @@ survey.onUploadFiles.add(async (_, options) => {
 });
 onRequest(({ method, url, status }) => {
   if (method === "GET" && url.startsWith("/api/files/") && status === 404) {
-    note(`${page.user ? "" : "Signed out: "}GET /api/files/:id answered 404, so the preview can't load.`, "error");
+    note("GET /api/files/:id answered 404, so the preview can't load.", "error");
   }
 });

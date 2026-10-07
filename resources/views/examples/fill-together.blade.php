@@ -14,7 +14,7 @@
 @endsection
 
 @section('try')
-    <li><a data-invite-link target="_blank" href="#">Open a second window</a> with the invite link. Both participants appear in the participant bar, with focus rings and cursors.</li>
+    <li><a data-invite-link target="_blank" href="#">Open a second window</a> with the invite link. Both participants appear in the participant bar, with focus rings and cursors. Switch the demo user in one window to see Alice and Bob side by side.</li>
     <li>Answer a few questions, then open a <a data-invite-link target="_blank" href="#">third window</a>: it starts with those answers, from one <code>init</code> message.</li>
     <li>Type in the same question from two windows: the last write wins.</li>
     <li>Press <strong>Complete</strong> in one window: it posts through I.1, <code>POST /api/responses</code> in Requests.</li>

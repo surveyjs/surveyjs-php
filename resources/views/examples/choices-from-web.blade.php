@@ -5,7 +5,7 @@
 @endsection
 
 @section('try')
-    <li>Change the <strong>Region</strong>: a new <code>GET /api/offices?region=…</code> appears in Requests, and the Office list reloads.</li>
+    <li>In <strong>Find an office</strong>, change the <strong>Region</strong>: a new <code>GET /api/offices?region=…</code> appears in Requests, and the Office list reloads.</li>
     <li>Open the <strong>Country</strong> list: it comes from <code>GET /api/countries</code>, the server's proxy. The log shows <code>X-Demo-Cache</code>: <em>miss</em> when the server fetched restcountries.com, <em>hit</em> from the 24-hour cache, <em>fallback</em> when the service failed and the bundled list was served (demo-only header).</li>
     <li>Every choices request carries <code>Authorization: Bearer demo-token</code>, added by <code>onBeforeRequestChoices</code>.</li>
 @endsection

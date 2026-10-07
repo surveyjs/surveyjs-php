@@ -15,7 +15,7 @@
 @endsection
 
 @section('try')
-    <li>In the <strong>Translations</strong> tab, add a language (for example Deutsch), then use its machine-translation action (<strong>Auto-translate</strong>).</li>
+    <li>The <strong>Translations</strong> tab opens with Deutsch, Français and Español added, and Español selected. Press <strong>Auto-translate All</strong> (the language list is in the side panel, <strong>Languages</strong>), or tick another language to translate into it too.</li>
     <li>Requests shows one <code>POST /api/translate</code> with the strings and the locales: it is the only outbound request, and your server calls your AI provider.</li>
     <li>Without <code>AI_API_KEY</code>, the endpoint answers <code>501</code> and the page shows its message.</li>
 @endsection

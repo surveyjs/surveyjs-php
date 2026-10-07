@@ -46,6 +46,22 @@ collab.onStateChanged.add(sendPresence);
 
 mountCreator(creator);
 
+// Version History (the collaboration menu) lists the room's changes; the plugin's own records are
+// only this window's edits, so the page passes in the room log: init's log, then every record from
+// a peer or from this window. A coalesced record is sent again as it grows: keep one row for it.
+const history = new Map();
+const addToHistory = (records) => {
+  for (const record of records) history.set(`${record.seq}:${record.op}:${record.payload?.target ?? ""}`, record);
+  collab.setHistory([...history.values()]);
+};
+ws.addEventListener("message", (e) => {
+  const msg = JSON.parse(e.data);
+  if (msg.type === "init") addToHistory(msg.log);
+  if (msg.type === "record") addToHistory([msg.payload]);
+});
+collab.onRecordAdded.add((_, { record }) => addToHistory([record]));
+collab.onRecordChanged.add((_, { record }) => addToHistory([record]));
+
 // Demo only: connection status in Creator's participant bar and on the page
 setStoredQuery({ room: formId });
 collab.setStatus("connecting");
@@ -55,5 +71,5 @@ ws.addEventListener("close", () => {
   collab.setStatus("closed");
   note(page.user?.isEditor
     ? "The relay closed the connection. Is it running? Start it with `composer edit-relay` (or `php artisan relay:edit`), then reload."
-    : "Only editors may join: the relay refuses viewers and signed-out users. Switch to Alice and reload.", "error");
+    : "Only editors may join: the relay refuses viewers and signed-out visitors. Reload to sign in as Alice.", "error");
 });

@@ -44,5 +44,5 @@ ws.addEventListener("close", () => {
   collab?.apply({ type: "status", status: "closed" });
   note(page.user
     ? "The relay closed the connection. Is it running? Start it with `composer relay` (or `php artisan relay:fill`), then reload."
-    : "Signed out: the relay refuses the connection. Pick a demo user and reload.", "error");
+    : "The relay refuses signed-out visitors. Pick a demo user and reload.", "error");
 });

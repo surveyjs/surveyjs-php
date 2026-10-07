@@ -215,11 +215,11 @@ check("I.6 GET /api/customers/exists trims and lower-cases the email", "I.6", as
   expectEqual((await http("GET", `/api/customers/exists?email=${unique("new")}%40example.com`)).data, { exists: false }, "unknown email");
 });
 
-check("I.6 GET /api/shipping uses the longest matching postcode prefix", "I.6", async () => {
-  for (const [postcode, price] of [["10115", 4.9], ["10999", 3.5], ["80331", 5.9], ["SW1A 1AA", 9.5], ["99999", 12.9]]) {
+check("I.6 GET /api/shipping uses the longest matching postcode prefix, null when none matches", "I.6", async () => {
+  for (const [postcode, price] of [["10115", 4.9], ["10999", 3.5], ["80331", 5.9], ["SW1A 1AA", 9.5], ["99999", null]]) {
     const r = await http("GET", `/api/shipping?postcode=${encodeURIComponent(postcode)}`);
     expectStatus(r, 200, "GET /api/shipping");
-    expect(Math.abs(Number(r.data?.price) - price) < 1e-9, `price for ${postcode}: expected ${price}, got ${r.text()}`);
+    expect(price === null ? r.data?.price === null : Math.abs(Number(r.data?.price) - price) < 1e-9, `price for ${postcode}: expected ${price}, got ${r.text()}`);
   }
 });
 

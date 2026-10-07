@@ -10,6 +10,7 @@
 @section('try')
     <li><a data-invite-link target="_blank" href="#">Open a second window</a> with the invite link: each window shows the other's selection and edits live.</li>
     <li>Make a few edits, then open a <a data-invite-link target="_blank" href="#">third window</a>: it replays the saved definition plus the log and matches.</li>
+    <li>Open the <strong>Collaboration</strong> menu above the tabs and choose <strong>Show Version History</strong>: it lists every change in the room, from the log the relay sent plus each record since.</li>
     <li>Press <strong>Save</strong> in either window: <code>PUT /api/forms/support</code> stores it (III.1). When every window closes, the room empties, and a new session starts from the saved definition.</li>
 @endsection
 

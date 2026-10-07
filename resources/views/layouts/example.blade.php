@@ -3,6 +3,7 @@
 @php
     $manifest = \App\Support\Demo::manifest();
     $config = \App\Support\Demo::pageConfig($stepId, $step);
+    $users = \App\Http\Middleware\DemoUser::forPage($step['slug']);
     $commercial = str_starts_with($step['licence'], 'Commercial');
     $theme = trim($__env->yieldContent('theme', 'survey'));
 @endphp
@@ -25,14 +26,16 @@
             <span>Server Integration · PHP / Laravel</span>
         </a>
         <span class="text-sm text-gray-500">{{ $stepId }} · {{ $step['title'] }}</span>
-        <label class="ml-auto flex items-center gap-2 text-sm">
-            <span class="text-gray-500">Demo user</span>
-            <select id="demo-user" class="rounded border border-gray-300 bg-white px-2 py-1 text-sm">
-                <option value="alice">Alice (premium, editor)</option>
-                <option value="bob">Bob (basic, viewer)</option>
-                <option value="">Signed out</option>
-            </select>
-        </label>
+        @if (count($users) > 1)
+            <label class="ml-auto flex items-center gap-2 text-sm">
+                <span class="text-gray-500">Demo user</span>
+                <select id="demo-user" class="rounded border border-gray-300 bg-white px-2 py-1 text-sm">
+                    @foreach ($users as $key)
+                        <option value="{{ $key }}" @selected($key === $config['demoUser'])>{{ \App\Http\Middleware\DemoUser::LABELS[$key] }}</option>
+                    @endforeach
+                </select>
+            </label>
+        @endif
     </div>
     @if (config('surveyjs.demo_mode'))
         <div class="border-t border-amber-200 bg-amber-50 px-4 py-1.5 text-center text-xs text-amber-900 sm:px-6">
@@ -137,7 +140,7 @@
 <template id="stored-section">
     <div>
         <h3 data-field="title" class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-500"></h3>
-        <pre data-field="json" class="m-0 max-h-72 overflow-auto rounded bg-gray-50 p-2 font-mono text-[11.5px] leading-snug text-gray-800"></pre>
+        <pre data-field="json" class="m-0 overflow-x-auto rounded bg-gray-50 p-2 font-mono text-[11.5px] leading-snug text-gray-800"></pre>
     </div>
 </template>
 <template id="note">

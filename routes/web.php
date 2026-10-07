@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\DemoUser;
 use App\Support\Demo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,8 +12,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('catalog', ['manifest' => Demo::manifest()]))->name('catalog');
 
-Route::get('/examples/{slug}', function (string $slug) {
+Route::get('/examples/{slug}', function (Request $request, string $slug) {
     [$id, $step] = Demo::step($slug) ?? abort(404);
+    DemoUser::signInForPage($slug, $request);
 
     return view('examples.'.$slug, ['stepId' => $id, 'step' => $step]);
 })->where('slug', '[a-z0-9-]+')->name('example');

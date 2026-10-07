@@ -49,8 +49,9 @@ final class Demo
             'slug' => $step['slug'],
             'version' => self::manifest()['surveyjsVersion'],
             'licenseKey' => config('surveyjs.license_key'),
+            'demoUser' => DemoUser::key(),
             'user' => $user ? [
-                'key' => array_search($user->email, DemoUser::USERS, true) ?: null,
+                'key' => DemoUser::key(),
                 'name' => $user->name,
                 'plan' => $user->plan,
                 'isEditor' => $user->is_editor,

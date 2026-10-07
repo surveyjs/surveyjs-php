@@ -16,19 +16,21 @@ registerFunction({
   }
 });
 
-// Calculation: shipping price for a postcode
+// Calculation and validation: the shipping price for a postcode, null where you don't deliver
+const prices = new Map();   // one request per postcode serves both the calculated value and the validator
 registerFunction({
   name: "shippingCost",
   isAsync: true,
   func: async ([postcode]) => {
     if (!postcode) return 0;
-    const res = await fetch(`/api/shipping?postcode=${encodeURIComponent(postcode)}`);
-    return (await res.json()).price;
+    if (!prices.has(postcode)) prices.set(postcode, fetch(`/api/shipping?postcode=${encodeURIComponent(postcode)}`).then(r => r.json()));
+    return (await prices.get(postcode)).price;
   }
 });
 // #endregion
 
 // In the definition (shared/definitions/async-functions.json):
 //   "validators": [{ "type": "expression", "expression": "emailExists({email}) = false", "text": "This email is already registered" }]
+//   "validators": [{ "type": "expression", "expression": "shippingCost({postcode}) > 0", "text": "We don't deliver to this postcode yet" }]
 //   "calculatedValues": [{ "name": "shipping", "expression": "shippingCost({postcode})" }]
 mountSurvey(new Model(page.definition));

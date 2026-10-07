@@ -15,7 +15,8 @@ Route::get('/api/customers/exists', function (Request $request) {
     return ['exists' => DB::table('customers')->where('email', $email)->exists()];
 });
 
-// GET /api/shipping?postcode= — answers shippingCost(): the longest matching postcode prefix wins
+// GET /api/shipping?postcode= — answers shippingCost(): the longest matching postcode prefix wins,
+// { "price": null } when none matches (the form shows "We don't deliver to this postcode yet")
 Route::get('/api/shipping', function (Request $request) {
     $postcode = Str::upper(str_replace(' ', '', (string) $request->query('postcode')));
     $rate = DB::table('shipping_rates')->get()

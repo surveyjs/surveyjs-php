@@ -1,6 +1,9 @@
 // III.3 Translate strings with AI
 import { mountCreator, note, onRequest } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
+import "survey-core/i18n/german";
+import "survey-core/i18n/french";
+import "survey-core/i18n/spanish";
 
 const formId = "support";
 const creator = new SurveyCreator({ showTranslationTab: true });
@@ -19,7 +22,13 @@ creator.onMachineTranslate.add(async (_, options) => {
 // #endregion
 
 mountCreator(creator);
+
+// Demo only: open the Translations tab with a few languages added and Spanish selected
+// (the survey-core/i18n imports at the top give them their native names)
 creator.makeNewViewActive("translation");
+const translation = creator.getPlugin("translation").model;
+["de", "fr", "es"].forEach((locale) => translation.addLocale(locale));
+translation.setSelectedLocales(["es"]);
 
 // Demo only: show the server's message when translation is off or fails
 onRequest(async ({ url, status }) => {

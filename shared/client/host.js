@@ -203,16 +203,18 @@ export function show(name, text) {
   for (const el of document.querySelectorAll(`[data-show="${name}"]`)) el.textContent = text;
 }
 
-const userSwitch = document.getElementById("demo-user");
-if (userSwitch) {
-  userSwitch.value = page.user?.key ?? "";
-  userSwitch.addEventListener("change", () => {
-    document.cookie = userSwitch.value
-      ? `demo_user=${userSwitch.value}; path=/; max-age=31536000; samesite=lax`
-      : "demo_user=; path=/; max-age=0; samesite=lax";
-    location.reload();
-  });
+// The demo user is a cookie (alice, bob or none), so all tabs share it. A page signs in as its
+// own user and only some pages offer a switch: each tab sets the cookie back to its user when
+// it gets focus, so its requests keep going out as that user.
+const setDemoUser = (key) => { document.cookie = `demo_user=${key}; path=/; max-age=31536000; samesite=lax`; };
+if (page.demoUser) {
+  addEventListener("focus", () => setDemoUser(page.demoUser));
+  addEventListener("pageshow", () => setDemoUser(page.demoUser));
 }
+document.getElementById("demo-user")?.addEventListener("change", (e) => {
+  setDemoUser(e.target.value);
+  location.reload();
+});
 
 /** Display name for collaboration: the demo user's name plus a per-window number, so two windows differ. */
 const windowNumber = Math.floor(Math.random() * 90) + 10;
