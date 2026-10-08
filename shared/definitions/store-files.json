@@ -1,0 +1,11 @@
+{
+  "title": "Expense report",
+  "elements": [
+    { "type": "text", "name": "purpose", "title": "Purpose of the expense" },
+    {
+      "type": "file", "name": "receipt", "title": "Receipts",
+      "storeDataAsText": false, "allowMultiple": true, "maxSize": 5242880,
+      "description": "Images or PDFs up to 5 MB each"
+    }
+  ]
+}

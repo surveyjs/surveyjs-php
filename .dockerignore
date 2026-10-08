@@ -1,0 +1,15 @@
+.git
+.claude
+.env
+node_modules
+vendor
+public/build
+public/hot
+storage/app/*
+!storage/app/public
+!storage/app/private
+storage/logs/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+database/*.sqlite*

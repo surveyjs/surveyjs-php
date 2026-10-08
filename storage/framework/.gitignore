@@ -1,0 +1,11 @@
+compiled.php
+config.php
+down
+events.scanned.php
+lsp-*.php
+maintenance.php
+routes.php
+routes.scanned.php
+schedule-*
+services.json
+relay-*.pid

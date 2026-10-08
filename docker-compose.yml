@@ -1,0 +1,77 @@
+# docker-compose.yml — this app, its two relays and the SurveyJS service, side by side.
+#
+#   docker compose up --build        → http://localhost:8000 (relays on 8081 and 8082)
+#   docker compose up -d surveyjs    → only the service, on http://localhost:3010 (see docker-compose.override.yml)
+#
+# Settings come from your shell or from .env; see .env.example.
+
+x-app-environment: &app-environment
+    DB_DATABASE: /app/storage/database.sqlite
+    SURVEYJS_SERVICE_URL: http://surveyjs:3000
+    SURVEYJS_LICENSE_KEY: ${SURVEYJS_LICENSE_KEY:-}
+    VALIDATE_RESPONSES: ${VALIDATE_RESPONSES:-false}
+    LINT_DEFINITIONS: ${LINT_DEFINITIONS:-false}
+    AI_BASE_URL: ${AI_BASE_URL:-https://api.openai.com/v1}
+    AI_API_KEY: ${AI_API_KEY:-}
+    AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
+    DEMO_MODE: ${DEMO_MODE:-false}
+    SURVEYJS_AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}     # only to tell the IV.4 page whether extraction is configured
+
+services:
+    app:                        # your backend: this Laravel app (migrates and seeds on start)
+        build: .
+        ports: ["8000:8000"]
+        environment: *app-environment
+        volumes: [storage:/app/storage]
+        depends_on: [surveyjs]
+
+    relay:                      # I.8: the fill-together relay, its own process
+        build: .
+        command: ["php", "artisan", "relay:fill"]
+        ports: ["8081:8081"]
+        environment: *app-environment
+        volumes: [storage:/app/storage]
+        depends_on: [app]
+
+    edit-relay:                 # III.5: the edit-together relay, its own process
+        build: .
+        command: ["php", "artisan", "relay:edit"]
+        ports: ["8082:8082"]
+        environment: *app-environment
+        volumes: [storage:/app/storage]
+        depends_on: [app]
+
+    surveyjs:                   # SurveyJS service (Node.js): SurveyJS Server, built from a pinned commit
+        build:
+            context: https://github.com/surveyjs/surveyjs-server.git#db1ac24b5f984511bbac463c890b6b0a3ebd2dc9
+            # The repository's Dockerfile at this commit, plus git in the runtime stage: without it,
+            # `npm install --omit=dev` fails on a devDependency that is a git URL.
+            dockerfile_inline: |
+                FROM node:20-alpine AS build
+                WORKDIR /app
+                RUN apk add --no-cache git
+                COPY package*.json ./
+                RUN npm install
+                COPY tsconfig.json ./
+                COPY src ./src
+                RUN npm run build
+
+                FROM node:20-alpine
+                WORKDIR /app
+                ENV NODE_ENV=production
+                RUN apk add --no-cache git
+                COPY package*.json ./
+                RUN npm install --omit=dev
+                COPY --from=build /app/dist ./dist
+                EXPOSE 3000
+                CMD ["npm", "start"]
+        environment:            # IV.4: the AI provider the service extracts with; no licence key (this revision ignores it)
+            AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}
+            AI_MODEL: ${SURVEYJS_AI_MODEL:-}
+            OLLAMA_BASE_URL: ${SURVEYJS_OLLAMA_BASE_URL:-}
+            OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+            ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+        expose: ["3000"]        # reachable by the app only
+
+volumes:
+    storage:                    # the SQLite database, uploads and demo sandboxes, shared by the app and the relays

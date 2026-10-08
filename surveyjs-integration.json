@@ -1,0 +1,423 @@
+{
+  "contract": "server-integration-v4",
+  "platform": "php",
+  "framework": "laravel",
+  "repo": "surveyjs/surveyjs-php",
+  "branch": "master",
+  "live": "https://surveyjs-php.demos.surveyjs.io",
+  "surveyjsVersion": "3.2.0",
+  "sectionIV": "service",
+  "surveyjsService": "surveyjs/surveyjs-server@db1ac24b5f984511bbac463c890b6b0a3ebd2dc9",
+  "steps": {
+    "I.1": {
+      "slug": "save-response",
+      "anchor": "save",
+      "title": "Save the response",
+      "status": "done",
+      "page": "/examples/save-response",
+      "need": "Always. This is the whole minimum integration.",
+      "licence": "MIT",
+      "endpoints": [
+        "POST /api/responses"
+      ],
+      "files": {
+        "definition": "shared/definitions/save-response.json",
+        "client": "shared/client/save-response.js",
+        "server": "routes/examples/save-response.php",
+        "page": "resources/views/examples/save-response.blade.php"
+      },
+      "regions": [
+        "I.1.client",
+        "I.1.server"
+      ]
+    },
+    "I.2": {
+      "slug": "load-definition-variables-data",
+      "anchor": "load",
+      "title": "Load the definition, variables and previous answers",
+      "status": "done",
+      "page": "/examples/load-definition-variables-data",
+      "need": "When the form depends on who is answering, or edits an existing record.",
+      "licence": "MIT",
+      "endpoints": [
+        "GET /claim",
+        "GET /api/forms/{id}"
+      ],
+      "files": {
+        "definition": "shared/definitions/load-definition-variables-data.json",
+        "client": "shared/client/load-definition-variables-data.js",
+        "server": "routes/examples/load-definition-variables-data.php",
+        "page": "resources/views/examples/load-definition-variables-data.blade.php"
+      },
+      "regions": [
+        "I.2.client",
+        "I.2.server"
+      ]
+    },
+    "I.3": {
+      "slug": "resume-progress",
+      "anchor": "resume",
+      "title": "Resume where the user left off",
+      "status": "done",
+      "page": "/examples/resume-progress",
+      "need": "Long or multi-page forms that people fill in over several sittings.",
+      "licence": "MIT",
+      "endpoints": [
+        "GET /api/progress/{formId}",
+        "PUT /api/progress/{formId}"
+      ],
+      "files": {
+        "definition": "shared/definitions/resume-progress.json",
+        "client": "shared/client/resume-progress.js",
+        "server": "routes/examples/resume-progress.php",
+        "page": "resources/views/examples/resume-progress.blade.php"
+      },
+      "regions": [
+        "I.3.client",
+        "I.3.server"
+      ]
+    },
+    "I.4": {
+      "slug": "store-files",
+      "anchor": "files",
+      "title": "Store files outside the response",
+      "status": "done",
+      "page": "/examples/store-files",
+      "need": "Any form with a file question.",
+      "licence": "MIT",
+      "endpoints": [
+        "POST /api/files",
+        "GET /api/files/{id}"
+      ],
+      "files": {
+        "definition": "shared/definitions/store-files.json",
+        "client": "shared/client/store-files.js",
+        "server": "routes/examples/store-files.php",
+        "page": "resources/views/examples/store-files.blade.php"
+      },
+      "regions": [
+        "I.4.client",
+        "I.4.server"
+      ]
+    },
+    "I.5": {
+      "slug": "choices-from-web",
+      "anchor": "choices",
+      "title": "Choices from the web",
+      "status": "done",
+      "page": "/examples/choices-from-web",
+      "need": "Lists that live elsewhere: countries, products, users, offices.",
+      "licence": "MIT",
+      "endpoints": [
+        "GET /api/offices",
+        "GET /api/countries"
+      ],
+      "files": {
+        "definition": "shared/definitions/choices-from-web.json",
+        "client": "shared/client/choices-from-web.js",
+        "server": "routes/examples/choices-from-web.php",
+        "page": "resources/views/examples/choices-from-web.blade.php"
+      },
+      "regions": [
+        "I.5.client",
+        "I.5.server"
+      ]
+    },
+    "I.6": {
+      "slug": "async-functions",
+      "anchor": "async",
+      "title": "Async functions: calculations and validation",
+      "status": "done",
+      "page": "/examples/async-functions",
+      "need": "When a value or a rule depends on something only your server knows.",
+      "licence": "MIT",
+      "endpoints": [
+        "GET /api/customers/exists",
+        "GET /api/shipping"
+      ],
+      "files": {
+        "definition": "shared/definitions/async-functions.json",
+        "client": "shared/client/async-functions.js",
+        "server": "routes/examples/async-functions.php",
+        "page": "resources/views/examples/async-functions.blade.php"
+      },
+      "regions": [
+        "I.6.client",
+        "I.6.server"
+      ]
+    },
+    "I.7": {
+      "slug": "relational-storage",
+      "anchor": "relational",
+      "title": "Store responses in a relational database",
+      "status": "done",
+      "page": "/examples/relational-storage",
+      "need": "When you report on answers with SQL or join them with your own tables.",
+      "licence": "MIT",
+      "endpoints": [
+        "POST /api/claims"
+      ],
+      "files": {
+        "definition": "shared/definitions/relational-storage.v1.json",
+        "client": "shared/client/relational-storage.js",
+        "server": "routes/examples/relational-storage.php",
+        "page": "resources/views/examples/relational-storage.blade.php",
+        "definitionV2": "shared/definitions/relational-storage.v2.json"
+      },
+      "regions": [
+        "I.7.client",
+        "I.7.server"
+      ]
+    },
+    "I.8": {
+      "slug": "fill-together",
+      "anchor": "fill-together",
+      "title": "Fill one form together",
+      "status": "done",
+      "page": "/examples/fill-together",
+      "need": "When several people complete one record: a dispatcher and a technician on a job sheet, an applicant and an adviser.",
+      "licence": "MIT",
+      "endpoints": [
+        "WS /ws/rooms/{recordId}"
+      ],
+      "files": {
+        "definition": "shared/definitions/fill-together.json",
+        "client": "shared/client/fill-together.js",
+        "server": "app/Relay/FillRelay.php",
+        "page": "resources/views/examples/fill-together.blade.php",
+        "room": "app/Relay/Room.php",
+        "command": "app/Console/Commands/RelayFill.php"
+      },
+      "regions": [
+        "I.8.client",
+        "I.8.server"
+      ],
+      "see": "https://github.com/surveyjs/collaborative-form-filling"
+    },
+    "II": {
+      "slug": "dashboard",
+      "anchor": "dashboard",
+      "title": "See results in a dashboard",
+      "status": "done",
+      "page": "/examples/dashboard",
+      "need": "When people need to see answers, not just store them.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "GET /api/responses"
+      ],
+      "files": {
+        "definition": "shared/definitions/dashboard.json",
+        "client": "shared/client/dashboard.js",
+        "server": "routes/examples/dashboard.php",
+        "page": "resources/views/examples/dashboard.blade.php"
+      },
+      "regions": [
+        "II.client",
+        "II.server"
+      ]
+    },
+    "III.1": {
+      "slug": "creator-load-save",
+      "anchor": "creator-save",
+      "title": "Load and save definitions",
+      "status": "done",
+      "page": "/examples/creator-load-save",
+      "need": "When anyone other than a developer should change forms.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "GET /api/forms/{id}",
+        "PUT /api/forms/{id}"
+      ],
+      "files": {
+        "definition": "shared/definitions/creator-load-save.json",
+        "client": "shared/client/creator-load-save.js",
+        "server": "routes/examples/creator-load-save.php",
+        "page": "resources/views/examples/creator-load-save.blade.php"
+      },
+      "regions": [
+        "III.1.client",
+        "III.1.server"
+      ]
+    },
+    "III.2": {
+      "slug": "creator-uploads",
+      "anchor": "creator-files",
+      "title": "Upload images and files from Creator",
+      "status": "done",
+      "page": "/examples/creator-uploads",
+      "need": "When form authors add logos, images or files to a form.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "POST /api/files"
+      ],
+      "files": {
+        "definition": "shared/definitions/creator-load-save.json",
+        "client": "shared/client/creator-uploads.js",
+        "page": "resources/views/examples/creator-uploads.blade.php"
+      },
+      "regions": [
+        "III.2.client"
+      ],
+      "note": "Client only: reuses POST /api/files from I.4"
+    },
+    "III.3": {
+      "slug": "ai-translation",
+      "anchor": "creator-translate",
+      "title": "Translate strings with AI",
+      "status": "done",
+      "page": "/examples/ai-translation",
+      "need": "Multilingual forms.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "POST /api/translate"
+      ],
+      "files": {
+        "definition": "shared/definitions/creator-load-save.json",
+        "client": "shared/client/ai-translation.js",
+        "server": "routes/examples/ai-translation.php",
+        "page": "resources/views/examples/ai-translation.blade.php"
+      },
+      "regions": [
+        "III.3.client",
+        "III.3.server"
+      ]
+    },
+    "III.4": {
+      "slug": "variable-presets",
+      "anchor": "creator-presets",
+      "title": "Variable presets",
+      "status": "done",
+      "page": "/examples/variable-presets",
+      "need": "When form logic depends on variables your application supplies at runtime.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "GET /api/variable-presets/{formId}",
+        "PUT /api/variable-presets/{formId}"
+      ],
+      "files": {
+        "definition": "shared/definitions/variable-presets.json",
+        "client": "shared/client/variable-presets.js",
+        "server": "routes/examples/variable-presets.php",
+        "page": "resources/views/examples/variable-presets.blade.php"
+      },
+      "regions": [
+        "III.4.client",
+        "III.4.server"
+      ]
+    },
+    "III.5": {
+      "slug": "edit-together",
+      "anchor": "edit-together",
+      "title": "Edit one form together",
+      "status": "done",
+      "page": "/examples/edit-together",
+      "need": "When several people author the same form: a team building a large questionnaire, or reviewers editing alongside the author.",
+      "licence": "Commercial client",
+      "endpoints": [
+        "WS /ws/forms/{formId}"
+      ],
+      "files": {
+        "definition": "shared/definitions/creator-load-save.json",
+        "client": "shared/client/edit-together.js",
+        "server": "app/Relay/EditRelay.php",
+        "page": "resources/views/examples/edit-together.blade.php",
+        "room": "app/Relay/EditRoom.php",
+        "command": "app/Console/Commands/RelayEdit.php"
+      },
+      "regions": [
+        "III.5.client",
+        "III.5.server"
+      ],
+      "see": "https://github.com/surveyjs/collaborative-form-editing"
+    },
+    "IV.1": {
+      "slug": "validate-response",
+      "anchor": "validate",
+      "title": "Validate the response against the definition",
+      "status": "done",
+      "page": "/examples/validate-response",
+      "need": "When clients aren't trusted: public forms, APIs, compliance.",
+      "licence": "MIT",
+      "endpoints": [
+        "POST /api/responses"
+      ],
+      "files": {
+        "definition": "shared/definitions/relational-storage.v1.json",
+        "client": "shared/client/validate-response.js",
+        "server": "routes/examples/validate-response.php",
+        "page": "resources/views/examples/validate-response.blade.php"
+      },
+      "regions": [
+        "IV.1.client",
+        "IV.1.server"
+      ]
+    },
+    "IV.2": {
+      "slug": "lint-definition",
+      "anchor": "lint",
+      "title": "Lint definitions before saving",
+      "status": "done",
+      "page": "/examples/lint-definition",
+      "need": "When non-developers edit forms in Creator.",
+      "licence": "MIT",
+      "endpoints": [
+        "PUT /api/forms/{id}"
+      ],
+      "files": {
+        "definition": "shared/definitions/creator-load-save.json",
+        "client": "shared/client/lint-definition.js",
+        "server": "routes/examples/lint-definition.php",
+        "page": "resources/views/examples/lint-definition.blade.php"
+      },
+      "regions": [
+        "IV.2.client",
+        "IV.2.server"
+      ]
+    },
+    "IV.3": {
+      "slug": "server-pdf",
+      "anchor": "pdf",
+      "title": "Export forms to PDF on the server",
+      "status": "done",
+      "page": "/examples/server-pdf",
+      "need": "When the PDF must be produced server-side (archiving, email attachments) rather than in the user's browser.",
+      "licence": "Commercial",
+      "endpoints": [
+        "GET /api/claims/{id}/pdf"
+      ],
+      "files": {
+        "definition": "shared/definitions/relational-storage.v1.json",
+        "client": "shared/client/server-pdf.js",
+        "server": "routes/examples/server-pdf.php",
+        "page": "resources/views/examples/server-pdf.blade.php"
+      },
+      "regions": [
+        "IV.3.client",
+        "IV.3.server"
+      ],
+      "note": "The pinned SurveyJS service applies no licence key, so its PDFs carry the SurveyJS alert banner"
+    },
+    "IV.4": {
+      "slug": "extract-from-paper",
+      "anchor": "extract",
+      "title": "Turn paper, PDF and images into responses",
+      "status": "done",
+      "page": "/examples/extract-from-paper",
+      "need": "When forms still arrive on paper, as scans or as filled PDFs.",
+      "licence": "MIT, needs an AI provider",
+      "endpoints": [
+        "POST /api/work-orders/extract"
+      ],
+      "files": {
+        "definition": "shared/definitions/extract-from-paper.json",
+        "client": "shared/client/extract-from-paper.js",
+        "server": "routes/examples/extract-from-paper.php",
+        "page": "resources/views/examples/extract-from-paper.blade.php"
+      },
+      "regions": [
+        "IV.4.client",
+        "IV.4.server"
+      ]
+    }
+  }
+}
