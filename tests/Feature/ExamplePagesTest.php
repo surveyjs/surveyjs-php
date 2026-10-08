@@ -49,6 +49,16 @@ class ExamplePagesTest extends TestCase
             ->assertSee("sjs:{$id}.", false);   // the code panel shows the step's regions
     }
 
+    public function test_links_follow_the_scheme_of_a_tls_proxy(): void
+    {
+        $http = url('/examples/');   // http://<APP_URL host>/examples
+
+        $this->withoutVite()->get('/', ['X-Forwarded-Proto' => 'https'])
+            ->assertOk()
+            ->assertSee('href="'.preg_replace('~^http:~', 'https:', $http), false)
+            ->assertDontSee('href="'.$http, false);
+    }
+
     public function test_an_unknown_step_is_not_found(): void
     {
         $this->get('/examples/nothing-here')->assertNotFound();

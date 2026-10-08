@@ -7,6 +7,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * Seeds the demo users and every step's data from shared/seed/*.json,
@@ -24,9 +26,10 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        // Demo only: switch between them in the page header (see App\Http\Middleware\DemoUser)
-        User::factory()->create(['name' => 'Alice Martin', 'email' => 'alice@example.com', 'plan' => 'premium', 'is_editor' => true]);
-        User::factory()->create(['name' => 'Bob Fischer', 'email' => 'bob@example.com', 'plan' => 'basic', 'is_editor' => false]);
+        // Demo only: switch between them in the page header (see App\Http\Middleware\DemoUser).
+        // No factory: the Docker image installs without dev dependencies, so there is no Faker.
+        User::create(['name' => 'Alice Martin', 'email' => 'alice@example.com', 'password' => Hash::make(Str::random(32)), 'plan' => 'premium', 'is_editor' => true]);
+        User::create(['name' => 'Bob Fischer', 'email' => 'bob@example.com', 'password' => Hash::make(Str::random(32)), 'plan' => 'basic', 'is_editor' => false]);
 
         foreach ($this->seed('forms.json', true) as $key => $file) {
             $definition = json_decode((string) file_get_contents(base_path('shared/definitions/'.$file)), flags: JSON_THROW_ON_ERROR);

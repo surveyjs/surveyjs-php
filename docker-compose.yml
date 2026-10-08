@@ -1,4 +1,4 @@
-# docker-compose.yml — this app, its two relays and the SurveyJS service, side by side.
+# docker-compose.yml — this app, its two relays, its scheduler and the SurveyJS service, side by side.
 #
 #   docker compose up --build        → http://localhost:8000 (relays on 8081 and 8082)
 #   docker compose up -d surveyjs    → only the service, on http://localhost:3010 (see docker-compose.override.yml)
@@ -15,6 +15,8 @@ x-app-environment: &app-environment
     AI_API_KEY: ${AI_API_KEY:-}
     AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
     DEMO_MODE: ${DEMO_MODE:-false}
+    RELAY_URL: ${RELAY_URL:-}                           # set both when a proxy serves the relays (README: Behind a proxy)
+    EDIT_RELAY_URL: ${EDIT_RELAY_URL:-}
     SURVEYJS_AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}     # only to tell the IV.4 page whether extraction is configured
 
 services:
@@ -41,13 +43,21 @@ services:
         volumes: [storage:/app/storage]
         depends_on: [app]
 
+    scheduler:                  # demo:prune: with DEMO_MODE=true, removes visitor sandboxes unused for 24 hours
+        build: .
+        command: ["php", "artisan", "schedule:work"]
+        environment: *app-environment
+        volumes: [storage:/app/storage]
+        depends_on: [app]
+
     surveyjs:                   # SurveyJS service (Node.js): SurveyJS Server, built from a pinned commit
         build:
             context: https://github.com/surveyjs/surveyjs-server.git#db1ac24b5f984511bbac463c890b6b0a3ebd2dc9
-            # The repository's Dockerfile at this commit, plus git in the runtime stage: without it,
-            # `npm install --omit=dev` fails on a devDependency that is a git URL.
+            # The repository's Dockerfile at this commit, on Node 24 (20 is out of support, and npm on Node 22
+            # fails to install it), plus git in the runtime stage: without it, `npm install --omit=dev` fails
+            # on a devDependency that is a git URL.
             dockerfile_inline: |
-                FROM node:20-alpine AS build
+                FROM node:24-alpine AS build
                 WORKDIR /app
                 RUN apk add --no-cache git
                 COPY package*.json ./
@@ -56,7 +66,7 @@ services:
                 COPY src ./src
                 RUN npm run build
 
-                FROM node:20-alpine
+                FROM node:24-alpine
                 WORKDIR /app
                 ENV NODE_ENV=production
                 RUN apk add --no-cache git
