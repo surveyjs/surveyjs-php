@@ -22,9 +22,10 @@ Route::get('/api/countries', function () {
             ->get('https://restcountries.com/v3.1/all', ['fields' => 'name,cca2'])->throw()->collect()
             ->map(fn (array $country) => ['code' => $country['cca2'], 'name' => $country['name']['common']])
             ->sortBy('name')->values()->all());
-    } catch (Throwable $e) {   // down, or a different answer: serve the bundled list, not cached, so the next request retries
+    } catch (Throwable $e) {   // down, or a different answer: serve the bundled list for 10 minutes, so requests don't each wait for the timeout
         Log::warning('restcountries.com failed; serving shared/seed/countries.json', ['error' => $e->getMessage()]);
         $countries = json_decode(file_get_contents(base_path('shared/seed/countries.json')), true);
+        Cache::put('countries', $countries, now()->addMinutes(10));
     }
 
     return response()->json($countries)->header('Cache-Control', 'public, max-age=86400');

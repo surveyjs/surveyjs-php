@@ -1,6 +1,7 @@
 # Checks that this repository still matches the Server Integration page (contract server-integration-v4):
 # the manifest and regions, PHPUnit (every row of the SurveyJS service status mapping, mocked),
 # then the shared contract test twice: without the service, and with it plus the AI stub.
+# The image job builds the app's Docker image and starts it as docker-compose.yml does.
 name: Contract
 
 on:
@@ -78,3 +79,28 @@ jobs:
       - name: Service logs
         if: failure()
         run: docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml logs surveyjs ai-stub
+
+  image:
+    runs-on: ubuntu-latest
+    name: Docker image
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and start the app (no dev dependencies, migrates and seeds on start)
+        run: docker compose up -d --build --no-deps app
+
+      - name: It answers
+        run: curl -sf --retry 30 --retry-delay 2 --retry-all-errors http://127.0.0.1:8000/up > /dev/null
+
+      - name: Behind a TLS proxy, assets are https
+        run: curl -sf -H 'X-Forwarded-Proto: https' http://127.0.0.1:8000/ | grep -q 'https://127.0.0.1:8000/build/'
+
+      - name: Production settings
+        run: |
+          docker compose exec -T app php artisan about --only=environment | tee about.txt
+          grep -Eq 'Environment +\.* *production' about.txt
+          grep -Eq 'Debug Mode +\.* *OFF' about.txt
+
+      - name: App logs
+        if: failure()
+        run: docker compose logs app

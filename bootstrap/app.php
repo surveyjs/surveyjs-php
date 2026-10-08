@@ -20,6 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Behind a TLS proxy (Traefik, nginx, Cloudflare): build URLs, @vite assets and Secure cookies from X-Forwarded-*
+        $middleware->trustProxies(at: '*');
+
         // Store JSON exactly as it arrives: don't trim strings or turn "" into null under /api
         $middleware->trimStrings(except: [fn (Request $request) => $request->is('api/*')]);
         $middleware->convertEmptyStringsToNull(except: [fn (Request $request) => $request->is('api/*')]);

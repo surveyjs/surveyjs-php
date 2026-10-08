@@ -25,6 +25,11 @@ COPY --from=assets /app/public/build public/build
 RUN composer dump-autoload --optimize --no-dev \
     && php artisan package:discover
 
+# Production settings: real environment variables win over the .env that CMD copies from .env.example.
+# Logs go to `docker compose logs`. PHP_CLI_SERVER_WORKERS (read from the process environment, not .env)
+# lets the built-in server answer other visitors while IV.4 (up to 120 s), IV.3 or III.3 (60 s) waits.
+ENV APP_ENV=production APP_DEBUG=false LOG_CHANNEL=stderr PHP_CLI_SERVER_WORKERS=4
+
 EXPOSE 8000 8081 8082
 # Migrate and seed on start, then serve with upload limits for 5 MB files (see server.php)
 CMD ["sh", "-c", "[ -f .env ] || cp .env.example .env; grep -q '^APP_KEY=base64' .env || php artisan key:generate --force; touch \"${DB_DATABASE:-database/database.sqlite}\" && php artisan migrate --seed --force && exec php -d upload_max_filesize=10M -d post_max_size=12M -S 0.0.0.0:8000 -t public server.php"]

@@ -22,9 +22,37 @@ While you work on the code, run `composer dev` instead of `composer start`: it s
 
 - **I.8 and III.5** (fill and edit together) need the WebSocket relays, two long-running processes: `composer relay` (port 8081) and `composer edit-relay` (port 8082). `composer dev` starts them for you.
 - **Section IV** (validate, lint, PDF, extract) calls the SurveyJS service, which runs in Docker: `docker compose up -d surveyjs` publishes it on `http://localhost:3010`. Then set `VALIDATE_RESPONSES=true` and `LINT_DEFINITIONS=true` in `.env` to switch IV.1 and IV.2 on.
-- Everything in containers: `docker compose up --build` runs the app on port 8000, both relays and the service.
+- Everything in containers: `docker compose up --build` runs the app on port 8000, both relays, the scheduler and the service (see [Docker](#docker)).
 
 `composer start` runs PHP's built-in server with upload limits that fit 5 MB files (`php artisan serve` starts a child process that doesn't inherit `-d` flags). See `server.php`.
+
+## Docker
+
+The image runs with `APP_ENV=production`, `APP_DEBUG=false` and logs to `docker compose logs` (`LOG_CHANNEL=stderr`). These are environment variables, so they win over the `.env` the container copies from `.env.example`. PHP's built-in server runs 4 workers (`PHP_CLI_SERVER_WORKERS`, read from the process environment, not from `.env`), so a long IV.4 extraction doesn't hold up other visitors. That is enough for the demo; for your own production, serve Laravel with FrankenPHP or nginx + php-fpm. The `scheduler` service runs `php artisan schedule:work` for `demo:prune`.
+
+### Behind a proxy
+
+The app trusts `X-Forwarded-*` headers, so behind a TLS proxy (Traefik, nginx, Cloudflare) its URLs, assets and cookies use `https`. To serve the relays on the same host, route their paths to them and set `RELAY_URL` and `EDIT_RELAY_URL` to that origin. For Traefik, next to your entry point and TLS labels:
+
+```yaml
+services:
+    app:
+        labels:
+            - traefik.http.routers.surveyjs.rule=Host(`example.com`)
+            - traefik.http.services.surveyjs.loadbalancer.server.port=8000
+    relay:
+        labels:
+            - traefik.http.routers.surveyjs-relay.rule=Host(`example.com`) && PathPrefix(`/ws/rooms/`)
+            - traefik.http.services.surveyjs-relay.loadbalancer.server.port=8081
+    edit-relay:
+        labels:
+            - traefik.http.routers.surveyjs-edit-relay.rule=Host(`example.com`) && PathPrefix(`/ws/forms/`)
+            - traefik.http.services.surveyjs-edit-relay.loadbalancer.server.port=8082
+```
+
+```bash
+RELAY_URL=wss://example.com EDIT_RELAY_URL=wss://example.com docker compose up -d --build
+```
 
 ## Configuration
 
@@ -39,7 +67,7 @@ Copy `.env.example` to `.env` (`composer setup` does it). Besides Laravel's own 
 | `SURVEYJS_AI_PROVIDER`, `SURVEYJS_AI_MODEL`, `SURVEYJS_OLLAMA_BASE_URL`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY` | empty | IV.4: the AI provider the service extracts with (`openai`, `anthropic` or `ollama`). Docker Compose passes them to the service. |
 | `AI_BASE_URL`, `AI_API_KEY`, `AI_MODEL` | OpenAI, empty, `gpt-4o-mini` | III.3: any OpenAI-compatible `/chat/completions` endpoint for machine translation. Without a key, `/api/translate` answers `501`. |
 | `RELAY_PORT`, `EDIT_RELAY_PORT` | `8081`, `8082` | Where the relays listen. |
-| `RELAY_URL`, `EDIT_RELAY_URL` | empty | The relay URLs the pages use, when a proxy serves them (for example `wss://example.com/ws`). Empty means this host on the ports above. |
+| `RELAY_URL`, `EDIT_RELAY_URL` | empty | The relay origin the pages use when a proxy serves the relays, for example `wss://example.com`: the pages add `/ws/rooms/<id>` and `/ws/forms/<id>`. Empty means this host on the ports above. |
 | `DEMO_MODE` | `false` | The hosted demo's visitor sandboxes (below). |
 
 Code reads these through `config/surveyjs.php`, never with `env()`, so `php artisan config:cache` works.

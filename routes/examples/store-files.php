@@ -30,6 +30,8 @@ Route::get('/api/files/{id}', function (string $id) {
     $file = DB::table('files')->find($id);
     abort_if(! $file || Gate::denies('read-file', $file), 404);   // 404, not 403: don't confirm the file exists
 
-    return Storage::disk('uploads')->response($id, $file->name, ['Content-Type' => $file->type]);
+    return Storage::disk('uploads')->response($id, $file->name, [   // nosniff and sandbox: an uploaded HTML or SVG never runs as this site
+        'Content-Type' => $file->type, 'X-Content-Type-Options' => 'nosniff', 'Content-Security-Policy' => 'sandbox',
+    ]);
 });
 // #endregion
