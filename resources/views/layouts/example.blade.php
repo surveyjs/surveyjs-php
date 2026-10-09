@@ -60,7 +60,7 @@
                 <a class="text-sjs-dark underline" href="https://surveyjs.io/backend-integration/examples#{{ $step['anchor'] }}">This step on the Server Integration page</a>
                 <a class="text-sjs-dark underline" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source on GitHub</a>
                 @if ($commercial)
-                    <span class="text-gray-500">{{ $step['licence'] }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner</span>
+                    <span class="text-gray-500">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner</span>
                 @endif
             </p>
         </div>

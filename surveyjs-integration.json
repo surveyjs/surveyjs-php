@@ -267,7 +267,7 @@
       "status": "done",
       "page": "/examples/ai-translation",
       "need": "Multilingual forms.",
-      "licence": "Commercial client",
+      "licence": "Commercial client, needs an AI provider",
       "endpoints": [
         "POST /api/translate"
       ],
