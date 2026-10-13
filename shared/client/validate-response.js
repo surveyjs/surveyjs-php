@@ -24,6 +24,9 @@ survey.onComplete.add(async (sender, options) => {
 
 mountSurvey(survey);
 
+// Demo only: the start-over button
+document.getElementById("start-over")?.addEventListener("click", () => survey.clear(true, true));
+
 // Demo only: bypass the client and post tampered answers straight to the endpoint
 const valid = { customer_email: "ann@example.com", amount: 120, incident: "theft", details: "A valid claim" };
 const tampered = {

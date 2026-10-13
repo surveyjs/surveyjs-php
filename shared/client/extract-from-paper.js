@@ -40,3 +40,9 @@ document.getElementById("sample-scan")?.addEventListener("click", async () => {
   run(new File([blob], "work-order-scan.png", { type: "image/png" }));
 });
 document.getElementById("own-scan")?.addEventListener("change", (e) => e.target.files[0] && run(e.target.files[0]));
+document.getElementById("start-over")?.addEventListener("click", () => {
+  survey.clear(true, true);
+  for (const question of survey.getAllQuestions()) question.description = "";
+  document.getElementById("own-scan").value = "";   // so picking the same file again extracts it again
+  show("extract-status", "No scan yet.");
+});

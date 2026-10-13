@@ -32,7 +32,7 @@ document.addEventListener("visibilitychange", () => {
 });
 // #endregion
 
-// Demo only: the "Saved" indicator, reload and clear buttons
+// Demo only: the "Saved" indicator, and the reload and start-over buttons
 setStoredQuery({ key: formId });
 show("saved", saved ? "Restored the saved progress" : "Nothing saved yet");
 onRequest(({ method, url, status }) => {
@@ -43,12 +43,8 @@ document.getElementById("reload")?.addEventListener("click", () => {
   saveProgress.flush();
   setTimeout(() => location.reload(), 300);
 });
-document.getElementById("clear-progress")?.addEventListener("click", async () => {
-  saveProgress.cancel();
-  await fetch(`/api/progress/${formId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ data: {}, uiState: {} })
-  });
-  location.reload();
+document.getElementById("start-over")?.addEventListener("click", () => {
+  survey.clear(true, true);
+  saveProgress();          // the saved progress becomes the empty form on its first page
+  saveProgress.flush();
 });

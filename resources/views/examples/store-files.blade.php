@@ -5,6 +5,11 @@
     <li><strong>Under the hood › Stored</strong> lists the <code>files</code> by id, name and type. Press <strong>Complete</strong>: the stored response holds ids, not contents.</li>
     <li>The preview of each file comes through <code>GET /api/files/&lt;id&gt;</code> in <strong>Under the hood › Requests</strong>.</li>
     <li>Switch the <strong>Demo user</strong> to <strong>Signed out</strong>, then upload a file: the upload still answers <code>200</code>, but the preview's <code>GET /api/files/&lt;id&gt;</code> answers <code>404</code> (<code>Gate::denies('read-file')</code>).</li>
+    <li>Press <strong>Start over</strong> to fill in another expense report.</li>
+@endsection
+
+@section('actions')
+    @include('examples.partials.start-over')
 @endsection
 
 @section('readouts')

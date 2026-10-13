@@ -18,4 +18,7 @@ settings.web.onBeforeRequestChoices = (_, options) => {
 };
 // #endregion
 
-mountSurvey(new Model(page.definition));
+const survey = mountSurvey(new Model(page.definition));
+
+// Demo only: the start-over button
+document.getElementById("start-over")?.addEventListener("click", () => survey.clear(true, true));
