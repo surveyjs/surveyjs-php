@@ -14,33 +14,33 @@
     @endif
 @endsection
 
-@section('description')
-    <p>Three things can come from your server, each optional. The definition, rendered into the page as-is or with per-request changes, or fetched. Variables: application data the form reads in titles and conditions but never saves (the signed-in user, their plan, their locale). Previous answers: the stored response, so the form edits a record instead of starting blank.</p>
-@endsection
-
 @section('try')
-    <li><strong>Option A</strong> (<a href="{{ url('/claim') }}">/claim</a>): the title says "Hi {{ \Illuminate\Support\Str::before(auth()->user()->name ?? 'there', ' ') }}" and Requests shows no definition request. The server rendered it into the page.</li>
-    <li><strong>Option B</strong> (<a href="{{ route('example', 'load-definition-variables-data') }}">this page</a>): one <code>GET /api/forms/claim-request?record=</code> returns the definition, variables and previous answers.</li>
-    <li>In Option B, switch the demo user: <code>{user.name}</code> in the title changes, and "use priority handling?" appears only for Alice's <strong>premium</strong> plan.</li>
-    <li>Pick a record below: the form opens pre-filled and edits that claim instead of starting blank.</li>
-    <li>Press <strong>Complete</strong>: the stored panel shows the answers and no variables. <button id="start-over" type="button" class="text-sjs-dark underline">Start over</button></li>
+    <li><strong>Option A</strong> (<a href="{{ url('/claim') }}">/claim</a>): the title says "Hi {{ \Illuminate\Support\Str::before(auth()->user()->name ?? 'there', ' ') }}" and <strong>Under the hood › Requests</strong> shows no definition request.</li>
+    <li><strong>Option B</strong> (<a href="{{ route('example', 'load-definition-variables-data') }}">this page</a>): one <code>GET /api/forms/claim-request?record=</code> returns the definition, variables and previous answers. Open <strong>Under the hood › Requests</strong> and expand it to see them.</li>
+    <li>In Option B, the title shows Alice's name and <strong>premium</strong> plan, and "use priority handling?" shows because Alice is on the <strong>premium</strong> plan.</li>
+    <li>Pick a <strong>Record</strong>: the form opens pre-filled and edits that claim instead of starting blank.</li>
+    <li>Press <strong>Complete</strong>: <strong>Under the hood › Stored</strong> shows <code>responses</code> with the answers and no variables. Press <strong>Start over</strong> to fill it in again.</li>
 @endsection
 
-@section('controls')
-    <div class="flex flex-wrap items-center gap-4 rounded-lg border border-gray-200 bg-white p-3 text-sm">
-        <span class="font-semibold text-gray-700">Option</span>
-        <a href="{{ url('/claim') }}" @class(['rounded px-2 py-1', 'bg-sjs text-white' => $optionA, 'text-sjs-dark underline' => ! $optionA])>A: rendered into the page</a>
-        <a href="{{ route('example', 'load-definition-variables-data') }}" @class(['rounded px-2 py-1', 'bg-sjs text-white' => ! $optionA, 'text-sjs-dark underline' => $optionA])>B: fetched</a>
-        @unless ($optionA)
-            <form method="get" class="ml-auto flex items-center gap-2">
-                <label for="record" class="text-gray-600">Record</label>
-                <select id="record" name="record" onchange="this.form.submit()" class="rounded border border-gray-300 px-2 py-1">
-                    <option value="">None: a blank claim</option>
-                    @foreach ($records as $id => $label)
-                        <option value="{{ $id }}" @selected((string) $id === (string) $record)>{{ $label }}</option>
-                    @endforeach
-                </select>
-            </form>
-        @endunless
-    </div>
+@section('actions')
+    <span class="text-gray-600">Option</span>
+    <span class="box-border inline-flex h-9 items-stretch rounded-md border border-gray-300 bg-white p-0.5">
+        <a href="{{ url('/claim') }}" @if ($optionA) aria-current="page" @endif @class(['flex items-center rounded px-2.5 no-underline', 'bg-sjs-dark text-white' => $optionA, 'text-gray-700 hover:bg-gray-100' => ! $optionA])>A: rendered into the page</a>
+        <a href="{{ route('example', 'load-definition-variables-data') }}" @unless ($optionA) aria-current="page" @endunless @class(['flex items-center rounded px-2.5 no-underline', 'bg-sjs-dark text-white' => ! $optionA, 'text-gray-700 hover:bg-gray-100' => $optionA])>B: fetched</a>
+    </span>
+    @unless ($optionA)
+        <form method="get" class="flex items-center gap-2">
+            <label for="record" class="text-gray-600">Record</label>
+            <select id="record" name="record" onchange="this.form.submit()" class="box-border h-9 rounded-md border border-gray-300 bg-white px-2 text-sm">
+                <option value="">None: a blank claim</option>
+                @foreach ($records as $id => $label)
+                    <option value="{{ $id }}" @selected((string) $id === (string) $record)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </form>
+    @endunless
+    <button id="start-over" type="button" class="box-border inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 [font-family:inherit] hover:bg-gray-100">
+        <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 4 3 10 9 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L3 10"/></svg>
+        Start over
+    </button>
 @endsection

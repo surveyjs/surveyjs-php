@@ -2,17 +2,20 @@
 
 @section('theme', 'creator')
 
-@section('description')
-    <p>Survey Creator lets non-developers create and change forms in your application. For your backend, a definition is one more JSON document to load and save. Creator edits the definition your forms already load. Save it back through one endpoint; the next page load renders the new version. Saving definitions is an admin action: authorize it.</p>
-@endsection
-
 @section('try')
-    <li>As <strong>Alice</strong> (editor), change the form title in the Designer. Creator saves automatically (<code>autoSaveEnabled</code>): one <code>PUT /api/forms/support</code> answers <code>204</code>.</li>
-    <li><a href="?form" target="_blank">Open the form</a>: it renders the saved definition, with your new title.</li>
-    <li>Switch the demo user to <strong>Bob</strong> (viewer) and change anything: each save answers <code>403</code> from <code>Gate::authorize('edit-forms')</code>, and Creator shows the server's message: "You don't have editor rights".</li>
+    <li>As <strong>Alice</strong> (editor), change the form title in the Designer. Creator saves automatically (<code>autoSaveEnabled</code>): one <code>PUT /api/forms/support</code> answers <code>204</code>. Open <strong>Under the hood › Requests</strong> and expand it to see the definition sent.</li>
+    <li>Press <strong>Open the form</strong>: a new tab renders the saved definition, with your new title.</li>
+    <li>Switch the <strong>Demo user</strong> to <strong>Bob</strong> (viewer) and change anything: each save answers <code>403</code> from <code>Gate::authorize('edit-forms')</code>, and Creator shows the server's message: "You don't have editor rights".</li>
     <li>Select a question: the property grid's Data category has the <code>dbColumn</code> property from <a href="{{ route('example', 'relational-storage') }}">I.7</a>.</li>
 @endsection
 
+@section('actions')
+    <a href="?form" target="_blank" class="box-border inline-flex h-9 items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 no-underline hover:bg-gray-100">
+        Open the form
+        <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+    </a>
+@endsection
+
 @section('form')
-    <div id="creator" class="h-[80vh] min-h-[640px]"></div>
+    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,6rem)_-_var(--demo-above,1rem)_-_0.875rem)] min-h-[640px]"></div>
 @endsection

@@ -8,40 +8,38 @@
     <script>window.SURVEYJS_PAGE.record = {{ Js::from((string) $record) }};</script>
 @endsection
 
-@section('description')
-    <p>Several people fill in the same response at once and see each other's answers, focus and cursors. On the client it is one plugin, <code>CollaborationPlugin</code> from <code>survey-core/collaboration</code> (v3.1.1+). It emits small messages, applies incoming ones, and draws the participant bar, focus rings and cursors itself. Your server is a relay: it keeps each room's definition and the latest value of every answer, sends both to a newcomer in one <code>init</code> message, stores and forwards each change, and passes presence through. It never parses the definition or the answers. Last write wins per question. Saving the finished response stays the I.1 endpoint.</p>
-    <p>This relay is <code>app/Relay/FillRelay.php</code>, run as its own process with <code>php artisan relay:fill</code> (port {{ config('surveyjs.relay.fill_port') }}).</p>
-@endsection
-
 @section('try')
-    <li><a data-invite-link target="_blank" href="#">Open a second window</a> with the invite link. Both participants appear in the participant bar, with focus rings and cursors. Switch the demo user in one window to see Alice and Bob side by side.</li>
-    <li>Answer a few questions, then open a <a data-invite-link target="_blank" href="#">third window</a>: it starts with those answers, from one <code>init</code> message.</li>
+    <li>Press <strong>Open a second window</strong>: it opens the invite link. Both participants appear in the participant bar, with focus rings and cursors.</li>
+    <li>Answer a few questions, then press <strong>Open a second window</strong> again for a third: it starts with those answers, from one <code>init</code> message.</li>
     <li>Type in the same question from two windows: the last write wins.</li>
-    <li>Press <strong>Complete</strong> in one window: it posts through I.1, <code>POST /api/responses</code> in Requests.</li>
-    <li>"What the server stored" shows the room's latest values as the relay keeps them (snapshots are written in demo mode).</li>
+    <li>Press <strong>Complete</strong> in one window: <code>POST /api/responses</code> appears in <strong>Under the hood › Requests</strong>.</li>
+    <li><strong>Under the hood › Stored</strong> shows the <code>relay room</code>: the room's latest values as the relay keeps them (snapshots are written in demo mode).</li>
 @endsection
 
-@section('controls')
-    <div class="space-y-2 rounded-lg border border-gray-200 bg-white p-3 text-sm">
-        <div class="flex flex-wrap items-center gap-3">
-            <span class="font-semibold text-gray-700">Record</span>
-            <form method="get" class="flex items-center gap-2">
-                <select name="record" onchange="this.form.submit()" class="rounded border border-gray-300 px-2 py-1">
-                    @foreach ($records as $id => $label)
-                        <option value="{{ $id }}" @selected((string) $id === (string) $record)>{{ $label }}</option>
-                    @endforeach
-                    <option value="new" @selected($record === 'new')>A new, blank job sheet</option>
-                </select>
-            </form>
-            <span data-show="room" class="text-gray-500"></span>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <span class="text-gray-600">Invite link</span>
-            <input data-invite-link readonly class="min-w-0 flex-1 rounded border border-gray-300 bg-gray-50 px-2 py-1 font-mono text-xs" onclick="this.select()">
-            <button type="button" data-copy-invite class="cursor-pointer rounded border border-sjs px-2 py-1 text-sjs-dark data-[copied=true]:bg-sjs data-[copied=true]:text-white">Copy</button>
-        </div>
-        @if (config('surveyjs.demo_mode'))
-            <p class="text-xs text-gray-500">The link carries your sandbox id: whoever opens it works in your copy of the demo data, in the same rooms.</p>
-        @endif
-    </div>
+@section('actions')
+    <form method="get" class="flex items-center gap-2">
+        <label for="record" class="text-gray-600">Record</label>
+        <select id="record" name="record" onchange="this.form.submit()" class="box-border h-9 rounded-md border border-gray-300 bg-white px-2 text-sm">
+            @foreach ($records as $id => $label)
+                <option value="{{ $id }}" @selected((string) $id === (string) $record)>{{ $label }}</option>
+            @endforeach
+            <option value="new" @selected($record === 'new')>A new, blank job sheet</option>
+        </select>
+    </form>
+    <span data-show="room" class="text-gray-500"></span>
+    <span class="flex min-w-0 flex-1 items-center gap-2 basis-72">
+        <label for="invite-link" class="shrink-0 text-gray-600">Invite link</label>
+        <input id="invite-link" data-invite-link readonly class="box-border h-9 min-w-0 flex-1 rounded-md border border-gray-300 bg-gray-50 px-2 font-mono text-xs" onclick="this.select()">
+        <button type="button" data-copy-invite class="box-border inline-flex h-9 shrink-0 cursor-pointer items-center rounded-md border border-sjs-dark bg-white px-3 text-sm font-semibold text-sjs-dark [font-family:inherit] data-[copied=true]:bg-sjs-dark data-[copied=true]:text-white">Copy</button>
+    </span>
+    <a data-invite-link target="_blank" href="#" class="box-border inline-flex h-9 items-center gap-1.5 rounded-md border border-sjs-dark bg-sjs-dark px-3 text-sm font-semibold text-white no-underline hover:bg-sjs-dark/90">
+        Open a second window
+        <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+    </a>
+@endsection
+
+@section('about')
+    @if (config('surveyjs.demo_mode'))
+        <p>The invite link carries your sandbox id: whoever opens it works in your copy of the demo data, in the same rooms.</p>
+    @endif
 @endsection

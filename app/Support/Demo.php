@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * Demo only: what the step pages show around the form. The manifest, the code panel's regions
@@ -77,6 +78,23 @@ final class Demo
     }
 
     /**
+     * The step page's live links (resources/js/page-tabs.js): one per endpoint that host.js logs (under
+     * /api/ or /ws/), then one per section of the Stored panel, by title.
+     *
+     * @return list<array{kind: 'endpoint'|'stored', label: string}>
+     */
+    public static function liveLinks(array $step, Request $request): array
+    {
+        $endpoints = array_filter($step['endpoints'], fn (string $endpoint) => preg_match('~^[A-Z]+ /(api|ws)/~', $endpoint) === 1);
+        $stored = array_keys(self::stored($step['slug'], $request) ?? []);
+
+        return [
+            ...array_map(fn (string $label) => ['kind' => 'endpoint', 'label' => $label], array_values($endpoints)),
+            ...array_map(fn (string $label) => ['kind' => 'stored', 'label' => $label], $stored),
+        ];
+    }
+
+    /**
      * Find every `#region sjs:<id>` in a file.
      *
      * @return array<string, array{start: int, end: int, code: string}> start/end are 1-based lines of the code inside the markers
@@ -118,12 +136,31 @@ final class Demo
                         'language' => str_ends_with($path, '.php') ? 'php' : 'javascript',
                         'code' => $region['code'],
                         'url' => sprintf('%s/blob/%s/%s#L%d-L%d', config('surveyjs.github'), self::manifest()['branch'], $path, $region['start'], $region['end']),
+                        'run' => $role === 'server' ? self::runCommand($step) : null,
                     ];
                 }
             }
         }
 
         return $panel;
+    }
+
+    /**
+     * I.8 and III.5: how to start the step's relay. The manifest's files.command is the command's
+     * file; its artisan name comes from that class's $signature (relay:fill → surveyjs.relay.fill_port).
+     *
+     * @return array{command: string, port: int}|null
+     */
+    private static function runCommand(array $step): ?array
+    {
+        $path = $step['files']['command'] ?? null;
+        if ($path === null) {
+            return null;
+        }
+        $class = 'App\\'.str_replace('/', '\\', substr($path, strlen('app/'), -strlen('.php')));
+        $name = preg_split('/\s+/', trim((string) (new \ReflectionClass($class))->getDefaultProperties()['signature']))[0];
+
+        return ['command' => "php artisan {$name}", 'port' => (int) config('surveyjs.relay.'.Str::after($name, ':').'_port')];
     }
 
     private static function dedent(array $lines): string

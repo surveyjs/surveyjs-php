@@ -16,6 +16,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
+                'resources/js/page-tabs.js',
                 // SurveyJS themes: the form, Creator and Dashboard pages each load one
                 'resources/css/survey.css',
                 'resources/css/creator.css',

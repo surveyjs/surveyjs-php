@@ -3,14 +3,9 @@
 @endphp
 @extends('layouts.example')
 
-@section('description')
-    <p>PDF Generator runs on plain Node.js, without a browser. Give it the definition and the answers; get back the filled form. Here the SurveyJS service produces it next to this app, and the route passes the bytes through.</p>
-@endsection
-
 @section('banner')
-    @include('examples.partials.service-banner')
     <p class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-        PDF Generator is commercial. The pinned SurveyJS service never calls <code>setLicenseKey()</code>, so its PDFs carry the SurveyJS alert banner even when you set a licence key.
+        PDF Generator is commercial, and the pinned SurveyJS service never calls <code>setLicenseKey()</code>, so its PDFs carry the SurveyJS alert banner even when you set a licence key.
     </p>
 @endsection
 

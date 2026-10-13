@@ -3,21 +3,21 @@
 @endphp
 @extends('layouts.example')
 
-@section('description')
-    <p>Always keep the original response JSON and the version of the definition it was filled against. With both, you can re-map old responses whenever your tables change. Then copy the answers you query into columns. <code>valueName</code> makes this safe: it sets the key a question writes into the response independently of the question's name, so a form author can rename or restructure questions in Creator without breaking your columns. For more mapping metadata, such as a column type or a target table, add a custom property to questions; it then appears in Creator's property grid too.</p>
-@endsection
-
 @section('try')
-    <li>Fill in the <strong>v1</strong> form and press <strong>Complete</strong>. The stored panel shows the <code>responses</code> row with <code>definition_version: "v1"</code>, and the <code>claims</code> row with <code>customer_email</code> and <code>amount</code> filled.</li>
-    <li>Switch to <strong>v2</strong>: the questions are renamed (<code>contact_email</code>, <code>claimed_total</code>) and moved into panels, but keep <code>valueName</code>. Submit again: the same columns fill.</li>
-    <li>The custom <code>dbColumn</code> property is registered here and on the <a href="{{ route('example', 'creator-load-save') }}">III.1 Creator page</a>, where it shows in the property grid's Data category. <button id="start-over" type="button" class="text-sjs-dark underline">Start over</button></li>
+    <li>Fill in the <strong>v1</strong> form and press <strong>Complete</strong>. <strong>Under the hood › Stored</strong> shows the <code>responses</code> row with <code>definition_version: "v1"</code>, and the <code>claims</code> row with <code>customer_email</code> and <code>amount</code> filled.</li>
+    <li>Switch the <strong>Definition</strong> to <strong>v2</strong>: the questions are renamed (<code>contact_email</code>, <code>claimed_total</code>) and moved into panels. Submit again: the same columns fill.</li>
+    <li>Open the <a href="{{ route('example', 'creator-load-save') }}">III.1 Creator page</a> and select a question: the property grid's Data category shows <code>dbColumn</code>. Back here, press <strong>Start over</strong> to submit another claim.</li>
 @endsection
 
-@section('controls')
-    <div class="flex flex-wrap items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 text-sm">
-        <span class="font-semibold text-gray-700">Definition</span>
+@section('actions')
+    <span class="text-gray-600">Definition</span>
+    <span class="box-border inline-flex h-9 items-stretch rounded-md border border-gray-300 bg-white p-0.5">
         @foreach (['v1' => 'v1: q_email, q_amount', 'v2' => 'v2: renamed in Creator'] as $v => $label)
-            <a href="?version={{ $v }}" @class(['rounded px-2 py-1', 'bg-sjs text-white' => $version === $v, 'text-sjs-dark underline' => $version !== $v])>{{ $label }}</a>
+            <a href="?version={{ $v }}" @if ($version === $v) aria-current="page" @endif @class(['flex items-center rounded px-2.5 no-underline', 'bg-sjs-dark text-white' => $version === $v, 'text-gray-700 hover:bg-gray-100' => $version !== $v])>{{ $label }}</a>
         @endforeach
-    </div>
+    </span>
+    <button id="start-over" type="button" class="box-border inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 [font-family:inherit] hover:bg-gray-100">
+        <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 4 3 10 9 10"/><path d="M3.5 15a9 9 0 1 0 2.1-9.4L3 10"/></svg>
+        Start over
+    </button>
 @endsection

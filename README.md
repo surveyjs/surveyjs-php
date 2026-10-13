@@ -103,7 +103,7 @@ Each step is two or three files you can read on their own:
 
 - `routes/examples/<slug>.php`: the step's routes, the server code the page shows. `routes/examples.php` loads them in page order. They run in the stateless `api` group, so `fetch()` needs no CSRF token.
 - `shared/client/<slug>.js`: the step's client code, a plain ES module. Vite bundles it as an entry point (`vite.config.js`).
-- `resources/views/examples/<slug>.blade.php`: the step page: the description, the "Try this" list and the form.
+- `resources/views/examples/<slug>.blade.php`: the step page: the "Try this" list and the component. The explanation is in [the docs](#the-steps), not on the page.
 - The relays are `app/Relay/FillRelay.php` (I.8) and `app/Relay/EditRelay.php` (III.5), started by `php artisan relay:fill` and `relay:edit`.
 - `app/Integration/`: small helpers some routes call, so the code the page shows stays about SurveyJS. They aren't demo code:
   - `StoredJson` (I.1, I.2, I.3, I.7, III.1, III.4, IV.1, IV.2): stores and returns JSON exactly as it arrived.
@@ -174,4 +174,4 @@ These examples must not be used as a real service as they are. They don't cover 
 - `Gate::define('edit-forms')` and `Gate::define('read-file')` in `app/Providers/AppServiceProvider.php`: who may save definitions and presets, and who may read an uploaded file.
 - `app/Http/Middleware/DemoUser.php`: the demo-user switch stands in for your session guard or Sanctum. The relays check the same cookie in `FillRelay::user()` and `EditRelay::editor()`.
 
-When you copy a step into your app, leave out the demo-only files: `app/Http/Middleware/DemoUser.php`, `DemoSandbox.php` and `DemoCacheHeader.php` (and their lines in `bootstrap/app.php`), `app/Support/Demo.php`, `app/Support/Sandbox.php`, `app/Relay/RoomKey.php`'s sandbox helpers, `app/Console/Commands/DemoPrune.php`, `routes/web.php`, `resources/views/`, and `shared/client/host.js` (its `mountSurvey()` is one line: `renderSurvey(survey, element)` from `survey-js-ui`).
+When you copy a step into your app, leave out the demo-only files: `app/Http/Middleware/DemoUser.php`, `DemoSandbox.php` and `DemoCacheHeader.php` (and their lines in `bootstrap/app.php`), `app/Support/Demo.php`, `app/Support/Sandbox.php`, `app/Relay/RoomKey.php`'s sandbox helpers, `app/Console/Commands/DemoPrune.php`, `routes/web.php`, `resources/views/`, `resources/js/page-tabs.js`, and `shared/client/host.js` (its `mountSurvey()` is one line: `renderSurvey(survey, element)` from `survey-js-ui`).

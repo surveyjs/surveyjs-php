@@ -26,3 +26,35 @@
         margin: 0;
     }
 }
+
+/* Demo only: the highlights in a step page's Under the hood panel (resources/js/page-tabs.js). Scoped to #hood: the catalog has none. */
+#hood [data-hood-current='true'] {
+    box-shadow: inset 3px 0 0 var(--color-sjs);
+    background-color: color-mix(in srgb, var(--color-sjs) 9%, white);
+}
+#hood [data-hood-current='true'][data-state='error'] {
+    box-shadow: inset 3px 0 0 var(--color-red-500);
+    background-color: var(--color-red-100);
+}
+#hood [data-hood-changed='true'] > pre {
+    box-shadow: inset 3px 0 0 var(--color-sjs);
+    background-color: color-mix(in srgb, var(--color-sjs) 9%, white);
+}
+#hood mark {
+    border-radius: 2px;
+    background-color: color-mix(in srgb, var(--color-sjs) 22%, transparent);
+    color: inherit;
+}
+#hood [data-hood-flash] {
+    animation: hood-flash 1.4s ease-out;
+}
+@keyframes hood-flash {
+    from {
+        background-color: color-mix(in srgb, var(--color-sjs) 38%, white);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    #hood [data-hood-flash] {
+        animation: none;
+    }
+}
