@@ -53,6 +53,112 @@ function fill(template, values) {
   return node;
 }
 
+// Request and response bodies, only when the platform's #request-row template has both slots
+// (data-field="request-body" and "response-body"). Without them none of this runs: no clone, no
+// extra reads. Capture never touches what the caller sends or receives: a response is read through
+// a clone, at most BODY_LIMIT bytes, in a detached task, and any failure only writes
+// "(body unavailable)" into the slot.
+const BODY_LIMIT = 64 * 1024;
+const rowTemplate = document.getElementById("request-row")?.content;
+const CAPTURE_BODIES = Boolean(rowTemplate?.querySelector('[data-field="request-body"]') && rowTemplate?.querySelector('[data-field="response-body"]'));
+
+const sizeOf = (bytes) => `${bytes} bytes`;
+const cut = (text) => (text.length > BODY_LIMIT ? { text: text.slice(0, BODY_LIMIT), truncated: true } : { text, truncated: false });
+
+/** For display only: two-space JSON when the whole body was read and parses, else the text as it is. */
+function display(text, truncated, json) {
+  if (truncated) return `${text}\n… (truncated)`;
+  if (json) {
+    try {
+      return JSON.stringify(JSON.parse(text), null, 2);
+    } catch {
+      // not JSON after all
+    }
+  }
+  return text;
+}
+
+/** The request body as sent, read synchronously from what the caller passed, never consuming it. */
+function describeRequestBody(body, input) {
+  if (body === undefined || body === null) return typeof Request !== "undefined" && input instanceof Request && input.body ? "(not shown)" : "(no body)";
+  if (typeof body === "string") {
+    const { text, truncated } = cut(body);
+    return display(text, truncated, /^\s*[[{]/.test(text));
+  }
+  if (body instanceof URLSearchParams) return body.toString();
+  if (body instanceof FormData) {
+    return [...body.entries()]
+      .map(([name, value]) => (typeof value === "string" ? `${name}: ${value}` : `${name}: ${value.name} (${value.type || "unknown type"}, ${sizeOf(value.size)})`))
+      .join("\n");
+  }
+  if (body instanceof Blob) return `(${body.type || "unknown type"}, ${sizeOf(body.size)})`;
+  return "(not shown)";
+}
+
+const isJsonType = (type) => /^application\/json$|\+json$/.test(type);
+const isTextType = (type) => type.startsWith("text/") || isJsonType(type);
+
+/** Reads at most BODY_LIMIT bytes of a stream, then cancels it. Cancels it on any error too. */
+async function readLimited(stream) {
+  let reader;
+  try {
+    reader = stream.getReader();
+  } catch (error) {
+    stream.cancel().catch(() => {});   // never leave a clone unread: the browser would buffer the whole body
+    throw error;
+  }
+  const decoder = new TextDecoder();
+  let text = "";
+  let bytes = 0;
+  let done = false;
+  try {
+    while (bytes < BODY_LIMIT) {
+      const chunk = await reader.read();
+      if (chunk.done) {
+        done = true;
+        break;
+      }
+      const part = chunk.value.subarray(0, BODY_LIMIT - bytes);
+      bytes += part.byteLength;
+      text += decoder.decode(part, { stream: true });
+    }
+    return { text: text + decoder.decode(), truncated: !done };
+  } finally {
+    if (!done) reader.cancel().catch(() => {});
+  }
+}
+
+function captureResponse(entry, response) {
+  try {
+    if (response.status === 204 || response.status === 304 || !response.body) return entry.body("response-body", "(no content)");
+    const type = (response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
+    const header = response.headers.get("content-length");
+    const length = header === null ? null : Number(header);
+    if (!isTextType(type) || (length !== null && !(length <= BODY_LIMIT))) {
+      return entry.body("response-body", `(${type || "unknown type"}, ${length !== null && Number.isFinite(length) ? sizeOf(length) : "size unknown"})`);
+    }
+    const clone = response.clone();
+    readLimited(clone.body)
+      .then(({ text, truncated }) => entry.body("response-body", display(text, truncated, isJsonType(type))))
+      .catch(() => entry.body("response-body", "(body unavailable)"));
+  } catch {
+    entry.body("response-body", "(body unavailable)");
+  }
+}
+
+function captureXhrResponse(entry, xhr) {
+  try {
+    if (xhr.status === 0) return entry.body("response-body", "(no response)");
+    if (xhr.status === 204 || xhr.status === 304) return entry.body("response-body", "(no content)");
+    if (xhr.responseType !== "" && xhr.responseType !== "text") return entry.body("response-body", `(${xhr.responseType}, size unknown)`);
+    const type = (xhr.getResponseHeader("content-type") ?? "").split(";")[0].trim().toLowerCase();
+    const { text, truncated } = cut(xhr.responseText);
+    entry.body("response-body", display(text, truncated, isJsonType(type)));
+  } catch {
+    entry.body("response-body", "(body unavailable)");
+  }
+}
+
 function startEntry(method, url, requestHeaders) {
   const started = performance.now();
   const u = new URL(url, location.href);
@@ -85,6 +191,15 @@ function startEntry(method, url, requestHeaders) {
         for (const listener of requestListeners) listener({ method: method.toUpperCase(), url: u.pathname + u.search, status });
       }
     },
+    /** Write a body slot of the row (only called when CAPTURE_BODIES). Never throws. */
+    body(name, text) {
+      try {
+        const slot = row?.querySelector(`[data-field="${name}"]`);
+        if (slot) slot.textContent = text;
+      } catch {
+        // the log is optional
+      }
+    },
   };
 }
 
@@ -105,12 +220,21 @@ window.fetch = async (input, init = {}) => {
   const method = init.method ?? (typeof input === "object" && "method" in input ? input.method : "GET");
   const headers = Object.fromEntries(new Headers(init.headers ?? (input instanceof Request ? input.headers : undefined)));
   const entry = startEntry(method, url, headers);
+  if (CAPTURE_BODIES) {
+    try {
+      entry.body("request-body", describeRequestBody(init.body, input));
+    } catch {
+      entry.body("request-body", "(body unavailable)");
+    }
+  }
   try {
     const response = await nativeFetch(input, init);
     entry.finish(response.status, (h) => response.headers.get(h));
+    if (CAPTURE_BODIES) captureResponse(entry, response);   // synchronous up to the clone; the reading is detached
     return response;
   } catch (error) {
     entry.finish(0);
+    if (CAPTURE_BODIES) entry.body("response-body", "(no response)");
     throw error;
   }
 };
@@ -129,7 +253,17 @@ XMLHttpRequest.prototype.setRequestHeader = function (name, value) {
 XMLHttpRequest.prototype.send = function (...args) {
   if (this.__demo) {
     const entry = startEntry(this.__demo.method, this.__demo.url, this.__demo.headers);
-    this.addEventListener("loadend", () => entry.finish(this.status, (h) => this.getResponseHeader(h)), { once: true });
+    if (CAPTURE_BODIES) {
+      try {
+        entry.body("request-body", describeRequestBody(args[0]));
+      } catch {
+        entry.body("request-body", "(body unavailable)");
+      }
+    }
+    this.addEventListener("loadend", () => {
+      entry.finish(this.status, (h) => this.getResponseHeader(h));
+      if (CAPTURE_BODIES) captureXhrResponse(entry, this);
+    }, { once: true });
   }
   return xhrSend.apply(this, args);
 };

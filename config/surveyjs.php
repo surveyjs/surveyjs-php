@@ -49,4 +49,8 @@ return [
     ],
 
     'github' => 'https://github.com/surveyjs/surveyjs-php',
+
+    // The Server Integration docs. Step pages link to <docs>#<anchor> (anchor: surveyjs-integration.json).
+    // Change it here when the docs move; nothing else holds this URL.
+    'docs' => 'https://surveyjs.io/documentation/backend-integration',
 ];

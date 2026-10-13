@@ -28,6 +28,9 @@ class SurveyJsCheck extends Command
 
     private const MAX_RELAY_REGION_LINES = 60;   // the relay region holds onConnect, onMessage and onClose
 
+    /** Laravel plumbing that the displayed server regions call through App\Integration instead of showing. */
+    private const PLUMBING = ['JSON_PRESERVE_ZERO_FRACTION', 'insertGetId', 'toIso8601ZuluString', 'ConnectionException'];
+
     private const SERVICE_SHA = 'db1ac24b5f984511bbac463c890b6b0a3ebd2dc9';
 
     private array $errors = [];
@@ -40,6 +43,7 @@ class SurveyJsCheck extends Command
         $this->checkVersions($manifest);
         $this->checkManifest($manifest);
         $this->checkRegions($manifest);
+        $this->checkReadmeDocsLinks();
 
         if ($this->option('complete')) {
             foreach (array_diff(self::STEPS, array_keys($manifest['steps'])) as $missing) {
@@ -155,6 +159,13 @@ class SurveyJsCheck extends Command
                     if (isset($region['duplicate'])) {
                         $this->errors[] = "Region sjs:{$id} appears {$region['duplicate']} times in {$path}";
                     }
+                    if (str_starts_with($path, 'routes/') && str_ends_with($id, '.server')) {
+                        foreach (self::PLUMBING as $token) {
+                            if (str_contains($region['code'], $token)) {
+                                $this->errors[] = "Region sjs:{$id} in {$path} shows {$token}: move it into app/Integration";
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -171,6 +182,31 @@ class SurveyJsCheck extends Command
         }
         foreach (array_diff(array_keys($found), $listed) as $id) {
             $this->errors[] = "Region sjs:{$id} in {$found[$id][0]} is not listed in the manifest";
+        }
+    }
+
+    /**
+     * README.md's prose can't read config, so its two links to the docs must match config('surveyjs.docs').
+     * Only the prose counts: the generated step table (between the "steps" markers) always holds the URL.
+     * A docs link is one to the current value or to the old Server Integration page (surveyjs.io/backend-integration…).
+     */
+    private function checkReadmeDocsLinks(): void
+    {
+        $docs = config('surveyjs.docs');
+        $prose = preg_replace('/<!-- steps:start.*?<!-- steps:end -->/s', '', (string) file_get_contents(base_path('README.md')));
+        preg_match_all('~\]\((https?://[^)\s]+)\)|<(https?://[^>\s]+)>~', (string) $prose, $matches);
+
+        $links = array_values(array_filter(
+            array_map(fn ($markdown, $angle) => $markdown ?: $angle, $matches[1], $matches[2]),
+            fn (string $url) => str_starts_with($url, $docs)
+                || (preg_replace('/^www\./', '', (string) parse_url($url, PHP_URL_HOST)) === 'surveyjs.io'
+                    && str_starts_with((string) parse_url($url, PHP_URL_PATH), '/backend-integration')),
+        ));
+        $wrong = array_filter($links, fn (string $url) => $url !== $docs);
+
+        if (count($links) !== 2 || $wrong) {
+            $this->errors[] = sprintf('README.md must link to the docs exactly twice outside the step table, both to %s (config surveyjs.docs); found %d link(s)%s',
+                $docs, count($links), $wrong ? ': '.implode(', ', $wrong) : '');
         }
     }
 

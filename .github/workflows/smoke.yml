@@ -1,0 +1,119 @@
+# Two quick checks per step (tests/smoke/run.mjs): the step page loads, and its main endpoint answers
+# with the expected status. Weekly against a fresh local app with the service off (deterministic), on
+# demand, and from a release pipeline after a deploy:
+#
+#   jobs:
+#     smoke:
+#       needs: deploy
+#       uses: surveyjs/surveyjs-php/.github/workflows/smoke.yml@master
+#       with:
+#         base-url: https://surveyjs-php.demos.surveyjs.io
+#         relay-url: wss://surveyjs-php.demos.surveyjs.io
+#         edit-relay-url: wss://surveyjs-php.demos.surveyjs.io
+#
+# For a deployed URL, service, ai, validate-responses and lint-definitions must match the deployment:
+# the expected statuses of I.1, III.1, IV.1 and IV.2 depend on them.
+name: Smoke
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      base-url:
+        description: "A deployed app to check; empty: build and run this repository locally (composer smoke)"
+        type: string
+        default: ""
+      service:
+        description: "Section IV service: off | on"
+        type: string
+        default: "off"
+      ai:
+        description: "III.3 and IV.4: off | stub"
+        type: string
+        default: "off"
+      validate-responses:
+        description: "The app runs IV.1 in place of I.1"
+        type: boolean
+        default: false
+      lint-definitions:
+        description: "The app runs IV.2 in place of the III.1 PUT"
+        type: boolean
+        default: false
+      relay-url:
+        description: "ws(s):// origin of the I.8 relay (empty: skip its check; a local run starts its own)"
+        type: string
+        default: ""
+      edit-relay-url:
+        description: "ws(s):// origin of the III.5 relay (empty: skip its check; a local run starts its own)"
+        type: string
+        default: ""
+  workflow_call:
+    inputs:
+      base-url:
+        type: string
+        default: ""
+      service:
+        type: string
+        default: "off"
+      ai:
+        type: string
+        default: "off"
+      validate-responses:
+        type: boolean
+        default: false
+      lint-definitions:
+        type: boolean
+        default: false
+      relay-url:
+        type: string
+        default: ""
+      edit-relay-url:
+        type: string
+        default: ""
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    name: Smoke ${{ inputs.base-url || 'local app' }}
+    # A scheduled run has no inputs: each falls back to its default here
+    env:
+      BASE_URL: ${{ inputs.base-url || '' }}
+      SERVICE: ${{ inputs.service || 'off' }}
+      AI: ${{ inputs.ai || 'off' }}
+      VALIDATE_RESPONSES: ${{ inputs.validate-responses && 'true' || 'false' }}
+      LINT_DEFINITIONS: ${{ inputs.lint-definitions && 'true' || 'false' }}
+      RELAY_URL: ${{ inputs.relay-url || '' }}
+      EDIT_RELAY_URL: ${{ inputs.edit-relay-url || '' }}
+    steps:
+      # Called from another repository's pipeline, check out this one (its default branch)
+      - uses: actions/checkout@v4
+        with:
+          repository: surveyjs/surveyjs-php
+          ref: ${{ github.repository == 'surveyjs/surveyjs-php' && github.sha || '' }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - uses: shivammathur/setup-php@v2
+        if: env.BASE_URL == ''
+        with:
+          php-version: "8.5"
+          extensions: pdo_sqlite, sqlite3, fileinfo, pcntl, posix
+          coverage: none
+
+      - name: Install and set up
+        if: env.BASE_URL == ''
+        run: |
+          composer install --no-interaction --prefer-dist
+          composer setup
+
+      # composer smoke starts a fresh app and both relays, and sets BASE_URL, RELAY_URL and EDIT_RELAY_URL to them
+      - name: Smoke test against a fresh local app
+        if: env.BASE_URL == ''
+        run: composer smoke
+
+      - name: Smoke test against ${{ env.BASE_URL }}
+        if: env.BASE_URL != ''
+        run: node tests/smoke/run.mjs

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Integration\StoredJson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -14,11 +15,8 @@ Route::post('/api/claims', function (Request $request) {
     abort_unless(isset($body->data, $body->definitionVersion), 400, 'Expected { data, definitionVersion }');
 
     $id = DB::transaction(function () use ($body) {
-        $responseId = DB::table('responses')->insertGetId([
-            'form_id' => 'claim',
+        $responseId = StoredJson::insertResponse('claim', $body->data, [          // the original, stored as it arrived: 1.0 stays 1.0
             'definition_version' => $body->definitionVersion,                    // keep the original and its version
-            'data' => json_encode($body->data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR),
-            'created_at' => now('UTC')->toIso8601ZuluString(),
         ]);
         DB::table('claims')->insert([                                            // keys come from valueName
             'response_id' => $responseId,

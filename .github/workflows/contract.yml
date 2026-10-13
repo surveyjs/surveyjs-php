@@ -1,6 +1,8 @@
 # Checks that this repository still matches the Server Integration page (contract server-integration-v4):
 # the manifest and regions, PHPUnit (every row of the SurveyJS service status mapping, mocked),
-# then the shared contract test twice: without the service, and with it plus the AI stub.
+# then the shared contract test twice: without the service, and with it plus the AI stub. Between
+# the two, the browser tests (tests/browser, Playwright and Chromium) run the step pages.
+# The smoke test (.github/workflows/smoke.yml) also runs once without the service.
 # The image job builds the app's Docker image and starts it as docker-compose.yml does.
 name: Contract
 
@@ -52,6 +54,22 @@ jobs:
 
       - name: Contract test without the service
         run: composer contract
+        env:
+          SERVICE: "off"
+          AI: "off"
+
+      # host.js and page-tabs.js in a real browser: what PHPUnit and the contract test never run.
+      # Playwright starts the app on port 8000 (playwright.config.js)
+      - name: Browser tests (Chromium)
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:browser
+        env:
+          PHP_CLI_SERVER_WORKERS: "4"
+
+      # The weekly smoke workflow's test, so a broken smoke test fails the pull request
+      - name: Smoke test without the service
+        run: composer smoke
         env:
           SERVICE: "off"
           AI: "off"

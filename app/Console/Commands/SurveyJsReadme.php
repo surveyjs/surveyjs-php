@@ -25,8 +25,8 @@ class SurveyJsReadme extends Command
         foreach ($manifest['steps'] as $id => $step) {
             $file = fn (string $role) => isset($step['files'][$role]) ? "[`{$step['files'][$role]}`]({$step['files'][$role]})" : '—';
             $rows[] = sprintf(
-                '| %s | [%s](https://surveyjs.io/backend-integration/examples#%s) | [%s](%s%s) | %s | %s | %s | %s |',
-                $id, $step['title'], $step['anchor'], $step['page'], $manifest['live'], $step['page'],
+                '| %s | [%s](%s) | [%s](%s%s) | %s | %s | %s | %s |',
+                $id, $step['title'], Demo::docsUrl($step), $step['page'], $manifest['live'], $step['page'],
                 $file('server'), $file('client'), $file('page'), $step['licence'],
             );
         }

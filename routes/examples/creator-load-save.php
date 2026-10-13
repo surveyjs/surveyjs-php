@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Integration\StoredJson;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +16,7 @@ Route::put('/api/forms/{id}', function (Request $request, string $id) {
     Gate::authorize('edit-forms');                                           // editing is an admin action: 403 otherwise
     // The raw body, not $request->input(): PHP arrays would turn {} into [] in the stored JSON
     $definition = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);
-    DB::table('forms')->updateOrInsert(['key' => $id], [
-        'json' => json_encode($definition, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR),
-    ]);
+    StoredJson::put('forms', $id, $definition);                              // stored as it arrived: 1.0 stays 1.0
 
     return response()->noContent();                                          // the next page load renders the new version
 });
