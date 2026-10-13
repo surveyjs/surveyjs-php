@@ -19,6 +19,10 @@ Route::get('/api/customers/exists', function (Request $request) {
 // { "price": null } when none matches (the form shows "We don't deliver to this postcode yet")
 Route::get('/api/shipping', function (Request $request) {
     $postcode = Str::upper(str_replace(' ', '', (string) $request->query('postcode')));
+    // only a whole German (10115) or UK (SW1A 1AA) postcode gets a price, not anything that starts with a prefix
+    if (! preg_match('/^(\d{5}|[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2})$/', $postcode)) {
+        return ['price' => null];
+    }
     $rate = DB::table('shipping_rates')->get()
         ->filter(fn ($rate) => str_starts_with($postcode, $rate->postcode_prefix))
         ->sortByDesc(fn ($rate) => strlen($rate->postcode_prefix))
