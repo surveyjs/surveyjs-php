@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\DemoUser;
 use App\Support\Demo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -62,6 +63,18 @@ class ExamplePagesTest extends TestCase
     public function test_an_unknown_step_is_not_found(): void
     {
         $this->get('/examples/nothing-here')->assertNotFound();
+    }
+
+    #[DataProvider('steps')]
+    public function test_the_demo_user_switch_is_only_on_pages_that_show_an_authorization_decision(string $id, string $slug): void
+    {
+        $response = $this->withoutVite()->get("/examples/{$slug}")->assertOk();
+
+        if (array_key_exists($slug, DemoUser::PAGES)) {
+            $response->assertSee('id="demo-user"', false);
+        } else {
+            $response->assertDontSee('id="demo-user"', false);
+        }
     }
 
     #[DataProvider('steps')]
