@@ -12,13 +12,16 @@ use Symfony\Component\Process\Process;
  * Runs shared/contract-tests/run.mjs against a fresh copy of this app: migrates and seeds a new
  * SQLite database, starts the app and both relays on free ports, runs the test, stops everything
  * and exits with the test's code. SERVICE, AI, VALIDATE_RESPONSES, LINT_DEFINITIONS and DEMO_MODE
- * pass through from the environment.
+ * pass through from the environment. With --smoke it runs tests/smoke/run.mjs instead: two quick
+ * checks per step, the same ones the weekly and release pipelines run against a deployed copy.
  */
 class SurveyJsContract extends Command
 {
-    protected $signature = 'surveyjs:contract {--steps= : Only these steps, e.g. I.1,I.5}';
+    protected $signature = 'surveyjs:contract
+        {--steps= : Only these steps, e.g. I.1,I.5}
+        {--smoke : Run the smoke test (tests/smoke/run.mjs) instead of the contract test}';
 
-    protected $description = 'Run the shared contract test against a fresh database, the app and both relays';
+    protected $description = 'Run the shared contract test (or the smoke test) against a fresh database, the app and both relays';
 
     /** @var Process[] */
     private array $processes = [];
@@ -53,7 +56,7 @@ class SurveyJsContract extends Command
             $this->start('edit relay', [PHP_BINARY, 'artisan', 'relay:edit'], $env, $editPort);
 
             $test = new Process(
-                array_filter(['node', 'shared/contract-tests/run.mjs', $this->option('steps') ? '--steps='.$this->option('steps') : null]),
+                array_filter(['node', $this->option('smoke') ? 'tests/smoke/run.mjs' : 'shared/contract-tests/run.mjs', $this->option('steps') ? '--steps='.$this->option('steps') : null]),
                 base_path(),
                 $env + [
                     'BASE_URL' => "http://127.0.0.1:{$appPort}",

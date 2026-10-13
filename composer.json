@@ -63,6 +63,7 @@
             "Composer\\Config::disableProcessTimeout",
             "@php artisan surveyjs:contract"
         ],
+        "smoke": "@php artisan surveyjs:contract --smoke",
         "check": "@php artisan surveyjs:check",
         "php83": "phpstan analyse --no-progress --memory-limit=1G",
         "readme": "@php artisan surveyjs:readme",
