@@ -33,4 +33,7 @@ registerFunction({
 //   "validators": [{ "type": "expression", "expression": "emailExists({email}) = false", "text": "This email is already registered" }]
 //   "validators": [{ "type": "expression", "expression": "shippingCost({postcode}) > 0", "text": "We don't deliver to this postcode yet" }]
 //   "calculatedValues": [{ "name": "shipping", "expression": "shippingCost({postcode})" }]
-mountSurvey(new Model(page.definition));
+const survey = mountSurvey(new Model(page.definition));
+
+// Demo only: the start-over button
+document.getElementById("start-over")?.addEventListener("click", () => survey.clear(true, true));

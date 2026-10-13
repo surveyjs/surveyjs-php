@@ -53,3 +53,7 @@ onRequest(({ method, url, status }) => {
     note("GET /api/files/:id answered 404, so the preview can't load.", "error");
   }
 });
+document.getElementById("start-over")?.addEventListener("click", () => {
+  survey.clear(true, true);
+  show("sizes", "Add a file to compare the response sizes.");
+});

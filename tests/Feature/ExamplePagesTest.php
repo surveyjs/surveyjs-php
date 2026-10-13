@@ -152,11 +152,14 @@ class ExamplePagesTest extends TestCase
         return [
             'save-response' => ['save-response', ['start-over']],
             'load-definition-variables-data' => ['load-definition-variables-data', ['start-over']],
-            'resume-progress' => ['resume-progress', ['reload', 'clear-progress']],
+            'resume-progress' => ['resume-progress', ['reload', 'start-over']],
+            'store-files' => ['store-files', ['demo-user', 'start-over']],
+            'choices-from-web' => ['choices-from-web', ['start-over']],
+            'async-functions' => ['async-functions', ['start-over']],
             'relational-storage' => ['relational-storage', ['start-over']],
-            'extract-from-paper' => ['extract-from-paper', ['sample-scan', 'own-scan']],
+            'validate-response' => ['validate-response', ['start-over']],
+            'extract-from-paper' => ['extract-from-paper', ['sample-scan', 'own-scan', 'start-over']],
             'dashboard' => ['dashboard', ['from']],
-            'store-files' => ['store-files', ['demo-user']],
             'creator-load-save' => ['creator-load-save', ['demo-user']],
             'variable-presets' => ['variable-presets', ['demo-user']],
         ];
@@ -170,6 +173,24 @@ class ExamplePagesTest extends TestCase
 
         foreach ($ids as $id) {
             $this->assertStringContainsString('id="'.$id.'"', $actions, "{$slug}: #{$id} is not in the action row");
+        }
+    }
+
+    /** The Form Library examples (I.1–I.7, IV.1, IV.4) have Start over; I.8 (fill-together) doesn't. */
+    private const START_OVER = ['save-response', 'load-definition-variables-data', 'resume-progress', 'store-files', 'choices-from-web',
+        'async-functions', 'relational-storage', 'validate-response', 'extract-from-paper'];
+
+    #[DataProvider('steps')]
+    public function test_start_over_is_on_every_form_library_page_except_fill_together(string $id, string $slug): void
+    {
+        $client = (string) file_get_contents(base_path(Demo::manifest()['steps'][$id]['files']['client']));
+        $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
+
+        if (in_array($slug, self::START_OVER, true)) {
+            $this->assertStringContainsString('id="start-over"', $this->between($html, 'id="actions"', 'id="component"'));
+            $this->assertStringContainsString('getElementById("start-over")', $client, "{$slug}: the step script doesn't bind #start-over");
+        } else {
+            $this->assertStringNotContainsString('id="start-over"', $html);
         }
     }
 
