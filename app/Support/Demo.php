@@ -36,6 +36,12 @@ final class Demo
         return null;
     }
 
+    /** The Server Integration docs (config surveyjs.docs), at the step's anchor when a step is given. */
+    public static function docsUrl(?array $step = null): string
+    {
+        return config('surveyjs.docs').($step === null ? '' : '#'.$step['anchor']);
+    }
+
     /** window.SURVEYJS_PAGE: what shared/client/host.js and the step modules read. */
     public static function pageConfig(string $stepId, array $step): array
     {

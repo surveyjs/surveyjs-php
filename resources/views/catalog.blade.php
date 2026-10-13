@@ -26,7 +26,7 @@
         </p>
         <h1 class="mt-4 text-3xl font-bold text-gray-900 sm:text-4xl">Server Integration, step by step, in PHP</h1>
         <p class="mt-4 max-w-3xl text-lg text-gray-600">
-            The code behind <a class="text-sjs-dark underline" href="https://surveyjs.io/backend-integration/examples">Integrate SurveyJS with your backend</a>,
+            The code behind <a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl() }}">Integrate SurveyJS with your backend</a>,
             as a Laravel application. Each step runs the real SurveyJS component against these routes and shows the code that just ran.
             SurveyJS has no backend of its own, so treat these as starting points.
         </p>
@@ -63,7 +63,7 @@
                         <p class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                             <a class="font-semibold text-sjs-dark underline" href="{{ url($step['page']) }}">Run</a>
                             <a class="text-sjs-dark underline" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source</a>
-                            <a class="text-sjs-dark underline" href="https://surveyjs.io/backend-integration/examples#{{ $step['anchor'] }}">On the page</a>
+                            <a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl($step) }}">On the page</a>
                         </p>
                     </article>
                 @endforeach

@@ -40,6 +40,7 @@ class SurveyJsCheck extends Command
         $this->checkVersions($manifest);
         $this->checkManifest($manifest);
         $this->checkRegions($manifest);
+        $this->checkReadmeDocsLinks();
 
         if ($this->option('complete')) {
             foreach (array_diff(self::STEPS, array_keys($manifest['steps'])) as $missing) {
@@ -171,6 +172,31 @@ class SurveyJsCheck extends Command
         }
         foreach (array_diff(array_keys($found), $listed) as $id) {
             $this->errors[] = "Region sjs:{$id} in {$found[$id][0]} is not listed in the manifest";
+        }
+    }
+
+    /**
+     * README.md's prose can't read config, so its two links to the docs must match config('surveyjs.docs').
+     * Only the prose counts: the generated step table (between the "steps" markers) always holds the URL.
+     * A docs link is one to the current value or to the old Server Integration page (surveyjs.io/backend-integration…).
+     */
+    private function checkReadmeDocsLinks(): void
+    {
+        $docs = config('surveyjs.docs');
+        $prose = preg_replace('/<!-- steps:start.*?<!-- steps:end -->/s', '', (string) file_get_contents(base_path('README.md')));
+        preg_match_all('~\]\((https?://[^)\s]+)\)|<(https?://[^>\s]+)>~', (string) $prose, $matches);
+
+        $links = array_values(array_filter(
+            array_map(fn ($markdown, $angle) => $markdown ?: $angle, $matches[1], $matches[2]),
+            fn (string $url) => str_starts_with($url, $docs)
+                || (preg_replace('/^www\./', '', (string) parse_url($url, PHP_URL_HOST)) === 'surveyjs.io'
+                    && str_starts_with((string) parse_url($url, PHP_URL_PATH), '/backend-integration')),
+        ));
+        $wrong = array_filter($links, fn (string $url) => $url !== $docs);
+
+        if (count($links) !== 2 || $wrong) {
+            $this->errors[] = sprintf('README.md must link to the docs exactly twice outside the step table, both to %s (config surveyjs.docs); found %d link(s)%s',
+                $docs, count($links), $wrong ? ': '.implode(', ', $wrong) : '');
         }
     }
 
