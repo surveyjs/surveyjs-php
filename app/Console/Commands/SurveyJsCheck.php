@@ -28,6 +28,9 @@ class SurveyJsCheck extends Command
 
     private const MAX_RELAY_REGION_LINES = 60;   // the relay region holds onConnect, onMessage and onClose
 
+    /** Laravel plumbing that the displayed server regions call through App\Integration instead of showing. */
+    private const PLUMBING = ['JSON_PRESERVE_ZERO_FRACTION', 'insertGetId', 'toIso8601ZuluString', 'ConnectionException'];
+
     private const SERVICE_SHA = 'db1ac24b5f984511bbac463c890b6b0a3ebd2dc9';
 
     private array $errors = [];
@@ -155,6 +158,13 @@ class SurveyJsCheck extends Command
                     }
                     if (isset($region['duplicate'])) {
                         $this->errors[] = "Region sjs:{$id} appears {$region['duplicate']} times in {$path}";
+                    }
+                    if (str_starts_with($path, 'routes/') && str_ends_with($id, '.server')) {
+                        foreach (self::PLUMBING as $token) {
+                            if (str_contains($region['code'], $token)) {
+                                $this->errors[] = "Region sjs:{$id} in {$path} shows {$token}: move it into app/Integration";
+                            }
+                        }
                     }
                 }
             }

@@ -105,6 +105,12 @@ Each step is two or three files you can read on their own:
 - `shared/client/<slug>.js`: the step's client code, a plain ES module. Vite bundles it as an entry point (`vite.config.js`).
 - `resources/views/examples/<slug>.blade.php`: the step page: the description, the "Try this" list and the form.
 - The relays are `app/Relay/FillRelay.php` (I.8) and `app/Relay/EditRelay.php` (III.5), started by `php artisan relay:fill` and `relay:edit`.
+- `app/Integration/`: small helpers some routes call, so the code the page shows stays about SurveyJS. They aren't demo code:
+  - `StoredJson` (I.1, I.2, I.3, I.7, III.1, III.4, IV.1, IV.2): stores and returns JSON exactly as it arrived.
+  - `SurveyJsService` (IV.1–IV.4): calls the SurveyJS service and maps a refused connection or a timeout to `503` or `504`, and an answer it doesn't recognize to `502`.
+  - `AiTranslation` (III.3): the call to your OpenAI-compatible provider.
+
+  To copy one of those steps, copy its route file and the helpers it imports (`use App\Integration\…`).
 
 The code the Server Integration docs show is cut from these files between `// #region sjs:<step>.server` (or `.client`) and `// #endregion`. `surveyjs-integration.json` lists every step's files and regions; `composer check` verifies them, and `composer contract` runs the shared contract test (`shared/contract-tests/run.mjs`) against a fresh database, the app and both relays.
 
@@ -114,6 +120,8 @@ A response, a definition, saved progress and variable presets are each one JSON 
 
 - The global `TrimStrings` and `ConvertEmptyStringsToNull` middleware skip `/api/*` (`bootstrap/app.php`), so `"  a "` and `""` survive.
 - The routes decode the raw body with `json_decode($request->getContent())`, which keeps `{}` as an object. `$request->input()` would turn it into a PHP array and save `[]`.
+
+`App\Integration\StoredJson` writes it back with the flags that keep it as it arrived (`JSON_UNESCAPED_UNICODE`, `JSON_UNESCAPED_SLASHES`, `JSON_PRESERVE_ZERO_FRACTION`, so `1.0` stays `1.0`) and inserts responses with a `created_at` in ISO 8601 UTC.
 
 The step tables use the query builder (`DB::table()`), so "a response is one JSON document" stays visible. An Eloquent model with `protected $casts = ['data' => 'array']` works as well, with the same `{}` caveat (cast to `'object'` to keep it).
 

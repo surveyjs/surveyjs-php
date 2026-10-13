@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Integration\StoredJson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,10 +24,10 @@ Route::get('/api/forms/{id}', function (Request $request, string $id) {
     $definition = DB::table('forms')->where('key', $id)->value('json') ?? abort(404, 'Unknown form');
     $data = $request->filled('record') ? DB::table('responses')->where('id', $request->query('record'))->value('data') : null;
 
-    return response()->json([
+    return StoredJson::response([
         'definition' => json_decode($definition),                                // a stored document, as stored
         'variables' => ['user' => ['name' => $user?->name, 'plan' => $user?->plan]],
         'data' => $data === null ? new stdClass : json_decode($data),           // previous answers, or {}
-    ], options: JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION);
+    ]);
 });
 // #endregion

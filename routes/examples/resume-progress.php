@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Integration\StoredJson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
@@ -19,9 +20,7 @@ Route::get('/api/progress/{formId}', function (string $formId) {
 Route::put('/api/progress/{formId}', function (Request $request, string $formId) {
     // The raw body, not $request->input(): PHP arrays would turn {} into [] in the stored JSON
     $progress = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);
-    DB::table('progress')->updateOrInsert(['key' => $formId], [
-        'json' => json_encode($progress, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRESERVE_ZERO_FRACTION | JSON_THROW_ON_ERROR),
-    ]);
+    StoredJson::put('progress', $formId, $progress);                         // stored as it arrived: 1.0 stays 1.0
 
     return response()->noContent();
 });
