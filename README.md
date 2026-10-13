@@ -112,7 +112,7 @@ Each step is two or three files you can read on their own:
 
   To copy one of those steps, copy its route file and the helpers it imports (`use App\Integration\…`).
 
-The code the Server Integration docs show is cut from these files between `// #region sjs:<step>.server` (or `.client`) and `// #endregion`. `surveyjs-integration.json` lists every step's files and regions; `composer check` verifies them, and `composer contract` runs the shared contract test (`shared/contract-tests/run.mjs`) against a fresh database, the app and both relays. `composer smoke` runs a faster check per step (`tests/smoke/run.mjs`), which also works against a deployed copy.
+The code the Server Integration docs show is cut from these files between `// #region sjs:<step>.server` (or `.client`) and `// #endregion`. `surveyjs-integration.json` lists every step's files and regions; `composer check` verifies them, and `composer contract` runs the shared contract test (`shared/contract-tests/run.mjs`) against a fresh database, the app and both relays. `composer smoke` runs a faster check per step (`tests/smoke/run.mjs`), which also works against a deployed copy. `npm run test:browser` runs the step pages in Chromium (`tests/browser/`, Playwright) against the app on port 8000, and starts it when nothing answers there (`npx playwright install chromium` once).
 
 ### Storing JSON exactly as it arrives
 
