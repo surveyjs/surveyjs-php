@@ -5,7 +5,7 @@
   "repo": "surveyjs/surveyjs-php",
   "branch": "master",
   "live": "https://surveyjs-php.demos.surveyjs.io",
-  "surveyjsVersion": "3.2.0",
+  "surveyjsVersion": "3.2.1",
   "sectionIV": "service",
   "surveyjsService": "surveyjs/surveyjs-server@db1ac24b5f984511bbac463c890b6b0a3ebd2dc9",
   "steps": {

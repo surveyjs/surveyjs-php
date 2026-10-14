@@ -21,11 +21,11 @@
     "dependencies": {
         "highlight.js": "^11.12.0",
         "lodash": "^4.18.1",
-        "survey-analytics": "3.2.0",
-        "survey-core": "3.2.0",
-        "survey-creator-core": "3.2.0",
-        "survey-creator-js": "3.2.0",
-        "survey-js-ui": "3.2.0",
-        "survey-pdf": "3.2.0"
+        "survey-analytics": "3.2.1",
+        "survey-core": "3.2.1",
+        "survey-creator-core": "3.2.1",
+        "survey-creator-js": "3.2.1",
+        "survey-js-ui": "3.2.1",
+        "survey-pdf": "3.2.1"
     }
 }
