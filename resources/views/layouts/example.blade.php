@@ -108,8 +108,10 @@
         @endif
 
         <div id="component" class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            {{-- The form's padding is the card's: the app layer in survey.css zeroes SurveyJS's own side padding.
+                 Creator, the Dashboard and IV.3's list replace this section and fill the card. --}}
             @section('form')
-                <div id="form"></div>
+                <div id="form" class="p-4 sm:p-6"></div>
             @show
         </div>
     </div>

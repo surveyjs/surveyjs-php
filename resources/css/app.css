@@ -1,17 +1,26 @@
-/* Tailwind without its Preflight reset: the forms and Creator keep SurveyJS's own themes,
-   and Preflight would restyle their markup (borders, list styles, inline SVG icons). */
+/* Tailwind without its Preflight reset: SurveyJS styles its own markup (the forms through the
+   Tailwind adapter in survey.css, Creator and the Dashboard with their own themes), and Preflight
+   would restyle it (borders, list styles, inline SVG icons).
+   The theme is static: the SurveyJS Tailwind adapter reads these variables, and no utility does,
+   so plain @theme would drop them and the form would silently fall back to the adapter's literals. */
 @layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/theme.css' layer(theme) theme(static);
 @import 'tailwindcss/utilities.css' layer(utilities);
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
-@theme {
+@theme static {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-sjs: #19b394;
     --color-sjs-dark: #12957a;
+
+    /* The adapter's host contract (resources/css/surveyjs-tailwind-adapter.css): the form's brand and
+       text come from the page's own values. The other slots keep the adapter's Tailwind defaults. */
+    --color-primary: var(--color-sjs);
+    --color-primary-hover: var(--color-sjs-dark);
+    --color-foreground: var(--color-gray-800);
 }
 
 /* The few resets this app's own markup needs; SurveyJS markup is left alone */

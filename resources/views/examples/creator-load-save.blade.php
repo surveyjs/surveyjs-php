@@ -1,6 +1,7 @@
 @extends('layouts.example')
 
-@section('theme', 'creator')
+{{-- "Open the form" (?form) renders the saved definition with the Form Library, so it loads the form theme --}}
+@section('theme', request()->has('form') ? 'survey' : 'creator')
 
 @section('try')
     <li>As <strong>Alice</strong> (editor), change the form title in the Designer. Creator saves automatically (<code>autoSaveEnabled</code>): one <code>PUT /api/forms/support</code> answers <code>204</code>. Open <strong>Under the hood › Requests</strong> and expand it to see the definition sent.</li>
@@ -17,5 +18,6 @@
 @endsection
 
 @section('form')
-    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,6rem)_-_var(--demo-above,1rem)_-_0.875rem)] min-h-[640px]"></div>
+    {{-- ?form renders a form here: it takes the form's padding instead of Creator's height --}}
+    <div id="creator" class="{{ request()->has('form') ? 'p-4 sm:p-6' : 'h-[calc(100dvh_-_var(--header-h,6rem)_-_var(--demo-above,1rem)_-_0.875rem)] min-h-[640px]' }}"></div>
 @endsection
