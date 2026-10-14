@@ -27,3 +27,4 @@ Homestead.yaml
 Thumbs.db
 /playwright-report
 /test-results
+/.claude/
