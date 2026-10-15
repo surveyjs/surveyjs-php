@@ -188,7 +188,8 @@ class SurveyJsCheck extends Command
     /**
      * README.md's prose can't read config, so its two links to the docs must match config('surveyjs.docs').
      * Only the prose counts: the generated step table (between the "steps" markers) always holds the URL.
-     * A docs link is one to the current value or to the old Server Integration page (surveyjs.io/backend-integration…).
+     * A docs link is one to the current value or to an old Server Integration page
+     * (surveyjs.io/backend-integration… or surveyjs.io/documentation/backend-integration…).
      */
     private function checkReadmeDocsLinks(): void
     {
@@ -200,7 +201,7 @@ class SurveyJsCheck extends Command
             array_map(fn ($markdown, $angle) => $markdown ?: $angle, $matches[1], $matches[2]),
             fn (string $url) => str_starts_with($url, $docs)
                 || (preg_replace('/^www\./', '', (string) parse_url($url, PHP_URL_HOST)) === 'surveyjs.io'
-                    && str_starts_with((string) parse_url($url, PHP_URL_PATH), '/backend-integration')),
+                    && preg_match('~^(/documentation)?/backend-integration~', (string) parse_url($url, PHP_URL_PATH))),
         ));
         $wrong = array_filter($links, fn (string $url) => $url !== $docs);
 
