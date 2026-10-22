@@ -9,7 +9,7 @@ This is the PHP code behind [Integrate SurveyJS with your backend](https://surve
 
 ## Run it
 
-You need PHP 8.3 or later (with `pdo_sqlite` and `fileinfo`), Composer, and Node.js 22 or later.
+You need PHP 8.3 or later (with `pdo_sqlite` and `fileinfo`), Composer, and Node.js 22 or later. Use at least 8.3.36, 8.4.27 or 8.5.12: earlier releases are open to remote code execution (CVE-2026-109618, CVE-2026-109619).
 
 ```bash
 git clone https://github.com/surveyjs/surveyjs-php.git
@@ -29,6 +29,8 @@ While you work on the code, run `composer dev` instead of `composer start`: it s
 ## Docker
 
 The image runs with `APP_ENV=production`, `APP_DEBUG=false` and logs to `docker compose logs` (`LOG_CHANNEL=stderr`). These are environment variables, so they win over the `.env` the container copies from `.env.example`. PHP's built-in server runs 4 workers (`PHP_CLI_SERVER_WORKERS`, read from the process environment, not from `.env`), so a long IV.4 extraction doesn't hold up other visitors. That is enough for the demo; for your own production, serve Laravel with FrankenPHP or nginx + php-fpm. The `scheduler` service runs `php artisan schedule:work` for `demo:prune`.
+
+The image follows `php:8.5-cli` and refuses to build on a release older than 8.5.12. Run `docker compose build --pull` (or `docker compose up -d --build --pull always`) after each PHP security release so a cached base image doesn't keep an old PHP.
 
 ### Behind a proxy
 
