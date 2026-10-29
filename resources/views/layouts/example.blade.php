@@ -46,12 +46,9 @@
         <h1 class="min-w-0 truncate text-base font-semibold text-gray-900"><span class="font-bold text-sjs-dark">{{ $stepId }}</span> {{ $step['title'] }}</h1>
     </div>
 
-    @if (config('surveyjs.demo_mode'))
+    @if (request()->attributes->get('demo_join_failed'))
         <div class="border-t border-amber-200 bg-amber-50 px-4 py-1.5 text-center text-xs text-amber-900 sm:px-6">
-            @if (request()->attributes->get('demo_join_failed'))
-                <strong>That invite link has expired, so you have a fresh copy of the demo data.</strong>
-            @endif
-            You work in a private copy of the demo database, kept until it has been unused for 24 hours.
+            <strong>That invite link has expired, so you have a fresh copy of the demo data.</strong>
         </div>
     @endif
 </header>
