@@ -7,6 +7,6 @@
             <img src="{{ asset('images/site/logo-medium.svg') }}" width="122.09" height="50" alt="SurveyJS" class="-mb-3 hidden md:block">
         </a>
         <span aria-hidden="true" class="block h-6 w-px shrink-0 bg-sjs-line md:h-[38px]"></span>
-        <p class="m-0 text-base/5 font-bold text-sjs-fg md:text-xl/7 xl:text-2xl/8">{{ \App\Support\Demo::TITLE }}</p>
+        <p class="m-0 text-base/5 font-bold text-sjs-fg md:text-xl/7 xl:text-2xl/8">{{ \App\Support\Demo::HEADER }}</p>
     </div>
 </header>
