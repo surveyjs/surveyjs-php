@@ -42,8 +42,6 @@
     --color-sjs-back-gray: var(--color-gray-50);    /* general/backcolor-gray */
     --color-sjs-back-gray-2: var(--color-gray-100); /* general/backcolor-gray-2 */
     --color-sjs-border: #dedede;                    /* border-effect/default: the outline of white buttons */
-    --color-sjs-on-dark: #c5c5c5;                   /* dark/forecolor: text on general/forecolor (the footer) */
-    --color-sjs-on-dark-50: #676767;                /* dark/forecolor-50 */
     --color-sjs-blue: #437fd9;      /* special/blue: links */
     --color-sjs-blue-10: #ecf2fb;   /* special/blue-10 */
     --color-sjs-yellow: #ff9814;    /* special/yellow, secondary/secondary */

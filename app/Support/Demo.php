@@ -18,6 +18,9 @@ use Illuminate\Support\Str;
  */
 final class Demo
 {
+    /** The app title: next to the logo, the catalog heading and the step pages' header */
+    public const TITLE = 'Server Integration, step by step, in Laravel (PHP)';
+
     private static ?array $manifest = null;
 
     public static function manifest(): array

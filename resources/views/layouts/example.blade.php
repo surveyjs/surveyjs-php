@@ -40,9 +40,9 @@
     <div class="mx-auto flex min-w-0 max-w-screen-2xl items-center gap-3 px-3 py-2.5 sm:px-6">
         <a href="{{ route('catalog') }}" class="flex shrink-0 items-center gap-2 font-semibold text-gray-900 no-underline">
             <span class="rounded bg-sjs px-1.5 py-0.5 text-sm font-bold text-white">SurveyJS</span>
-            <span class="max-sm:hidden">Server Integration · PHP / Laravel</span>
+            <span class="max-lg:hidden">{{ \App\Support\Demo::TITLE }}</span>
         </a>
-        <span aria-hidden="true" class="text-gray-300 max-sm:hidden">/</span>
+        <span aria-hidden="true" class="text-gray-300 max-lg:hidden">/</span>
         <h1 class="min-w-0 truncate text-base font-semibold text-gray-900"><span class="font-bold text-sjs-dark">{{ $stepId }}</span> {{ $step['title'] }}</h1>
     </div>
 
