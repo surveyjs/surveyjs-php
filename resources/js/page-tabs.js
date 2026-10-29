@@ -1,5 +1,5 @@
 // Demo only: the two tab sets of a step page (layouts/example.blade.php): the side panel with
-// Description, Requests and Stored, and the main column with Demo and Code, plus the panel's toggle,
+// Description, Requests and Data, and the main column with Demo and Code, plus the panel's toggle,
 // its badge and the highlights. It works from the DOM alone: shared/client/host.js fills #requests,
 // #stored and #notes, and MutationObservers here watch them, so host.js doesn't know the tabs exist.
 //
@@ -12,9 +12,9 @@
 //   doesn't change the remembered choice. The panel opens on Description unless the hash names a tab:
 //   its last tab isn't remembered across loads or examples.
 // - What is unseen: a non-demo request that finished or a note that arrived while Requests wasn't
-//   showing, and a Stored section whose text changed after its first render while Stored wasn't
+//   showing, and a Data section whose text changed after its first render while Data wasn't
 //   showing. A tab shows when the panel is open on it, and showing it clears its flag. The badge on
-//   the toggle shows while the panel is closed and a flag is set; the Stored dot while Stored's is.
+//   the toggle shows while the panel is closed and a flag is set; the Data dot while Data's is.
 //   The Requests counter counts the unseen requests still in the log, red once one of them failed;
 //   showing Requests clears it.
 
@@ -234,7 +234,7 @@ function setUpPageTabs() {
   });
 
   // ---------------------------------------------------------------------------------------------
-  // The badge on the toggle, the Requests counter and the Stored dot
+  // The badge on the toggle, the Requests counter and the Data dot
 
   function paintUnseen() {
     const open = isOpen();
@@ -314,7 +314,7 @@ function setUpPageTabs() {
   });
 
   // ---------------------------------------------------------------------------------------------
-  // Stored: first render, changes, highlights and <mark> on new entries
+  // Data: first render, changes, highlights and <mark> on new entries
 
   const previous = new Map();   // section title → its text at the last render
   let marks = new Map();        // section title → { text, fresh } to keep highlighted across re-renders

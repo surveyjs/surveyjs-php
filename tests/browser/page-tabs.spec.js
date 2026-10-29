@@ -1,5 +1,5 @@
-// resources/js/page-tabs.js: the side panel (Description, Requests, Stored) and the main tabs (Demo,
-// Code), the toggle and its badge, the hash, the phone sheet, the counter, the Stored dot, the fade on
+// resources/js/page-tabs.js: the side panel (Description, Requests, Data) and the main tabs (Demo,
+// Code), the toggle and its badge, the hash, the phone sheet, the counter, the Data dot, the fade on
 // the panel's tab row and the bounded read-outs (design 04).
 import { expect, test } from '@playwright/test';
 import { completeSaveResponse, row } from './helpers.js';
@@ -30,11 +30,11 @@ test('1. the default state: open on Description at 1440, closed at 390; the togg
     await expectMain(page, 'demo');
     await expect(toggle(page)).toHaveAttribute('aria-label', 'Hide the panel');
 
-    // The panel sits left of the main column, 350px wide, sticky under the header
+    // The panel sits left of the main column, 400px wide, sticky under the header
     const [panel, main, header] = await Promise.all(['#side-panel', 'main', '#page-header'].map((s) => page.locator(s).boundingBox()));
     expect(panel.x).toBe(0);
-    expect(panel.width).toBe(350);
-    expect(main.x).toBe(350);
+    expect(panel.width).toBe(400);
+    expect(main.x).toBe(400);
     expect(panel.y).toBeCloseTo(header.height, 0);
     expect(panel.y + panel.height).toBeCloseTo(900, 0);
 
@@ -62,9 +62,9 @@ test('1. the default state: open on Description at 1440, closed at 390; the togg
     await page.goto('/examples/save-response');
     await panelTab(page, 'stored').click();
 
-    // 900: docked at 300px
+    // 900: docked at 320px
     await page.setViewportSize({ width: 900, height: 1000 });
-    expect((await page.locator('#side-panel').boundingBox()).width).toBe(300);
+    expect((await page.locator('#side-panel').boundingBox()).width).toBe(320);
 
     // 390: closed, whatever was stored; across 768 the stored choice is kept
     await page.setViewportSize({ width: 390, height: 844 });
@@ -179,7 +179,7 @@ test('3. the phone sheet: full screen, no page scroll, Escape and × close it an
     await expect(page.locator('html')).not.toHaveCSS('overflow-y', 'hidden');
 });
 
-test('4. the badge: while closed, on a request and on a Stored change; it clears once both tabs were shown', async ({ page }) => {
+test('4. the badge: while closed, on a request and on a Data change; it clears once both tabs were shown', async ({ page }) => {
     await page.goto('/examples/save-response');
     await expect(badge(page)).toBeHidden();
 
@@ -187,7 +187,7 @@ test('4. the badge: while closed, on a request and on a Stored change; it clears
     const box = await toggle(page).boundingBox();
     expect([box.width, box.height]).toEqual([42, 42]);
 
-    // Open on Description: a request and a Stored change don't show the badge, but the counter and the dot do
+    // Open on Description: a request and a Data change don't show the badge, but the counter and the dot do
     await completeSaveResponse(page);
     await expect(row(page, 'POST', '/api/responses')).toHaveAttribute('data-state', 'ok');
     await expect(page.locator('#stored-dot')).toBeVisible();
@@ -203,7 +203,7 @@ test('4. the badge: while closed, on a request and on a Stored change; it clears
     expect([dot.x - button.x, dot.y - button.y, dot.width, dot.height]).toEqual([36, 0, 6, 6]);
     await expect(badge(page)).toHaveCSS('background-color', 'rgb(25, 179, 148)');
 
-    // Requests seen: its counter clears, the Stored change still counts
+    // Requests seen: its counter clears, the Data change still counts
     await toggle(page).click();
     await expect(badge(page)).toBeHidden();
     await panelTab(page, 'requests').click();
@@ -213,7 +213,7 @@ test('4. the badge: while closed, on a request and on a Stored change; it clears
     await expect(badge(page)).toBeVisible();
     await expect(toggle(page)).toHaveAttribute('aria-label', 'Show the panel, stored data changed');
 
-    // Stored seen too: nothing is left
+    // Data seen too: nothing is left
     await toggle(page).click();
     await panelTab(page, 'stored').click();
     await expect(page.locator('#stored-dot')).toBeHidden();
@@ -275,12 +275,19 @@ test('5. the counter counts the unseen requests, green while they succeed and re
     await expect(counter).toHaveAttribute('data-kind', 'ok');
 });
 
-test('6. at 900 the panel tabs scroll and fade where they are cut; both tab rows are one height', async ({ page }) => {
+test('6. at 900 the tabs have no icons and fit; cut, the panel tabs scroll and fade; both tab rows are one height', async ({ page }) => {
     await page.setViewportSize({ width: 900, height: 1000 });
     await page.goto('/examples/async-functions');
     const tablist = page.locator('#panel-tabs');
     await page.evaluate(() => document.fonts.ready);
 
+    await expect(page.locator('#panel-tabs svg, #page-tabs svg')).toHaveCount(5);
+    for (const icon of await page.locator('#panel-tabs svg, #page-tabs svg').all()) await expect(icon).toBeHidden();
+    await expect(tablist).not.toHaveAttribute('data-fade-end');
+    await expect(tablist).not.toHaveAttribute('data-fade-start');
+
+    // Narrower than its tabs, the row is cut
+    await page.locator('#side-panel').evaluate((el) => { el.style.width = '240px'; });
     await expect(tablist).toHaveAttribute('data-fade-end', '');
     await expect(tablist).not.toHaveAttribute('data-fade-start');
     const mask = () => tablist.evaluate((el) => getComputedStyle(el).maskImage);

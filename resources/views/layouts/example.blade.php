@@ -1,5 +1,5 @@
 {{-- Demo only: the frame around every step page (resources/js/page-tabs.js). A sticky header, then two columns:
-     a side panel with Description (what to try), Requests and Stored (what the server got and kept), and the main
+     a side panel with Description (what to try), Requests and Data (what the server got and kept), and the main
      column with Demo (the action row and the component) and Code (the code that ran). From 768px the panel is docked
      on the left; narrower, it opens as a full-screen sheet. The explanation is in the docs; the integration code is
      in the step's files. --}}
@@ -17,7 +17,7 @@
     $panelTabs = [
         'description' => ['Description', '<path d="M4 5h16M4 10h16M4 15h10M4 20h7"/>'],
         'requests' => ['Requests', '<path d="M7 7h13l-3-3M17 17H4l3 3"/>'],
-        'stored' => ['Stored', '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
+        'stored' => ['Data', '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
     ];
     $mainTabs = [
         'demo' => ['Demo', '<polygon points="6 4 20 12 6 20 6 4"/>'],
@@ -37,7 +37,7 @@
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-800 antialiased">
 <header id="page-header" class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
-    <div class="mx-auto flex min-w-0 max-w-screen-2xl items-center gap-3 px-3 py-2.5 sm:px-6">
+    <div class="flex min-w-0 items-center gap-3 px-4 py-2.5 md:px-5 lg:px-6">
         <a href="{{ route('catalog') }}" class="flex shrink-0 items-center gap-2 font-semibold text-gray-900 no-underline">
             <span class="rounded bg-sjs px-1.5 py-0.5 text-sm font-bold text-white">SurveyJS</span>
             <span class="max-lg:hidden">{{ \App\Support\Demo::TITLE }}</span>
@@ -57,7 +57,7 @@
     {{-- THE SIDE PANEL: docked from 768px (open by default), a full-screen sheet below (closed by default).
          Its three tab panels scroll inside it. --}}
     <aside id="side-panel" aria-label="Description, requests and stored data"
-           class="box-border flex flex-col bg-white max-md:fixed max-md:inset-0 max-md:z-50 max-md:hidden max-md:data-[sheet]:flex md:sticky md:top-[var(--header-h)] md:h-[calc(100dvh-var(--header-h))] md:w-[300px] md:shrink-0 md:self-start md:border-r md:border-gray-200 lg:w-[350px]">
+           class="box-border flex flex-col bg-white max-md:fixed max-md:inset-0 max-md:z-50 max-md:hidden max-md:data-[sheet]:flex md:sticky md:top-[var(--header-h)] md:h-[calc(100dvh-var(--header-h))] md:w-[320px] md:shrink-0 md:self-start md:border-r md:border-gray-200 lg:w-[400px]">
         <div class="flex h-10 shrink-0 items-center justify-end px-2 md:hidden">
             <button type="button" id="panel-close" aria-label="Close the panel"
                     class="flex h-8 cursor-pointer items-center gap-1 rounded-md border-0 bg-transparent px-2 text-sm font-semibold text-gray-600 [font-family:inherit] hover:bg-gray-100 hover:text-gray-900 aria-expanded:bg-gray-100">
@@ -71,7 +71,7 @@
                  class="flex scroll-px-4 items-stretch gap-3 overflow-x-auto px-4 py-2 [scrollbar-width:none] md:px-5 lg:px-6 data-[fade-start]:[mask-image:linear-gradient(to_right,transparent,#000_16px)] data-[fade-end]:[mask-image:linear-gradient(to_left,transparent,#000_16px)] data-[fade-start]:data-[fade-end]:[mask-image:linear-gradient(to_right,transparent,#000_16px,#000_calc(100%-16px),transparent)]">
                 @foreach ($panelTabs as $key => [$label, $icon])
                     <button type="button" role="tab" id="panel-tab-{{ $key }}" data-panel-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
-                        <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
+                        <svg aria-hidden="true" class="size-4 shrink-0 md:max-lg:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
                         {{ $label }}
                         @if ($key === 'requests')
                             {{-- Figma .counter, style=positive / style=negative --}}
@@ -125,7 +125,7 @@
                 <ol id="requests" class="m-0 min-h-0 flex-1 list-none divide-y divide-gray-100 overflow-y-auto p-0 font-mono text-xs"></ol>
             </section>
 
-            {{-- STORED: what the server stored, which scrolls --}}
+            {{-- DATA: what the server stored, which scrolls --}}
             <section id="panel-stored" role="tabpanel" aria-labelledby="panel-tab-stored" hidden class="flex min-h-0 flex-1 flex-col text-sm">
                 <div class="flex shrink-0 items-center justify-between gap-2 border-b border-gray-100 px-4 py-1.5 text-xs text-gray-500">
                     <span>What the server stored</span>
@@ -149,7 +149,7 @@
             <div id="page-tabs" role="tablist" aria-label="Step views" class="flex min-w-0 items-stretch gap-3">
                 @foreach ($mainTabs as $key => [$label, $icon])
                     <button type="button" role="tab" id="tab-{{ $key }}" data-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
-                        <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
+                        <svg aria-hidden="true" class="size-4 shrink-0 md:max-lg:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
                         {{ $label }}
                     </button>
                 @endforeach
@@ -227,7 +227,7 @@
             <span class="text-right"><span data-field="status" class="font-semibold"></span> <span data-field="time" class="text-gray-400"></span></span>
             <span data-field="headers" class="col-span-3 col-start-2 truncate text-[11px] text-sjs-dark empty:hidden"></span>
         </button>
-        {{-- One column: the panel is 300–350px wide, or a phone --}}
+        {{-- One column: the panel is 320–400px wide, or a phone --}}
         <div data-row-bodies hidden class="grid gap-3 pb-3 pl-10 pr-4">
             <div class="min-w-0">
                 <p class="mb-1 font-sans text-[11px] font-bold uppercase tracking-wide text-gray-500">Request body</p>
