@@ -2,17 +2,17 @@
 // Contract test for server-integration-v4: calls every endpoint of the Server Integration page
 // and checks the documented shape. Zero dependencies, Node 22+. The same file in every platform repo.
 //
-//   BASE_URL=http://127.0.0.1:8000 node shared/contract-tests/run.mjs [--steps I.1,I.5]
+//   BASE_URL=http://127.0.0.1:8000 node shared/contract-tests/run.mjs [--steps 1.1,1.5]
 //
 // Options (environment):
 //   BASE_URL             the app (default http://127.0.0.1:8000)
-//   SERVICE=off|on       Section IV service: off expects 503 "not running", on expects real answers
-//   AI=off|stub          III.3 and IV.4: off expects 501 / 503, stub expects ai-stub.mjs answers
-//   VALIDATE_RESPONSES   true when the app runs IV.1 in place of I.1
-//   LINT_DEFINITIONS     true when the app runs IV.2 in place of the III.1 PUT
+//   SERVICE=off|on       Section 4 service: off expects 503 "not running", on expects real answers
+//   AI=off|stub          3.3 and 4.4: off expects 501 / 503, stub expects ai-stub.mjs answers
+//   VALIDATE_RESPONSES   true when the app runs 4.1 in place of 1.1
+//   LINT_DEFINITIONS     true when the app runs 4.2 in place of the 3.1 PUT
 //   DEMO_MODE            true when the app and relays run visitor sandboxes
-//   RELAY_URL            ws://… of the I.8 fill relay (enables its checks)
-//   EDIT_RELAY_URL       ws://… of the III.5 edit relay (enables its checks)
+//   RELAY_URL            ws://… of the 1.8 fill relay (enables its checks)
+//   EDIT_RELAY_URL       ws://… of the 3.5 edit relay (enables its checks)
 //
 // Step checks read back through GET /demo/stored/:slug. Cross-step checks run only when every
 // step they involve is selected. One line per check; the exit code is non-zero on any failure.
@@ -30,12 +30,12 @@ const DEMO = flag("DEMO_MODE");
 const RELAY_URL = process.env.RELAY_URL?.replace(/\/$/, "");
 const EDIT_RELAY_URL = process.env.EDIT_RELAY_URL?.replace(/\/$/, "");
 
-const ALL_STEPS = ["I.1", "I.2", "I.3", "I.4", "I.5", "I.6", "I.7", "I.8", "II", "III.1", "III.2", "III.3", "III.4", "III.5", "IV.1", "IV.2", "IV.3", "IV.4"];
+const ALL_STEPS = ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "2", "3.1", "3.2", "3.3", "3.4", "3.5", "4.1", "4.2", "4.3", "4.4"];
 const SLUGS = {
-  "I.1": "save-response", "I.2": "load-definition-variables-data", "I.3": "resume-progress", "I.4": "store-files",
-  "I.5": "choices-from-web", "I.6": "async-functions", "I.7": "relational-storage", "I.8": "fill-together",
-  "II": "dashboard", "III.1": "creator-load-save", "III.3": "ai-translation", "III.4": "variable-presets",
-  "III.5": "edit-together", "IV.1": "validate-response", "IV.2": "lint-definition", "IV.3": "server-pdf", "IV.4": "extract-from-paper",
+  "1.1": "save-response", "1.2": "load-definition-variables-data", "1.3": "resume-progress", "1.4": "store-files",
+  "1.5": "choices-from-web", "1.6": "async-functions", "1.7": "relational-storage", "1.8": "fill-together",
+  "2": "dashboard", "3.1": "creator-load-save", "3.3": "ai-translation", "3.4": "variable-presets",
+  "3.5": "edit-together", "4.1": "validate-response", "4.2": "lint-definition", "4.3": "server-pdf", "4.4": "extract-from-paper",
 };
 
 const stepsArg = process.argv.slice(2).join(" ").match(/--steps[= ]([^\s]+)/)?.[1];
@@ -116,21 +116,21 @@ const isObject = (v) => v !== null && typeof v === "object" && !Array.isArray(v)
 const checks = [];
 const check = (name, steps, fn, { skip } = {}) => checks.push({ name, steps: [].concat(steps), fn, skip });
 
-// ---------- I.1
-check("I.1 POST /api/responses stores the JSON exactly as it arrives", "I.1", async () => {
+// ---------- 1.1
+check("1.1 POST /api/responses stores the JSON exactly as it arrives", "1.1", async () => {
   const r = await http("POST", "/api/responses", { json: { formId: "contract", data: ROUNDTRIP } });
   expectStatus(r, 201, "POST /api/responses");
   expect(Number.isInteger(r.data?.id), `expected { id: number }, got ${r.text()}`);
   const s = await stored("save-response", { id: r.data.id });
   expectEqual(s.responses?.[0]?.data, ROUNDTRIP, "stored data");
-}, { skip: VALIDATE && "VALIDATE_RESPONSES replaces I.1 with IV.1" });
+}, { skip: VALIDATE && "VALIDATE_RESPONSES replaces 1.1 with 4.1" });
 
-check("I.1 bad JSON answers 400 { error }", "I.1", async () => {
+check("1.1 bad JSON answers 400 { error }", "1.1", async () => {
   expectError(await http("POST", "/api/responses", { json: "{not json" }), 400, "POST /api/responses with bad JSON");
 });
 
-// ---------- I.2
-check("I.2 GET /api/forms/:id returns { definition, variables, data }", "I.2", async () => {
+// ---------- 1.2
+check("1.2 GET /api/forms/:id returns { definition, variables, data }", "1.2", async () => {
   const r = await http("GET", "/api/forms/claim");
   expectStatus(r, 200, "GET /api/forms/claim");
   expect(isObject(r.data?.definition) && Array.isArray(r.data.definition.elements ?? r.data.definition.pages), "definition is a survey JSON object");
@@ -141,7 +141,7 @@ check("I.2 GET /api/forms/:id returns { definition, variables, data }", "I.2", a
   expectEqual(bob.data?.variables?.user?.plan, "basic", "Bob's variables.user.plan");
 });
 
-check("I.2 ?record= returns the stored response as data", "I.2", async () => {
+check("1.2 ?record= returns the stored response as data", "1.2", async () => {
   const s = await stored("load-definition-variables-data");
   const row = s.responses?.[0];
   expect(row && Number.isInteger(row.id), "the stored panel lists a claim response");
@@ -150,12 +150,12 @@ check("I.2 ?record= returns the stored response as data", "I.2", async () => {
   expectEqual(r.data?.data, row.data, "data for the record");
 });
 
-check("I.2 an unknown form answers 404 { error }", "I.2", async () => {
+check("1.2 an unknown form answers 404 { error }", "1.2", async () => {
   expectError(await http("GET", `/api/forms/${unique("missing")}`), 404, "GET /api/forms/<unknown>");
 });
 
-// ---------- I.3
-check("I.3 progress: 404 before, 204 on PUT, stored as-is, the same document on GET", "I.3", async () => {
+// ---------- 1.3
+check("1.3 progress: 404 before, 204 on PUT, stored as-is, the same document on GET", "1.3", async () => {
   const key = unique("contract");
   expectError(await http("GET", `/api/progress/${key}`), 404, "GET /api/progress before any PUT");
   const doc = { data: ROUNDTRIP, uiState: { currentPageName: "page2", activeElementName: "q1" } };
@@ -167,8 +167,8 @@ check("I.3 progress: 404 before, 204 on PUT, stored as-is, the same document on 
   expectEqual(r.data, doc, "GET /api/progress after PUT");
 });
 
-// ---------- I.4
-check("I.4 upload two files, download the same bytes and Content-Type", "I.4", async () => {
+// ---------- 1.4
+check("1.4 upload two files, download the same bytes and Content-Type", "1.4", async () => {
   const one = Buffer.from("first file\n");
   const two = readShared("samples/work-order-scan.png");
   const form = new FormData();
@@ -189,8 +189,8 @@ check("I.4 upload two files, download the same bytes and Content-Type", "I.4", a
   expectError(await http("GET", `/api/files/${unique("missing")}`), 404, "GET /api/files/<unknown>");
 });
 
-// ---------- I.5
-check("I.5 GET /api/offices?region= returns [{ id, name }] ordered by name", "I.5", async () => {
+// ---------- 1.5
+check("1.5 GET /api/offices?region= returns [{ id, name }] ordered by name", "1.5", async () => {
   const r = await http("GET", "/api/offices?region=europe");
   expectStatus(r, 200, "GET /api/offices");
   expect(Array.isArray(r.data) && r.data.length > 0 && r.data.every((o) => "id" in o && typeof o.name === "string"), `expected [{ id, name }], got ${r.text()}`);
@@ -200,7 +200,7 @@ check("I.5 GET /api/offices?region= returns [{ id, name }] ordered by name", "I.
   expectEqual(none.data, [], "offices of an unknown region");
 });
 
-check("I.5 GET /api/countries returns at least 100 { code, name }, cached for a day", "I.5", async () => {
+check("1.5 GET /api/countries returns at least 100 { code, name }, cached for a day", "1.5", async () => {
   const r = await http("GET", "/api/countries");
   expectStatus(r, 200, "GET /api/countries");
   expect(Array.isArray(r.data) && r.data.length >= 100, `expected at least 100 countries, got ${r.data?.length}`);
@@ -208,14 +208,14 @@ check("I.5 GET /api/countries returns at least 100 { code, name }, cached for a 
   expect(/max-age=86400/.test(r.headers.get("cache-control") ?? ""), `Cache-Control: ${r.headers.get("cache-control")}`);
 });
 
-// ---------- I.6
-check("I.6 GET /api/customers/exists trims and lower-cases the email", "I.6", async () => {
+// ---------- 1.6
+check("1.6 GET /api/customers/exists trims and lower-cases the email", "1.6", async () => {
   expectEqual((await http("GET", "/api/customers/exists?email=taken%40example.com")).data, { exists: true }, "seeded email");
   expectEqual((await http("GET", `/api/customers/exists?email=${encodeURIComponent("  Taken@Example.COM ")}`)).data, { exists: true }, "seeded email, padded and upper-case");
   expectEqual((await http("GET", `/api/customers/exists?email=${unique("new")}%40example.com`)).data, { exists: false }, "unknown email");
 });
 
-check("I.6 GET /api/shipping uses the longest matching postcode prefix, null when none matches or the postcode is malformed", "I.6", async () => {
+check("1.6 GET /api/shipping uses the longest matching postcode prefix, null when none matches or the postcode is malformed", "1.6", async () => {
   for (const [postcode, price] of [["10115", 4.9], ["10999", 3.5], ["80331", 5.9], ["SW1A 1AA", 9.5], ["99999", null], ["111111111111", null], ["1", null], ["SW1", null]]) {
     const r = await http("GET", `/api/shipping?postcode=${encodeURIComponent(postcode)}`);
     expectStatus(r, 200, "GET /api/shipping");
@@ -223,8 +223,8 @@ check("I.6 GET /api/shipping uses the longest matching postcode prefix, null whe
   }
 });
 
-// ---------- I.7
-check("I.7 POST /api/claims keeps the JSON and the version, and fills the columns", "I.7", async () => {
+// ---------- 1.7
+check("1.7 POST /api/claims keeps the JSON and the version, and fills the columns", "1.7", async () => {
   const data = { ...ROUNDTRIP, customer_email: "contract@example.com", amount: 1840.5, incident: "theft" };
   const r = await http("POST", "/api/claims", { json: { data, definitionVersion: "v2" } });
   expectStatus(r, 201, "POST /api/claims");
@@ -237,8 +237,8 @@ check("I.7 POST /api/claims keeps the JSON and the version, and fills the column
   expect(Number(s.claims?.[0]?.amount) === 1840.5, `claims.amount: ${s.claims?.[0]?.amount}`);
 });
 
-// ---------- II
-check("II GET /api/responses returns the stored documents, filtered and paged", "II", async () => {
+// ---------- 2
+check("2 GET /api/responses returns the stored documents, filtered and paged", "2", async () => {
   const all = await http("GET", "/api/responses?formId=feedback");
   expectStatus(all, 200, "GET /api/responses");
   expect(Array.isArray(all.data) && all.data.length >= 150 && all.data.every(isObject), `expected the seeded feedback responses, got ${all.data?.length}`);
@@ -250,14 +250,14 @@ check("II GET /api/responses returns the stored documents, filtered and paged", 
   expect(recent.data.length > 0 && recent.data.length < all.data.length, `from=${since} filters (${recent.data.length} of ${all.data.length})`);
 });
 
-check("I.1 → II: a posted response comes back as stored", ["I.1", "II"], async () => {
+check("1.1 → 2: a posted response comes back as stored", ["1.1", "2"], async () => {
   const formId = unique("contract");
   expectStatus(await http("POST", "/api/responses", { json: { formId, data: ROUNDTRIP } }), 201, "POST /api/responses");
   expectEqual((await http("GET", `/api/responses?formId=${formId}`)).data, [ROUNDTRIP], "GET /api/responses");
-}, { skip: VALIDATE && "VALIDATE_RESPONSES replaces I.1 with IV.1" });
+}, { skip: VALIDATE && "VALIDATE_RESPONSES replaces 1.1 with 4.1" });
 
-// ---------- III.1
-check("III.1 PUT /api/forms/:id: 403 for Bob and signed out, saved as-is for Alice", "III.1", async () => {
+// ---------- 3.1
+check("3.1 PUT /api/forms/:id: 403 for Bob and signed out, saved as-is for Alice", "3.1", async () => {
   const key = unique("contract");
   expectError(await http("PUT", `/api/forms/${key}`, { json: ROUNDTRIP, user: "bob" }), 403, "PUT as Bob");
   expectError(await http("PUT", `/api/forms/${key}`, { json: ROUNDTRIP, user: null }), 403, "PUT signed out");
@@ -270,14 +270,14 @@ check("III.1 PUT /api/forms/:id: 403 for Bob and signed out, saved as-is for Ali
   expect(isObject(support.data?.definition), "GET /api/forms/support has .definition");
 });
 
-check("III.1 → I.2: a saved definition comes back as .definition", ["III.1", "I.2"], async () => {
+check("3.1 → 1.2: a saved definition comes back as .definition", ["3.1", "1.2"], async () => {
   const key = unique("contract");
   expectStatus(await http("PUT", `/api/forms/${key}`, { json: ROUNDTRIP }), LINT ? [200, 204] : 204, "PUT /api/forms");
   expectEqual((await http("GET", `/api/forms/${key}`)).data?.definition, ROUNDTRIP, "GET /api/forms .definition");
 });
 
-// ---------- III.2
-check("III.2 → I.4: a Creator upload is served from the URL kept in the definition", ["III.2", "I.4", "III.1"], async () => {
+// ---------- 3.2
+check("3.2 → 1.4: a Creator upload is served from the URL kept in the definition", ["3.2", "1.4", "3.1"], async () => {
   const form = new FormData();
   form.append("files[]", new Blob([readShared("samples/work-order-scan.png")], { type: "image/png" }), "logo.png");
   const [id] = (await http("POST", "/api/files", { body: form })).data ?? [];
@@ -292,16 +292,16 @@ check("III.2 → I.4: a Creator upload is served from the URL kept in the defini
   expect(d.bytes.equals(readShared("samples/work-order-scan.png")), "logo bytes");
 });
 
-// ---------- III.3
-check(`III.3 POST /api/translate (AI=${AI})`, "III.3", async () => {
+// ---------- 3.3
+check(`3.3 POST /api/translate (AI=${AI})`, "3.3", async () => {
   const r = await http("POST", "/api/translate", { json: { strings: ["Hello", "Thank you, naïve user"], from: "en", to: "de" } });
   if (AI === "off") return expectError(r, 501, "POST /api/translate without a key", "Set AI_API_KEY to enable translation");
   expectStatus(r, 200, "POST /api/translate");
   expectEqual(r.data, ["[de] Hello", "[de] Thank you, naïve user"], "translated strings in order");
 });
 
-// ---------- III.4
-check("III.4 variable presets: GET, 404, 403 for Bob, PUT stored as-is", "III.4", async () => {
+// ---------- 3.4
+check("3.4 variable presets: GET, 404, 403 for Bob, PUT stored as-is", "3.4", async () => {
   const seeded = await http("GET", "/api/variable-presets/support");
   expectStatus(seeded, 200, "GET /api/variable-presets/support");
   expect(Array.isArray(seeded.data) && seeded.data.length >= 2, "basic and premium presets are seeded");
@@ -314,9 +314,9 @@ check("III.4 variable presets: GET, 404, 403 for Bob, PUT stored as-is", "III.4"
   expectEqual((await http("GET", `/api/variable-presets/${key}`)).data, presets, "GET after PUT");
 });
 
-// ---------- IV.1
+// ---------- 4.1
 const claimData = { customer_email: "valid@example.com", amount: 120, incident: "theft", details: "Contract test" };
-check(`IV.1 POST /api/responses is validated by the service (SERVICE=${SERVICE})`, "IV.1", async () => {
+check(`4.1 POST /api/responses is validated by the service (SERVICE=${SERVICE})`, "4.1", async () => {
   const before = (await stored("validate-response")).responses?.[0]?.id ?? 0;
   const valid = await http("POST", "/api/responses", { json: { formId: "claim", data: claimData } });
   if (SERVICE === "off") return expectError(valid, 503, "POST /api/responses", "not running");
@@ -334,8 +334,8 @@ check(`IV.1 POST /api/responses is validated by the service (SERVICE=${SERVICE})
   expectEqual(after.filter((row) => row.id > before).length, 1, "rows stored (only the valid response)");
 }, { skip: !VALIDATE && "VALIDATE_RESPONSES is off" });
 
-// ---------- IV.2
-check(`IV.2 PUT /api/forms/:id is linted by the service (SERVICE=${SERVICE})`, "IV.2", async () => {
+// ---------- 4.2
+check(`4.2 PUT /api/forms/:id is linted by the service (SERVICE=${SERVICE})`, "4.2", async () => {
   const put = (key, json) => http("PUT", `/api/forms/${key}`, { json });
   const clean = unique("contract");
   const r0 = await put(clean, { elements: [{ type: "text", name: "q1" }] });
@@ -359,7 +359,7 @@ check(`IV.2 PUT /api/forms/:id is linted by the service (SERVICE=${SERVICE})`, "
   expectEqual((await http("GET", `/api/forms/${key}`)).data?.definition, warned, "a definition with warnings is saved");
 }, { skip: !LINT && "LINT_DEFINITIONS is off" });
 
-// ---------- IV.3
+// ---------- 4.3
 const pdfCheck = async (id) => {
   const r = await http("GET", `/api/claims/${id}/pdf`);
   if (SERVICE === "off") return expectError(r, 503, "GET /api/claims/:id/pdf", "not running");
@@ -367,7 +367,7 @@ const pdfCheck = async (id) => {
   expect((r.headers.get("content-type") ?? "").startsWith("application/pdf"), `Content-Type ${r.headers.get("content-type")}`);
   expect(r.bytes.subarray(0, 4).toString("latin1") === "%PDF", "the body starts with %PDF");
 };
-check(`IV.3 GET /api/claims/:id/pdf (SERVICE=${SERVICE})`, "IV.3", async () => {
+check(`4.3 GET /api/claims/:id/pdf (SERVICE=${SERVICE})`, "4.3", async () => {
   const s = await stored("server-pdf");
   const id = s.responses?.[0]?.id;
   expect(Number.isInteger(id), "the stored panel lists a claim");
@@ -375,14 +375,14 @@ check(`IV.3 GET /api/claims/:id/pdf (SERVICE=${SERVICE})`, "IV.3", async () => {
   expectError(await http("GET", "/api/claims/999999999/pdf"), 404, "GET the PDF of an unknown claim");
 });
 
-check("I.7 → IV.3: a new claim prints", ["I.7", "IV.3"], async () => {
+check("1.7 → 4.3: a new claim prints", ["1.7", "4.3"], async () => {
   const r = await http("POST", "/api/claims", { json: { data: claimData, definitionVersion: "v1" } });
   expectStatus(r, 201, "POST /api/claims");
   await pdfCheck(r.data.id);
 });
 
-// ---------- IV.4
-check(`IV.4 POST /api/work-orders/extract (SERVICE=${SERVICE}, AI=${AI})`, "IV.4", async () => {
+// ---------- 4.4
+check(`4.4 POST /api/work-orders/extract (SERVICE=${SERVICE}, AI=${AI})`, "4.4", async () => {
   const before = (await stored("extract-from-paper"))["row counts"];
   const form = new FormData();
   form.append("scan", new Blob([readShared("samples/work-order-scan.png")], { type: "image/png" }), "work-order-scan.png");
@@ -443,7 +443,7 @@ class Socket {
 }
 const type = (t) => (m) => m.type === t;
 
-check("I.8 fill relay: init first, values relayed, late joiners get them, peer-left on leave", "I.8", async () => {
+check("1.8 fill relay: init first, values relayed, late joiners get them, peer-left on leave", "1.8", async () => {
   await http("GET", "/demo/stored/fill-together");   // takes demo_sid from the server in demo mode
   const room = `${RELAY_URL}/ws/rooms/${unique("contract")}`;
   const a = await Socket.open(`${room}?name=Ann`);
@@ -470,7 +470,7 @@ check("I.8 fill relay: init first, values relayed, late joiners get them, peer-l
   void initB;
 }, { skip: !RELAY_URL && "RELAY_URL is not set" });
 
-check("III.5 edit relay: appends reach a late joiner's init.log in order", "III.5", async () => {
+check("3.5 edit relay: appends reach a late joiner's init.log in order", "3.5", async () => {
   await http("GET", "/demo/stored/edit-together");
   const room = `${EDIT_RELAY_URL}/ws/forms/${unique("contract")}`;
   const a = await Socket.open(`${room}?name=Ann`);
@@ -492,7 +492,7 @@ check("III.5 edit relay: appends reach a late joiner's init.log in order", "III.
   await b.close(); await c.close();
 }, { skip: !EDIT_RELAY_URL && "EDIT_RELAY_URL is not set" });
 
-check("I.8 and III.5 relays: sandboxes get separate rooms, one sandbox shares a room", ["I.8", "III.5"], async () => {
+check("1.8 and 3.5 relays: sandboxes get separate rooms, one sandbox shares a room", ["1.8", "3.5"], async () => {
   const other = new Jar();
   await http("GET", "/demo/stored/fill-together", { jar: other });
   await http("GET", "/demo/stored/fill-together");

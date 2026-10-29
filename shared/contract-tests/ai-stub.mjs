@@ -7,7 +7,7 @@
 //                            provider calls it (SurveyJS Server db1ac24, AI_PROVIDER=ollama,
 //                            OLLAMA_BASE_URL=http://ai-stub:3020). Answers with the contents of
 //                            shared/samples/work-order-scan.answers.json.
-// POST /v1/chat/completions  OpenAI-compatible chat completions for III.3 machine translation.
+// POST /v1/chat/completions  OpenAI-compatible chat completions for 3.3 machine translation.
 //                            Expects the page's prompt: "Translate each string from <from> to <to>.
 //                            Return a JSON array in the same order." with the strings as a JSON array
 //                            in the last user message. Answers "[<to>] <string>" for each, in order.
@@ -19,7 +19,7 @@ import { readFileSync } from "node:fs";
 
 const PORT = Number(process.env.AI_STUB_PORT ?? 3020);
 const ANSWERS = JSON.parse(readFileSync(new URL("../samples/work-order-scan.answers.json", import.meta.url), "utf8"));
-// One answer read with low confidence, so the IV.4 page shows a flagged answer (flagged < 0.75)
+// One answer read with low confidence, so the 4.4 page shows a flagged answer (flagged < 0.75)
 const CONFIDENCE = Object.fromEntries(Object.keys(ANSWERS).map((name) => [name, name === "notes" ? 0.55 : 0.96]));
 
 function send(res, status, body) {

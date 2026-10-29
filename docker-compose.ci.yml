@@ -1,4 +1,4 @@
-# Tests only, never production: a deterministic AI provider for IV.4 extraction and III.3 translation.
+# Tests only, never production: a deterministic AI provider for 4.4 extraction and 3.3 translation.
 #   docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ci.yml up -d surveyjs ai-stub
 services:
     ai-stub:

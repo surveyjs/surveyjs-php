@@ -82,7 +82,7 @@ jobs:
             sleep 2
           done
 
-      - name: Contract test with the service, the AI stub and the IV switches
+      - name: Contract test with the service, the AI stub and the Section 4 switches
         run: composer contract
         env:
           SERVICE: "on"

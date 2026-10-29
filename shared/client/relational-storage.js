@@ -1,11 +1,11 @@
-// I.7 Store responses in a relational database
+// 1.7 Store responses in a relational database
 import { mountSurvey, note, onStored, page } from "./host.js";
 
 // Demo only: the v1 / v2 switch. v2 renames q_email and q_amount in Creator but keeps their valueName
 const definitionVersion = new URLSearchParams(location.search).get("version") === "v2" ? "v2" : "v1";
 const definitions = { v1: page.definition, v2: page.definitionV2 };
 
-// #region sjs:I.7.client
+// #region sjs:1.7.client
 import { Model, Serializer } from "survey-core";
 
 // Optional: a custom property for richer mapping, editable in Creator's property grid

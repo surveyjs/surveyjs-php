@@ -1,4 +1,4 @@
-// IV.2 Lint definitions before saving
+// 4.2 Lint definitions before saving
 import { mountCreator, note } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 
@@ -6,7 +6,7 @@ const formId = "support";
 const creator = new SurveyCreator({ showTranslationTab: true });
 creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;
 
-// #region sjs:IV.2.client
+// #region sjs:4.2.client
 // Creator: surface the server's lint report instead of a silent failure
 async function saveDefinition(definition) {
   const res = await fetch(`/api/forms/${formId}`, {

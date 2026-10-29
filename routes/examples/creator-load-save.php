@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
-// GET /api/forms/{id} is the I.2 endpoint (load-definition-variables-data.php): Creator reads its .definition.
+// GET /api/forms/{id} is the 1.2 endpoint (load-definition-variables-data.php): Creator reads its .definition.
 // This file holds only the PUT, so LINT_DEFINITIONS=true can swap in lint-definition.php.
 
-// #region sjs:III.1.server
+// #region sjs:3.1.server
 // PUT /api/forms/{id} — store the definition as-is: it's one JSON document
 Route::put('/api/forms/{id}', function (Request $request, string $id) {
     Gate::authorize('edit-forms');                                           // editing is an admin action: 403 otherwise

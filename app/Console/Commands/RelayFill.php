@@ -14,14 +14,14 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
 /**
- * Starts the I.8 relay (app/Relay/FillRelay.php) as its own long-running process, because
+ * Starts the 1.8 relay (app/Relay/FillRelay.php) as its own long-running process, because
  * PHP-FPM and `php artisan serve` can't hold WebSocket connections. Runs on Windows and Linux.
  */
 class RelayFill extends Command
 {
     protected $signature = 'relay:fill';
 
-    protected $description = 'Run the I.8 "Fill one form together" WebSocket relay (RELAY_PORT, default 8081)';
+    protected $description = 'Run the 1.8 "Fill one form together" WebSocket relay (RELAY_PORT, default 8081)';
 
     public function handle(): int
     {
@@ -50,7 +50,7 @@ class RelayFill extends Command
         Worker::$pidFile = storage_path('framework/relay-fill.pid');
         Worker::$logFile = storage_path('logs/relay-fill.log');
         Worker::$command = 'start';   // Workerman reads its command from argv on Linux and macOS
-        $this->components->info("I.8 fill relay listening on ws://0.0.0.0:{$port}/ws/rooms/{recordId}");
+        $this->components->info("1.8 fill relay listening on ws://0.0.0.0:{$port}/ws/rooms/{recordId}");
         Worker::runAll();
 
         return self::SUCCESS;

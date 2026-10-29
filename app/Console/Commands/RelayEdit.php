@@ -14,14 +14,14 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Worker;
 
 /**
- * Starts the III.5 relay (app/Relay/EditRelay.php) as its own long-running process, because
+ * Starts the 3.5 relay (app/Relay/EditRelay.php) as its own long-running process, because
  * PHP-FPM and `php artisan serve` can't hold WebSocket connections. Runs on Windows and Linux.
  */
 class RelayEdit extends Command
 {
     protected $signature = 'relay:edit';
 
-    protected $description = 'Run the III.5 "Edit one form together" WebSocket relay (EDIT_RELAY_PORT, default 8082)';
+    protected $description = 'Run the 3.5 "Edit one form together" WebSocket relay (EDIT_RELAY_PORT, default 8082)';
 
     public function handle(): int
     {
@@ -50,7 +50,7 @@ class RelayEdit extends Command
         Worker::$pidFile = storage_path('framework/relay-edit.pid');
         Worker::$logFile = storage_path('logs/relay-edit.log');
         Worker::$command = 'start';   // Workerman reads its command from argv on Linux and macOS
-        $this->components->info("III.5 edit relay listening on ws://0.0.0.0:{$port}/ws/forms/{formId}");
+        $this->components->info("3.5 edit relay listening on ws://0.0.0.0:{$port}/ws/forms/{formId}");
         Worker::runAll();
 
         return self::SUCCESS;

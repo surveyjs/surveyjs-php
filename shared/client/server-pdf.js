@@ -1,7 +1,7 @@
-// IV.3 Export forms to PDF on the server
+// 4.3 Export forms to PDF on the server
 import { note } from "./host.js";
 
-// #region sjs:IV.3.client
+// #region sjs:4.3.client
 // Ask your server for the filled form as a PDF
 async function openPdf(id) {
   const tab = window.open("", "_blank");             // open the tab in the click itself: after an await, browsers block pop-ups

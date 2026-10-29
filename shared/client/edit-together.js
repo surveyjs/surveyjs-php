@@ -1,4 +1,4 @@
-// III.5 Edit one form together
+// 3.5 Edit one form together
 import { inviteLink, mountCreator, note, page, participantName, relayUrl, setStoredQuery } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 import { CollaborationPlugin } from "survey-creator-core/collaboration";
@@ -7,7 +7,7 @@ const formId = "support";
 const userName = participantName();
 const creator = new SurveyCreator({ showTranslationTab: true });
 
-// Saving is unchanged: saveSurveyFunc stores creator.JSON through III.1
+// Saving is unchanged: saveSurveyFunc stores creator.JSON through 3.1
 creator.saveSurveyFunc = async (saveNo, callback) => {
   const res = await fetch(`/api/forms/${formId}`, {
     method: "PUT",
@@ -17,7 +17,7 @@ creator.saveSurveyFunc = async (saveNo, callback) => {
   callback(saveNo, res.ok);
 };
 
-// #region sjs:III.5.client
+// #region sjs:3.5.client
 // Every edit becomes a small JSON record; the plugin also captures and draws presence
 const collab = new CollaborationPlugin(creator, { roomId: formId, getInviteLink: inviteLink });
 creator.addPlugin("collaboration", collab);
@@ -28,7 +28,7 @@ const sendPresence = () => ready && ws.send(JSON.stringify({ type: "presence", s
 ws.addEventListener("message", (e) => {
   const msg = JSON.parse(e.data);
   if (msg.type === "init") {
-    creator.JSON = msg.seed;                         // the saved definition (III.1)…
+    creator.JSON = msg.seed;                         // the saved definition (3.1)…
     if (msg.log.length) collab.apply(msg.log);       // …plus every edit since, in order
     ready = true;
     sendPresence();                                  // announce yourself to the others

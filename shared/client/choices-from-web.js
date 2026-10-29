@@ -1,11 +1,11 @@
-// I.5 Choices from the web
+// 1.5 Choices from the web
 import { mountSurvey, page } from "./host.js";
 import { Model } from "survey-core";
 
 // Demo only: a stand-in for the access token your app already has
 const token = "demo-token";
 
-// #region sjs:I.5.client
+// #region sjs:1.5.client
 // In the definition — no code (shared/definitions/choices-from-web.json):
 //   "choicesByUrl": { "url": "/api/offices?region={region}", "valueName": "id", "titleName": "name" }
 //   "choicesByUrl": { "url": "/api/countries", "valueName": "code", "titleName": "name" }

@@ -1,10 +1,10 @@
-// I.8 Fill one form together
+// 1.8 Fill one form together
 import { inviteLink, mountSurvey, note, page, participantName, relayUrl, setStoredQuery, show } from "./host.js";
 
 const recordId = new URLSearchParams(location.search).get("record") ?? String(page.record ?? "new");
 const userName = participantName();
 
-// Saving the finished response is still I.1: post survey.data on complete
+// Saving the finished response is still 1.1: post survey.data on complete
 const postResponse = async (sender) => {
   await fetch("/api/responses", {
     method: "POST",
@@ -13,7 +13,7 @@ const postResponse = async (sender) => {
   });
 };
 
-// #region sjs:I.8.client
+// #region sjs:1.8.client
 import { Model } from "survey-core";
 import { CollaborationPlugin } from "survey-core/collaboration";   // v3.1.1+
 

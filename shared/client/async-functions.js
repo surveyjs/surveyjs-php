@@ -1,8 +1,8 @@
-// I.6 Async functions: calculations and validation
+// 1.6 Async functions: calculations and validation
 import { mountSurvey, page } from "./host.js";
 import { Model } from "survey-core";
 
-// #region sjs:I.6.client
+// #region sjs:1.6.client
 import { registerFunction } from "survey-core";
 
 // Validation: does a customer with this email already exist?

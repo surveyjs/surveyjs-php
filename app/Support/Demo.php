@@ -33,7 +33,7 @@ final class Demo
     {
         foreach (self::manifest()['steps'] as $id => $step) {
             if ($step['slug'] === $slug) {
-                return [$id, $step];
+                return [(string) $id, $step];   // json_decode turns the key "2" into int 2
             }
         }
 
@@ -132,7 +132,7 @@ final class Demo
     }
 
     /**
-     * I.8 and III.5: how to start the step's relay. The manifest's files.command is the command's
+     * 1.8 and 3.5: how to start the step's relay. The manifest's files.command is the command's
      * file; its artisan name comes from that class's $signature (relay:fill → surveyjs.relay.fill_port).
      *
      * @return array{command: string, port: int}|null

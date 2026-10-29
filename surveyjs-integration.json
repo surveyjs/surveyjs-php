@@ -6,10 +6,10 @@
   "branch": "master",
   "live": "https://surveyjs-php.demos.surveyjs.io",
   "surveyjsVersion": "3.2.3",
-  "sectionIV": "service",
+  "section4": "service",
   "surveyjsService": "surveyjs/surveyjs-server@db1ac24b5f984511bbac463c890b6b0a3ebd2dc9",
   "steps": {
-    "I.1": {
+    "1.1": {
       "slug": "save-response",
       "anchor": "save",
       "title": "Save the response",
@@ -27,11 +27,11 @@
         "page": "resources/views/examples/save-response.blade.php"
       },
       "regions": [
-        "I.1.client",
-        "I.1.server"
+        "1.1.client",
+        "1.1.server"
       ]
     },
-    "I.2": {
+    "1.2": {
       "slug": "load-definition-variables-data",
       "anchor": "load",
       "title": "Load the definition, variables and previous answers",
@@ -50,11 +50,11 @@
         "page": "resources/views/examples/load-definition-variables-data.blade.php"
       },
       "regions": [
-        "I.2.client",
-        "I.2.server"
+        "1.2.client",
+        "1.2.server"
       ]
     },
-    "I.3": {
+    "1.3": {
       "slug": "resume-progress",
       "anchor": "resume",
       "title": "Resume where the user left off",
@@ -73,11 +73,11 @@
         "page": "resources/views/examples/resume-progress.blade.php"
       },
       "regions": [
-        "I.3.client",
-        "I.3.server"
+        "1.3.client",
+        "1.3.server"
       ]
     },
-    "I.4": {
+    "1.4": {
       "slug": "store-files",
       "anchor": "files",
       "title": "Store files outside the response",
@@ -96,11 +96,11 @@
         "page": "resources/views/examples/store-files.blade.php"
       },
       "regions": [
-        "I.4.client",
-        "I.4.server"
+        "1.4.client",
+        "1.4.server"
       ]
     },
-    "I.5": {
+    "1.5": {
       "slug": "choices-from-web",
       "anchor": "choices",
       "title": "Choices from the web",
@@ -119,11 +119,11 @@
         "page": "resources/views/examples/choices-from-web.blade.php"
       },
       "regions": [
-        "I.5.client",
-        "I.5.server"
+        "1.5.client",
+        "1.5.server"
       ]
     },
-    "I.6": {
+    "1.6": {
       "slug": "async-functions",
       "anchor": "async",
       "title": "Async functions: calculations and validation",
@@ -142,11 +142,11 @@
         "page": "resources/views/examples/async-functions.blade.php"
       },
       "regions": [
-        "I.6.client",
-        "I.6.server"
+        "1.6.client",
+        "1.6.server"
       ]
     },
-    "I.7": {
+    "1.7": {
       "slug": "relational-storage",
       "anchor": "relational",
       "title": "Store responses in a relational database",
@@ -165,11 +165,11 @@
         "definitionV2": "shared/definitions/relational-storage.v2.json"
       },
       "regions": [
-        "I.7.client",
-        "I.7.server"
+        "1.7.client",
+        "1.7.server"
       ]
     },
-    "I.8": {
+    "1.8": {
       "slug": "fill-together",
       "anchor": "fill-together",
       "title": "Fill one form together",
@@ -189,12 +189,12 @@
         "command": "app/Console/Commands/RelayFill.php"
       },
       "regions": [
-        "I.8.client",
-        "I.8.server"
+        "1.8.client",
+        "1.8.server"
       ],
       "see": "https://github.com/surveyjs/collaborative-form-filling"
     },
-    "II": {
+    "2": {
       "slug": "dashboard",
       "anchor": "dashboard",
       "title": "See results in a dashboard",
@@ -212,11 +212,11 @@
         "page": "resources/views/examples/dashboard.blade.php"
       },
       "regions": [
-        "II.client",
-        "II.server"
+        "2.client",
+        "2.server"
       ]
     },
-    "III.1": {
+    "3.1": {
       "slug": "creator-load-save",
       "anchor": "creator-save",
       "title": "Load and save definitions",
@@ -235,11 +235,11 @@
         "page": "resources/views/examples/creator-load-save.blade.php"
       },
       "regions": [
-        "III.1.client",
-        "III.1.server"
+        "3.1.client",
+        "3.1.server"
       ]
     },
-    "III.2": {
+    "3.2": {
       "slug": "creator-uploads",
       "anchor": "creator-files",
       "title": "Upload images and files from Creator",
@@ -256,11 +256,11 @@
         "page": "resources/views/examples/creator-uploads.blade.php"
       },
       "regions": [
-        "III.2.client"
+        "3.2.client"
       ],
-      "note": "Client only: reuses POST /api/files from I.4"
+      "note": "Client only: reuses POST /api/files from 1.4"
     },
-    "III.3": {
+    "3.3": {
       "slug": "ai-translation",
       "anchor": "creator-translate",
       "title": "Translate strings with AI",
@@ -278,11 +278,11 @@
         "page": "resources/views/examples/ai-translation.blade.php"
       },
       "regions": [
-        "III.3.client",
-        "III.3.server"
+        "3.3.client",
+        "3.3.server"
       ]
     },
-    "III.4": {
+    "3.4": {
       "slug": "variable-presets",
       "anchor": "creator-presets",
       "title": "Variable presets",
@@ -301,11 +301,11 @@
         "page": "resources/views/examples/variable-presets.blade.php"
       },
       "regions": [
-        "III.4.client",
-        "III.4.server"
+        "3.4.client",
+        "3.4.server"
       ]
     },
-    "III.5": {
+    "3.5": {
       "slug": "edit-together",
       "anchor": "edit-together",
       "title": "Edit one form together",
@@ -325,12 +325,12 @@
         "command": "app/Console/Commands/RelayEdit.php"
       },
       "regions": [
-        "III.5.client",
-        "III.5.server"
+        "3.5.client",
+        "3.5.server"
       ],
       "see": "https://github.com/surveyjs/collaborative-form-editing"
     },
-    "IV.1": {
+    "4.1": {
       "slug": "validate-response",
       "anchor": "validate",
       "title": "Validate the response against the definition",
@@ -348,11 +348,11 @@
         "page": "resources/views/examples/validate-response.blade.php"
       },
       "regions": [
-        "IV.1.client",
-        "IV.1.server"
+        "4.1.client",
+        "4.1.server"
       ]
     },
-    "IV.2": {
+    "4.2": {
       "slug": "lint-definition",
       "anchor": "lint",
       "title": "Lint definitions before saving",
@@ -370,11 +370,11 @@
         "page": "resources/views/examples/lint-definition.blade.php"
       },
       "regions": [
-        "IV.2.client",
-        "IV.2.server"
+        "4.2.client",
+        "4.2.server"
       ]
     },
-    "IV.3": {
+    "4.3": {
       "slug": "server-pdf",
       "anchor": "pdf",
       "title": "Export forms to PDF on the server",
@@ -392,12 +392,12 @@
         "page": "resources/views/examples/server-pdf.blade.php"
       },
       "regions": [
-        "IV.3.client",
-        "IV.3.server"
+        "4.3.client",
+        "4.3.server"
       ],
       "note": "The pinned SurveyJS service applies no licence key, so its PDFs carry the SurveyJS alert banner"
     },
-    "IV.4": {
+    "4.4": {
       "slug": "extract-from-paper",
       "anchor": "extract",
       "title": "Turn paper, PDF and images into responses",
@@ -415,8 +415,8 @@
         "page": "resources/views/examples/extract-from-paper.blade.php"
       },
       "regions": [
-        "IV.4.client",
-        "IV.4.server"
+        "4.4.client",
+        "4.4.server"
       ]
     }
   }

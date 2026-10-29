@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Route;
 
 // Used in place of the PUT in creator-load-save.php when LINT_DEFINITIONS=true (routes/examples.php).
 
-// #region sjs:IV.2.server
+// #region sjs:4.2.server
 // PUT /api/forms/{id} — lint the definition from Creator before storing it
 Route::put('/api/forms/{id}', function (Request $request, string $id) {
     Gate::authorize('edit-forms');
-    $definition = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);   // the raw body keeps {} as {} (see III.1)
+    $definition = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);   // the raw body keeps {} as {} (see 3.1)
     $lint = SurveyJsService::post('/schema', $definition, timeout: 10);
     if ($lint->status() === 422 && $lint->json('errors') !== null) {           // errors: refuse the save, report them as they are
         return response($lint->body(), 422)->header('Content-Type', 'application/json');

@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Demo only: adds X-Demo-Cache: hit / miss / fallback to GET /api/countries so the requests log
- * shows where the list came from. It watches cache events, so the I.5 route stays as on the page.
+ * shows where the list came from. It watches cache events, so the 1.5 route stays as on the page.
  */
 class DemoCacheHeader
 {

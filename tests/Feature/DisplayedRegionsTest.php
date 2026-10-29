@@ -24,16 +24,16 @@ class DisplayedRegionsTest extends TestCase
     public static function pitfalls(): array
     {
         return [
-            'I.1.server' => ['routes/examples/save-response.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED, 'TrimStrings', 'ConvertEmptyStringsToNull', 'bootstrap/app.php']],
-            'I.2.server' => ['routes/examples/load-definition-variables-data.php', ['previous answers, or {}']],
-            'I.3.server' => ['routes/examples/resume-progress.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            'I.4.server' => ['routes/examples/store-files.php', ['field "files[]": PHP keeps only the last of several "files"', '404, not 403', 'nosniff', 'sandbox']],
-            'I.7.server' => ['routes/examples/relational-storage.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            'II.server' => ['routes/examples/dashboard.php', ['documents as stored, not re-encoded']],
-            'III.1.server' => ['routes/examples/creator-load-save.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            'III.4.server' => ['routes/examples/variable-presets.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            'IV.1.server' => ['routes/examples/validate-response.php', ['the raw body keeps {} as {} (see I.1)', self::DECODE, self::AS_IT_ARRIVED]],
-            'IV.2.server' => ['routes/examples/lint-definition.php', ['the raw body keeps {} as {} (see III.1)', self::DECODE, self::AS_IT_ARRIVED]],
+            '1.1.server' => ['routes/examples/save-response.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED, 'TrimStrings', 'ConvertEmptyStringsToNull', 'bootstrap/app.php']],
+            '1.2.server' => ['routes/examples/load-definition-variables-data.php', ['previous answers, or {}']],
+            '1.3.server' => ['routes/examples/resume-progress.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            '1.4.server' => ['routes/examples/store-files.php', ['field "files[]": PHP keeps only the last of several "files"', '404, not 403', 'nosniff', 'sandbox']],
+            '1.7.server' => ['routes/examples/relational-storage.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            '2.server' => ['routes/examples/dashboard.php', ['documents as stored, not re-encoded']],
+            '3.1.server' => ['routes/examples/creator-load-save.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            '3.4.server' => ['routes/examples/variable-presets.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            '4.1.server' => ['routes/examples/validate-response.php', ['the raw body keeps {} as {} (see 1.1)', self::DECODE, self::AS_IT_ARRIVED]],
+            '4.2.server' => ['routes/examples/lint-definition.php', ['the raw body keeps {} as {} (see 3.1)', self::DECODE, self::AS_IT_ARRIVED]],
         ];
     }
 

@@ -17,7 +17,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 /**
- * Every row of the SurveyJS service status mapping (the meta prompt's "Section IV"), faked with
+ * Every row of the SurveyJS service status mapping (the meta prompt's "Section 4"), faked with
  * Http::fake(). It fails closed: nothing is saved or passed on unless the answer is a recognized success.
  */
 class SurveyJsServiceTest extends TestCase
@@ -28,7 +28,7 @@ class SurveyJsServiceTest extends TestCase
 
     private const SERVICE = 'http://surveyjs.test:3000';
 
-    /** routes/examples.php picks the IV.1 and IV.2 route files at boot, so the switches are set before routes load. */
+    /** routes/examples.php picks the 4.1 and 4.2 route files at boot, so the switches are set before routes load. */
     public function createApplication()
     {
         $app = require Application::inferBasePath().'/bootstrap/app.php';
@@ -65,7 +65,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // IV.1 POST /api/responses
+    // 4.1 POST /api/responses
 
     public function test_iv1_valid_answers_are_saved(): void
     {
@@ -114,7 +114,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // IV.2 PUT /api/forms/{id}
+    // 4.2 PUT /api/forms/{id}
 
     private const DEFINITION = ['elements' => [['type' => 'text', 'name' => 'q1']]];
 
@@ -173,7 +173,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // IV.3 GET /api/claims/{id}/pdf
+    // 4.3 GET /api/claims/{id}/pdf
 
     private function claimId(): int
     {
@@ -219,7 +219,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // IV.4 POST /api/work-orders/extract
+    // 4.4 POST /api/work-orders/extract
 
     private function extract()
     {

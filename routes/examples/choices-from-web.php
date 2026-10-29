@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:I.5.server
+// #region sjs:1.5.server
 // GET /api/offices?region= — {region} from the form arrives as a query parameter
 Route::get('/api/offices', function (Request $request) {
     return DB::table('offices')->where('region', $request->query('region', ''))->orderBy('name')->get(['id', 'name']);

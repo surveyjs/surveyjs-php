@@ -30,7 +30,7 @@ RUN composer dump-autoload --optimize --no-dev \
 
 # Production settings: real environment variables win over the .env that CMD copies from .env.example.
 # Logs go to `docker compose logs`. PHP_CLI_SERVER_WORKERS (read from the process environment, not .env)
-# lets the built-in server answer other visitors while IV.4 (up to 120 s), IV.3 or III.3 (60 s) waits.
+# lets the built-in server answer other visitors while 4.4 (up to 120 s), 4.3 or 3.3 (60 s) waits.
 ENV APP_ENV=production APP_DEBUG=false LOG_CHANNEL=stderr PHP_CLI_SERVER_WORKERS=4
 
 EXPOSE 8000 8081 8082

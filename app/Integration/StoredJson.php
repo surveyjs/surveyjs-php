@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Stores SurveyJS JSON (responses, definitions, saved progress, variable presets) exactly as it
- * arrived, and returns it the same way. Used by I.1, I.3, I.7, III.1, III.4, IV.1 and IV.2 to store,
- * and by I.2 to answer. A response or a definition is one JSON document: store it as text, never as
+ * arrived, and returns it the same way. Used by 1.1, 1.3, 1.7, 3.1, 3.4, 4.1 and 4.2 to store,
+ * and by 1.2 to answer. A response or a definition is one JSON document: store it as text, never as
  * columns of a PHP array. When you copy one of those steps, copy this file too.
  */
 final class StoredJson
@@ -35,7 +35,7 @@ final class StoredJson
     }
 
     /**
-     * Insert one response: the answers as one JSON document, plus any extra columns (I.7 adds
+     * Insert one response: the answers as one JSON document, plus any extra columns (1.7 adds
      * definition_version). $formId and $data are taken as sent: each route does its own validation.
      */
     public static function insertResponse(mixed $formId, mixed $data, array $columns = []): int
@@ -44,7 +44,7 @@ final class StoredJson
             'form_id' => $formId,
             ...$columns,
             'data' => self::encode($data),
-            'created_at' => now('UTC')->toIso8601ZuluString(),   // ISO 8601 UTC strings sort and compare as dates (II filters on them)
+            'created_at' => now('UTC')->toIso8601ZuluString(),   // ISO 8601 UTC strings sort and compare as dates (2 filters on them)
         ]);
     }
 

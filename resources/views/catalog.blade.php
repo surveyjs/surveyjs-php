@@ -2,10 +2,10 @@
      (Figma General, page "Backend Integration examples page + demo"; desktop 1400, tablet 900, mobile 375) --}}
 @php
     $sections = [
-        'I' => ['Run forms', 'The Form Library renders forms in the browser. Your backend needs exactly one thing: an endpoint that stores the response. Everything after the first item is optional — add it when a form needs it.'],
-        'II' => ['See results in a dashboard', 'SurveyJS Dashboard runs in the browser. Your backend returns the stored responses.'],
-        'III' => ['Edit forms in Survey Creator', 'For your backend, a definition is one more JSON document to load and save. Saving definitions is an admin action: authorize it.'],
-        'IV' => ['Run SurveyJS on your server', 'Only if you can\'t trust the client: validate, lint, PDF, extraction, through the SurveyJS service next to this app.'],
+        '1' => ['Run forms', 'The Form Library renders forms in the browser. Your backend needs exactly one thing: an endpoint that stores the response. Everything after the first item is optional — add it when a form needs it.'],
+        '2' => ['See results in a dashboard', 'SurveyJS Dashboard runs in the browser. Your backend returns the stored responses.'],
+        '3' => ['Edit forms in Survey Creator', 'For your backend, a definition is one more JSON document to load and save. Saving definitions is an admin action: authorize it.'],
+        '4' => ['Run SurveyJS on your server', 'Only if you can\'t trust the client: validate, lint, PDF, extraction, through the SurveyJS service next to this app.'],
     ];
     $steps = collect($manifest['steps'])->groupBy(fn ($step, $id) => explode('.', $id)[0], preserveKeys: true);
     // The manifest's licence reads "MIT", "Commercial" or "Commercial client", optionally followed by ", needs an AI provider"

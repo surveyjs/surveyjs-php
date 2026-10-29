@@ -1,10 +1,10 @@
-// IV.4 Turn paper, PDF and images into responses
+// 4.4 Turn paper, PDF and images into responses
 import { mountSurvey, note, page, show } from "./host.js";
 import { Model } from "survey-core";
 
 const survey = mountSurvey(new Model(page.definition));   // the work order form
 
-// #region sjs:IV.4.client
+// #region sjs:4.4.client
 // Upload the scan; open the draft in the form for review
 async function extract(file) {
   const body = new FormData();

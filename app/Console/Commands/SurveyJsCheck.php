@@ -20,7 +20,7 @@ class SurveyJsCheck extends Command
 
     protected $description = 'Check the manifest, the snippet regions, shared/ and the SurveyJS versions';
 
-    private const STEPS = ['I.1', 'I.2', 'I.3', 'I.4', 'I.5', 'I.6', 'I.7', 'I.8', 'II', 'III.1', 'III.2', 'III.3', 'III.4', 'III.5', 'IV.1', 'IV.2', 'IV.3', 'IV.4'];
+    private const STEPS = ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8', '2', '3.1', '3.2', '3.3', '3.4', '3.5', '4.1', '4.2', '4.3', '4.4'];
 
     private const REGION_SOURCES = ['routes', 'app/Relay', 'shared/client'];
 

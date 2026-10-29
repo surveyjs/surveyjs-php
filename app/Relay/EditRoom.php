@@ -8,7 +8,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Timer;
 
 /**
- * One III.5 room: the saved definition it started from, every Creator record since (in arrival
+ * One 3.5 room: the saved definition it started from, every Creator record since (in arrival
  * order) and the people in it. Each connection keeps its id, name, colour and presence in $connection->context.
  */
 final class EditRoom

@@ -1,7 +1,7 @@
-// I.1 Save the response
+// 1.1 Save the response
 import { mountSurvey, note, onStored, show } from "./host.js";
 
-// #region sjs:I.1.client
+// #region sjs:1.1.client
 import { Model } from "survey-core";
 
 // The definition can be a constant in the page — no database needed

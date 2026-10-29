@@ -1,17 +1,17 @@
-// III.1 Load and save definitions
+// 3.1 Load and save definitions
 import { mountCreator, mountSurvey, note } from "./host.js";
 import { Model, Serializer } from "survey-core";
 
 const formId = "support";
 
-// The I.7 custom property: it shows in the property grid's Data category
+// The 1.7 custom property: it shows in the property grid's Data category
 Serializer.addProperty("question", { name: "dbColumn", category: "data" });
 
-// #region sjs:III.1.client
+// #region sjs:3.1.client
 import { SurveyCreator } from "survey-creator-js";
 
 const creator = new SurveyCreator({ showTranslationTab: true });
-creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;   // the I.2 endpoint's .definition
+creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;   // the 1.2 endpoint's .definition
 
 creator.autoSaveEnabled = true;   // save after each change; without it, Creator shows a Save button
 creator.saveSurveyFunc = async (saveNo, callback) => {

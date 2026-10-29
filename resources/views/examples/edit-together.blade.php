@@ -6,7 +6,7 @@
     <li>Press <strong>Open a second window</strong>: it opens the invite link, and each window shows the other's selection and edits live.</li>
     <li>Make a few edits, then press <strong>Open a second window</strong> again for a third: it replays the saved definition plus the log and matches.</li>
     <li>Open the <strong>Collaboration</strong> menu above Creator's tabs and choose <strong>Show Version History</strong>: it lists every change in the room.</li>
-    <li>Press <strong>Save</strong> in either window: <code>PUT /api/forms/support</code> stores it (III.1). When every window closes, the room empties, and a new session starts from the saved definition.</li>
+    <li>Press <strong>Save</strong> in either window: <code>PUT /api/forms/support</code> stores it (3.1). When every window closes, the room empties, and a new session starts from the saved definition.</li>
 @endsection
 
 @section('actions')

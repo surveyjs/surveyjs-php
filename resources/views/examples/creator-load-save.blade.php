@@ -7,7 +7,7 @@
     <li>As <strong>Alice</strong> (editor), change the form title in the Designer. Creator saves automatically (<code>autoSaveEnabled</code>): one <code>PUT /api/forms/support</code> answers <code>204</code>. Open <strong>Requests</strong> and expand it to see the definition sent.</li>
     <li>Press <strong>Open the form</strong>: a new tab renders the saved definition, with your new title.</li>
     <li>Switch the <strong>Demo user</strong> to <strong>Bob</strong> (viewer) and change anything: each save answers <code>403</code> from <code>Gate::authorize('edit-forms')</code>, and Creator shows the server's message: "You don't have editor rights".</li>
-    <li>Select a question: the property grid's Data category has the <code>dbColumn</code> property from <a href="{{ route('example', 'relational-storage') }}">I.7</a>.</li>
+    <li>Select a question: the property grid's Data category has the <code>dbColumn</code> property from <a href="{{ route('example', 'relational-storage') }}">1.7</a>.</li>
 @endsection
 
 @section('actions')

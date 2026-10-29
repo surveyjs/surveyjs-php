@@ -12,13 +12,13 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Timer;
 
 /**
- * I.8 Fill one form together: the relay behind CollaborationPlugin from survey-core/collaboration.
+ * 1.8 Fill one form together: the relay behind CollaborationPlugin from survey-core/collaboration.
  * Wire protocol: https://github.com/surveyjs/collaborative-form-filling (PROTOCOL.md).
  * Started by `php artisan relay:fill` (app/Console/Commands/RelayFill.php).
  */
 final class FillRelay
 {
-    // #region sjs:I.8.server
+    // #region sjs:1.8.server
     // The relay, run as its own process: php artisan relay:fill (PHP-FPM can't hold connections).
     // No SurveyJS here: the definition and the answers are opaque JSON.
     private array $rooms = [];   // room key => Room { seed, values, clients }

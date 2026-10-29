@@ -20,7 +20,7 @@ class ExamplePagesTest extends TestCase
     {
         $manifest = json_decode((string) file_get_contents(__DIR__.'/../../surveyjs-integration.json'), true);
 
-        return collect($manifest['steps'])->mapWithKeys(fn ($step, $id) => [$id => [$id, $step['slug']]])->all();
+        return collect($manifest['steps'])->mapWithKeys(fn ($step, $id) => [$id => [(string) $id, $step['slug']]])->all();   // the key "2" decodes as int 2
     }
 
     public function test_the_catalog_lists_every_step(): void
@@ -167,7 +167,7 @@ class ExamplePagesTest extends TestCase
         }
     }
 
-    /** The Form Library examples (I.1–I.7, IV.1, IV.4) have Start over; I.8 (fill-together) doesn't. */
+    /** The Form Library examples (1.1–1.7, 4.1, 4.4) have Start over; 1.8 (fill-together) doesn't. */
     private const START_OVER = ['save-response', 'load-definition-variables-data', 'resume-progress', 'store-files', 'choices-from-web',
         'async-functions', 'relational-storage', 'validate-response', 'extract-from-paper'];
 

@@ -1,5 +1,5 @@
 // The Form Library pages wear the SurveyJS Tailwind adapter (survey-core/themes/adapters/tailwind4.css)
-// with the demo's colours from app.css's @theme static (design 03, Verify 2 to 4 and 6, on I.1).
+// with the demo's colours from app.css's @theme static (design 03, Verify 2 to 4 and 6, on 1.1).
 // A Tailwind or survey-core upgrade that drops a variable makes the adapter fall back to its
 // literals silently; these tests fail instead.
 import { expect, test } from '@playwright/test';

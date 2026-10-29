@@ -1,9 +1,9 @@
-// III.4 Variable presets
+// 3.4 Variable presets
 import { mountCreator, page } from "./host.js";
 
 const formId = "support";
 
-// #region sjs:III.4.client
+// #region sjs:3.4.client
 import { SurveyCreator } from "survey-creator-js";
 
 const creator = new SurveyCreator({

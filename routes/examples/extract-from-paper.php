@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:IV.4.server
+// #region sjs:4.4.server
 // POST /api/work-orders/extract — send the uploaded scan to the SurveyJS service; return a draft response
 Route::post('/api/work-orders/extract', function (Request $request) {
     $scan = $request->file('scan') ?? abort(400, 'Upload the scan in a field named "scan"');

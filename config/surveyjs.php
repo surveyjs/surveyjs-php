@@ -9,19 +9,19 @@ return [
     // Shown in the browser: setLicenseKey() runs only when it is set
     'license_key' => env('SURVEYJS_LICENSE_KEY'),
 
-    // Section IV: SurveyJS Server (github.com/surveyjs/surveyjs-server), run next to the app
+    // Section 4: SurveyJS Server (github.com/surveyjs/surveyjs-server), run next to the app
     'service_url' => rtrim((string) env('SURVEYJS_SERVICE_URL', 'http://localhost:3010'), '/'),
     'validate_responses' => (bool) env('VALIDATE_RESPONSES', false),
     'lint_definitions' => (bool) env('LINT_DEFINITIONS', false),
 
-    // III.3: an OpenAI-compatible /chat/completions endpoint for machine translation
+    // 3.3: an OpenAI-compatible /chat/completions endpoint for machine translation
     'ai' => [
         'base_url' => rtrim((string) env('AI_BASE_URL', 'https://api.openai.com/v1'), '/'),
         'api_key' => env('AI_API_KEY'),
         'model' => env('AI_MODEL', 'gpt-4o-mini'),
     ],
 
-    // IV.4: read only to pass them to the SurveyJS service in Docker Compose
+    // 4.4: read only to pass them to the SurveyJS service in Docker Compose
     'extraction' => [
         'provider' => env('SURVEYJS_AI_PROVIDER'),
         'model' => env('SURVEYJS_AI_MODEL'),
@@ -30,7 +30,7 @@ return [
         'anthropic_api_key' => env('ANTHROPIC_API_KEY'),
     ],
 
-    // I.8 and III.5: the WebSocket relays run as their own processes
+    // 1.8 and 3.5: the WebSocket relays run as their own processes
     'relay' => [
         'fill_port' => (int) env('RELAY_PORT', 8081),
         'edit_port' => (int) env('EDIT_RELAY_PORT', 8082),

@@ -1,4 +1,4 @@
-// Shared by the browser tests: rows of the requests log, the I.1 form and a streaming server.
+// Shared by the browser tests: rows of the requests log, the 1.1 form and a streaming server.
 import http from 'node:http';
 import { expect } from '@playwright/test';
 
@@ -18,7 +18,7 @@ export async function slot(rowLocator, name) {
     return element.textContent();
 }
 
-/** I.1: fill in the form and press Complete. */
+/** 1.1: fill in the form and press Complete. */
 export async function completeSaveResponse(page, email = 'ann@example.com') {
     await page.getByRole('textbox', { name: /Your email/ }).fill(email);
     await page.getByRole('button', { name: 'Complete' }).click();

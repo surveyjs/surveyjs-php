@@ -6,7 +6,7 @@ use App\Integration\AiTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:III.3.server
+// #region sjs:3.3.server
 // POST /api/translate — strings in, translated strings out (same order); nothing goes to SurveyJS
 Route::post('/api/translate', function (Request $request) {
     abort_unless(config('surveyjs.ai.api_key'), 501, 'Set AI_API_KEY to enable translation');

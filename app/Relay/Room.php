@@ -8,7 +8,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Timer;
 
 /**
- * One I.8 room: the definition it hands out, the latest value of every answer and the people in it.
+ * One 1.8 room: the definition it hands out, the latest value of every answer and the people in it.
  * Each connection keeps its own id, name, colour and presence in $connection->context.
  */
 final class Room

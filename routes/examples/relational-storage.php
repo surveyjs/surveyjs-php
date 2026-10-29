@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:I.7.server
+// #region sjs:1.7.server
 // POST /api/claims — original JSON first, then the columns you query
 Route::post('/api/claims', function (Request $request) {
     // The raw body, not $request->input(): PHP arrays would turn {} into [] in the stored JSON

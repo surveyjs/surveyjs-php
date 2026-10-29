@@ -1,11 +1,11 @@
-// I.4 Store files outside the response
+// 1.4 Store files outside the response
 import { mountSurvey, note, onRequest, page, show } from "./host.js";
 import { Model } from "survey-core";
 
 // In the definition: { "type": "file", "name": "receipt", "storeDataAsText": false, "allowMultiple": true }
 const survey = new Model(page.definition);
 
-// #region sjs:I.4.client
+// #region sjs:1.4.client
 // Upload: your server stores the files and returns an id (or a URL) for each
 survey.onUploadFiles.add(async (_, options) => {
   const body = new FormData();
@@ -25,7 +25,7 @@ survey.onDownloadFile.add(async (_, options) => {
 });
 // #endregion
 
-// Saving the finished response is I.1
+// Saving the finished response is 1.1
 survey.onComplete.add(async (sender) => {
   await fetch("/api/responses", {
     method: "POST",
