@@ -34,9 +34,9 @@
 @include('partials.site-header')
 
 <main>
-    <div class="{{ $column }} pt-24 pb-12 text-center">
-        <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold md:text-sjs-title-2xl">{{ \App\Support\Demo::TITLE }}</h1>
-        <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-sjs-fg-50">
+    <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-20">
+        <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Add a backend to your SurveyJS forms</h1>
+        <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-pretty text-sjs-fg-50">
             The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}">Integrate SurveyJS with your backend</a>,
             as a Laravel application. Each step runs the real SurveyJS component against these routes and shows the code that just ran.
             SurveyJS has no backend of its own, so treat these as starting points.
