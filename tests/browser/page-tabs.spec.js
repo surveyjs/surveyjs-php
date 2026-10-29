@@ -281,8 +281,7 @@ test('6. at 900 the tabs have no icons and fit; cut, the panel tabs scroll and f
     const tablist = page.locator('#panel-tabs');
     await page.evaluate(() => document.fonts.ready);
 
-    await expect(page.locator('#panel-tabs svg, #page-tabs svg')).toHaveCount(5);
-    for (const icon of await page.locator('#panel-tabs svg, #page-tabs svg').all()) await expect(icon).toBeHidden();
+    await expect(page.locator('#panel-tabs svg, #page-tabs svg')).toHaveCount(0);
     await expect(tablist).not.toHaveAttribute('data-fade-end');
     await expect(tablist).not.toHaveAttribute('data-fade-start');
     const thumb = page.locator('#panel-tabs-thumb');

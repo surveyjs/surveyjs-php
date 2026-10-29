@@ -14,15 +14,8 @@
     $hasReadouts = trim($__env->yieldContent('readouts')) !== '';
     // The tab buttons of both columns (design 02's header tabs)
     $tabClass = 'flex h-11 shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap border-0 bg-transparent px-3.5 text-[15px] font-semibold text-gray-600 shadow-[inset_0_-3px_0_transparent] [font-family:inherit] hover:text-gray-900 aria-selected:text-gray-900 aria-selected:shadow-[inset_0_-3px_0_var(--color-sjs)]';
-    $panelTabs = [
-        'description' => ['Description', '<path d="M4 5h16M4 10h16M4 15h10M4 20h7"/>'],
-        'requests' => ['Requests', '<path d="M7 7h13l-3-3M17 17H4l3 3"/>'],
-        'stored' => ['Data', '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
-    ];
-    $mainTabs = [
-        'demo' => ['Demo', '<polygon points="6 4 20 12 6 20 6 4"/>'],
-        'code' => ['Code', '<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>'],
-    ];
+    $panelTabs = ['description' => 'Description', 'requests' => 'Requests', 'stored' => 'Data'];
+    $mainTabs = ['demo' => 'Demo', 'code' => 'Code'];
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -70,9 +63,8 @@
         <div class="relative shrink-0 border-b border-gray-200">
             <div id="panel-tabs" role="tablist" aria-label="Description, requests and stored data"
                  class="flex scroll-px-4 items-stretch gap-3 overflow-x-auto px-4 py-2 [scrollbar-width:none] md:px-5 lg:px-6 data-[fade-start]:[mask-image:linear-gradient(to_right,transparent,#000_16px)] data-[fade-end]:[mask-image:linear-gradient(to_left,transparent,#000_16px)] data-[fade-start]:data-[fade-end]:[mask-image:linear-gradient(to_right,transparent,#000_16px,#000_calc(100%-16px),transparent)]">
-                @foreach ($panelTabs as $key => [$label, $icon])
+                @foreach ($panelTabs as $key => $label)
                     <button type="button" role="tab" id="panel-tab-{{ $key }}" data-panel-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
-                        <svg aria-hidden="true" class="size-4 shrink-0 md:max-lg:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
                         {{ $label }}
                         @if ($key === 'requests')
                             {{-- Figma .counter, style=positive / style=negative --}}
@@ -152,9 +144,8 @@
                 <span id="panel-dot" hidden class="absolute -top-px left-[35px] size-1.5 rounded-full bg-sjs ring-2 ring-white"></span>
             </button>
             <div id="page-tabs" role="tablist" aria-label="Step views" class="flex min-w-0 items-stretch gap-3">
-                @foreach ($mainTabs as $key => [$label, $icon])
+                @foreach ($mainTabs as $key => $label)
                     <button type="button" role="tab" id="tab-{{ $key }}" data-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
-                        <svg aria-hidden="true" class="size-4 shrink-0 md:max-lg:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
                         {{ $label }}
                     </button>
                 @endforeach
