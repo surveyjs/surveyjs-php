@@ -285,11 +285,22 @@ test('6. at 900 the tabs have no icons and fit; cut, the panel tabs scroll and f
     for (const icon of await page.locator('#panel-tabs svg, #page-tabs svg').all()) await expect(icon).toBeHidden();
     await expect(tablist).not.toHaveAttribute('data-fade-end');
     await expect(tablist).not.toHaveAttribute('data-fade-start');
+    const thumb = page.locator('#panel-tabs-thumb');
+    await expect(thumb).toBeHidden();
 
     // Narrower than its tabs, the row is cut
     await page.locator('#side-panel').evaluate((el) => { el.style.width = '240px'; });
     await expect(tablist).toHaveAttribute('data-fade-end', '');
     await expect(tablist).not.toHaveAttribute('data-fade-start');
+    // The thumb shows in the 8px under the tabs, 4px in from the row's left; the native scrollbar takes no room
+    await expect(thumb).toBeVisible();
+    const rowBox = () => tablist.locator('xpath=..').boundingBox();
+    const [row, thumbAtStart, tabAtStart] = await Promise.all([rowBox(), thumb.boundingBox(), panelTab(page, 'description').boundingBox()]);
+    expect(thumbAtStart.x - row.x).toBe(4);
+    expect(thumbAtStart.y).toBe(tabAtStart.y + tabAtStart.height);
+    expect(row.y + row.height - 1 - (thumbAtStart.y + thumbAtStart.height)).toBe(0);   // 1: the row's bottom border
+    expect(thumbAtStart.width).toBeLessThan(row.width - 8);
+    expect(await tablist.evaluate((el) => el.offsetHeight - el.clientHeight)).toBe(0);
     const mask = () => tablist.evaluate((el) => getComputedStyle(el).maskImage);
     expect(await mask()).toBe('linear-gradient(270deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 16px)');   // to left
     expect(await tablist.evaluate((el) => el.scrollWidth > el.clientWidth && getComputedStyle(el).flexWrap)).toBe('nowrap');
@@ -300,6 +311,18 @@ test('6. at 900 the tabs have no icons and fit; cut, the panel tabs scroll and f
     await expect(tablist).toHaveAttribute('data-fade-start', '');
     await expect(tablist).not.toHaveAttribute('data-fade-end');
     expect(await mask()).toBe('linear-gradient(90deg, rgba(0, 0, 0, 0), rgb(0, 0, 0) 16px)');   // to right
+    // Scrolled to the end, the thumb ends 4px in from the row's right
+    const [rowAtEnd, thumbAtEnd] = await Promise.all([rowBox(), thumb.boundingBox()]);
+    expect(rowAtEnd.x + rowAtEnd.width - (thumbAtEnd.x + thumbAtEnd.width)).toBeCloseTo(4, 0);
+
+    // Dragging the thumb back to the left scrolls the row to its start
+    await page.mouse.move(thumbAtEnd.x + thumbAtEnd.width / 2, thumbAtEnd.y + thumbAtEnd.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(rowAtEnd.x, thumbAtEnd.y + thumbAtEnd.height / 2, { steps: 4 });
+    await page.mouse.up();
+    await expect(tablist).not.toHaveAttribute('data-fade-start');
+    expect((await thumb.boundingBox()).x - rowAtEnd.x).toBe(4);
+
     await tablist.evaluate((el) => el.scrollTo({ left: 8 }));
     await expect(tablist).toHaveAttribute('data-fade-end', '');
     await expect(tablist).toHaveAttribute('data-fade-start', '');

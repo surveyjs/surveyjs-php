@@ -65,8 +65,9 @@
             </button>
         </div>
 
-        {{-- The tabs never wrap: the row scrolls, and page-tabs.js sets data-fade-start / data-fade-end where tabs are cut --}}
-        <div class="shrink-0 border-b border-gray-200">
+        {{-- The tabs never wrap: the row scrolls, and page-tabs.js sets data-fade-start / data-fade-end where tabs are cut
+             and shows the scrollbar's thumb --}}
+        <div class="relative shrink-0 border-b border-gray-200">
             <div id="panel-tabs" role="tablist" aria-label="Description, requests and stored data"
                  class="flex scroll-px-4 items-stretch gap-3 overflow-x-auto px-4 py-2 [scrollbar-width:none] md:px-5 lg:px-6 data-[fade-start]:[mask-image:linear-gradient(to_right,transparent,#000_16px)] data-[fade-end]:[mask-image:linear-gradient(to_left,transparent,#000_16px)] data-[fade-start]:data-[fade-end]:[mask-image:linear-gradient(to_right,transparent,#000_16px,#000_calc(100%-16px),transparent)]">
                 @foreach ($panelTabs as $key => [$label, $icon])
@@ -83,6 +84,10 @@
                     </button>
                 @endforeach
             </div>
+            {{-- Figma "scrollbar": a 4px round thumb 4px in from the sides, with no track. The native one is hidden: it
+                 would make the row taller when cut. The thumb fills the 8px under the tabs, which is the area you drag; page-tabs.js sizes and moves it. --}}
+            <div id="panel-tabs-thumb" aria-hidden="true" hidden
+                 class="absolute bottom-0 left-1 h-2 cursor-pointer touch-none before:absolute before:inset-x-0 before:top-0.5 before:h-1 before:rounded-full before:bg-sjs-scrollbar before:content-['']"></div>
         </div>
 
         {{-- shared/client/host.js fills #notes, #requests and #stored by id and by the templates below, also while hidden --}}

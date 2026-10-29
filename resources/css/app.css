@@ -48,6 +48,7 @@
     --color-sjs-yellow-10: #fff4e7; /* special/yellow-10 */
     --color-sjs-red: #e50a3e;       /* special/red */
     --color-sjs-red-15: #fbdae2;    /* special/red-15 */
+    --color-sjs-scrollbar: rgb(17 16 20 / 0.15);    /* sjs2/color/utility/scrollbar: the thumb */
 
     /* The design's type styles: article/titles/* and article/paragraphs/* */
     --text-sjs-title-2xl: 4rem;     /* titles/xx-large, 64/72 */

@@ -46,7 +46,10 @@ function setUpPageTabs() {
 
   // ---------------------------------------------------------------------------------------------
   // Sizes: the header and the main tab row for the sticky panel and Creator, what sits above the
-  // component, and the fade on the panel's tab row
+  // component, and the fade and the scrollbar on the panel's tab row
+
+  const thumb = document.getElementById("panel-tabs-thumb");
+  const TRACK_INSET = 8;   // the thumb runs 4px in from each side of the row
 
   function measure() {
     const root = document.documentElement.style;
@@ -59,7 +62,29 @@ function setUpPageTabs() {
     const { scrollLeft, clientWidth, scrollWidth } = panelTablist;
     panelTablist.toggleAttribute("data-fade-start", scrollLeft > 0);
     panelTablist.toggleAttribute("data-fade-end", scrollLeft + clientWidth < scrollWidth - 1);
+
+    // The thumb shows only while the row is cut. It is as wide as the visible share of the row, at least 24px
+    const hidden = scrollWidth - clientWidth <= 1;
+    thumb.hidden = hidden;
+    if (hidden) return;
+    const track = clientWidth - TRACK_INSET;
+    const width = Math.max(24, (track * clientWidth) / scrollWidth);
+    thumb.style.width = `${width}px`;
+    thumb.style.transform = `translateX(${((track - width) * scrollLeft) / (scrollWidth - clientWidth)}px)`;
   }
+
+  // Dragging the thumb scrolls the row
+  thumb.addEventListener("pointerdown", (event) => {
+    const { clientWidth, scrollWidth, scrollLeft } = panelTablist;
+    const ratio = (scrollWidth - clientWidth) / (clientWidth - TRACK_INSET - thumb.offsetWidth);
+    const move = (e) => {
+      panelTablist.scrollLeft = scrollLeft + (e.clientX - event.clientX) * ratio;
+    };
+    event.preventDefault();
+    thumb.setPointerCapture(event.pointerId);
+    thumb.addEventListener("pointermove", move);
+    thumb.addEventListener("lostpointercapture", () => thumb.removeEventListener("pointermove", move), { once: true });
+  });
 
   const sizes = new ResizeObserver(() => {
     measure();
