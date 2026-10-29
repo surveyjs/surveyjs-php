@@ -37,7 +37,7 @@
     <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-20">
         <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Build a PHP Backend for Your SurveyJS Forms</h1>
         <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-pretty text-sjs-fg-50">
-            The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}">Integrate SurveyJS with your backend</a>,
+            The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">Integrate SurveyJS with your backend</a>,
             as a Laravel application. Each step runs the real SurveyJS component against these routes and shows the code that just ran.
             SurveyJS has no backend of its own, so treat these as starting points.
         </p>
@@ -49,7 +49,7 @@
                 Commercial steps (Dashboard, Creator, server-side PDF) run without a licence key and show a licence banner;
                 set <code class="font-sans">SURVEYJS_LICENSE_KEY</code> to remove it.
             </p>
-            <a class="{{ $whiteButton }}" href="{{ config('surveyjs.github') }}">Source on GitHub</a>
+            <a class="{{ $whiteButton }}" href="{{ config('surveyjs.github') }}" target="_blank">Source on GitHub</a>
         </div>
     </div>
 
@@ -89,8 +89,8 @@
                         </div>
                         <p class="m-0 flex flex-wrap items-center gap-x-5 gap-y-2">
                             <a class="rounded-lg bg-sjs-back-gray-2 px-6 py-3 text-base/6 font-semibold text-sjs-fg no-underline hover:bg-gray-200" href="{{ url($step['page']) }}">Run</a>
-                            <a class="{{ $siteLink }}" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source ↗&#xFE0E;</a>
-                            <a class="{{ $siteLink }}" href="{{ \App\Support\Demo::docsUrl($step) }}">On the page ↗&#xFE0E;</a>
+                            <a class="{{ $siteLink }}" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}" target="_blank">Source ↗&#xFE0E;</a>
+                            <a class="{{ $siteLink }}" href="{{ \App\Support\Demo::docsUrl($step) }}" target="_blank">On the page ↗&#xFE0E;</a>
                         </p>
                     </article>
                 @endforeach
@@ -102,12 +102,12 @@
         <div class="{{ $column }} py-12 md:py-16 xl:py-24">
             <div class="flex flex-col items-center gap-6 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center">
                 <p class="m-0 text-sjs-para-md">
-                    Also on <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nodejs">Node.js ↗&#xFE0E;</a>,
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-aspnet-mvc">ASP.NET Core ↗&#xFE0E;</a>,
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-python-flask">Python ↗&#xFE0E;</a> and
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nextjs">Next.js ↗&#xFE0E;</a>
+                    Also on <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nodejs" target="_blank">Node.js ↗&#xFE0E;</a>,
+                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-aspnet-mvc" target="_blank">ASP.NET Core ↗&#xFE0E;</a>,
+                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-python-flask" target="_blank">Python ↗&#xFE0E;</a> and
+                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nextjs" target="_blank">Next.js ↗&#xFE0E;</a>
                 </p>
-                <a class="{{ $whiteButton }}" href="https://app.demos.surveyjs.io">See SurveyJS Demos</a>
+                <a class="{{ $whiteButton }}" href="https://app.demos.surveyjs.io" target="_blank">See SurveyJS Demos</a>
             </div>
         </div>
     </div>

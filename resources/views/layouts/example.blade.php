@@ -92,7 +92,7 @@
                 <div class="space-y-2">
                     <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ $step['title'] }}</h2>
                     <p><strong class="text-gray-900">You need this:</strong> {{ $step['need'] }}</p>
-                    <p><a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl($step) }}">Read this step in the docs</a></p>
+                    <p><a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl($step) }}" target="_blank">Read this step in the docs</a></p>
                 </div>
 
                 <section class="space-y-3 rounded-lg border border-gray-200 bg-white p-5">
@@ -188,9 +188,9 @@
         {{-- CODE: the step's regions at the column's width; it scrolls with the page --}}
         <div id="panel-code" role="tabpanel" aria-labelledby="tab-code" hidden class="p-4 text-sm lg:p-6">
             <p class="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source on GitHub</a>
+                <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['server'] ?? $step['files']['client'] }}" target="_blank">Source on GitHub</a>
                 @isset($step['files']['definition'])
-                    <span>Definition: <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definition'] }}"><code>{{ $step['files']['definition'] }}</code></a>@isset($step['files']['definitionV2']), <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definitionV2'] }}"><code>{{ $step['files']['definitionV2'] }}</code></a>@endisset</span>
+                    <span>Definition: <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definition'] }}" target="_blank"><code>{{ $step['files']['definition'] }}</code></a>@isset($step['files']['definitionV2']), <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definitionV2'] }}" target="_blank"><code>{{ $step['files']['definitionV2'] }}</code></a>@endisset</span>
                 @endisset
                 @if ($commercial)
                     <span class="text-gray-500">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner</span>
@@ -206,7 +206,7 @@
                                     · run <code class="text-white">{{ $region['run']['command'] }}</code> (port {{ $region['run']['port'] }})
                                 @endif
                             </span>
-                            <a class="text-sjs underline" href="{{ $region['url'] }}">View on GitHub</a>
+                            <a class="text-sjs underline" href="{{ $region['url'] }}" target="_blank">View on GitHub</a>
                         </figcaption>
                         <pre class="m-0 overflow-x-auto p-0 text-[12.5px] leading-relaxed"><code class="language-{{ $region['language'] }} block !bg-transparent p-4">{{ $region['code'] }}</code></pre>
                     </figure>

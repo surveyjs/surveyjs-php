@@ -2,7 +2,7 @@
      (the bottom quarter of each image) hangs below the row, so the title and the divider centre on the logo's box. --}}
 <header class="border-b border-sjs-line bg-white">
     <div class="flex items-center gap-4 px-4 pt-4 pb-5 md:gap-5 md:px-6 md:pb-6 xl:px-8">
-        <a href="https://surveyjs.io" class="shrink-0">
+        <a href="https://surveyjs.io" class="shrink-0" target="_blank">
             <img src="{{ asset('images/site/logo-small.svg') }}" width="78.1377" height="32" alt="SurveyJS" class="-mb-2 block md:hidden">
             <img src="{{ asset('images/site/logo-medium.svg') }}" width="122.09" height="50" alt="SurveyJS" class="-mb-3 hidden md:block">
         </a>
