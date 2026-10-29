@@ -17,7 +17,7 @@
     $badgeText = ['MIT' => 'text-sjs-blue', 'Commercial' => 'text-sjs'];
     $badgeTint = ['MIT' => 'bg-sjs-blue-10', 'Commercial' => 'bg-sjs-10'];
     $siteLink = 'text-base/6 font-semibold text-sjs-blue underline decoration-dotted [text-underline-position:from-font] hover:decoration-solid';
-    $whiteButton = 'inline-block rounded-lg bg-white px-4 py-3 text-sm/4 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
+    $whiteButton = 'inline-block rounded-lg bg-white px-6 py-3 text-base/6 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
     $column = 'mx-auto max-w-sjs-content px-4 md:px-6';
     $number = 0;
 @endphp
