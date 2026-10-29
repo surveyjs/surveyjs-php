@@ -21,5 +21,5 @@
 @endsection
 
 @section('form')
-    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,6rem)_-_var(--demo-above,1rem)_-_0.875rem)] min-h-[640px]"></div>
+    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,3.5rem)_-_var(--tabs-h,3.5rem)_-_var(--demo-above,1rem)_-_1.5rem)] min-h-[640px]"></div>
 @endsection

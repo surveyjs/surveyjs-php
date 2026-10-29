@@ -6,7 +6,7 @@
 
 @section('try')
     <li>Fill in the claim and press <strong>Complete</strong>: <code>POST /api/responses</code> answers <code>201</code> after the service validated it. Press <strong>Start over</strong> to submit another claim.</li>
-    <li>Send tampered responses straight to the endpoint, bypassing the form, with <strong>An unknown choice</strong>, <strong>A wrong type</strong> or <strong>A missing required answer</strong>. Each answers <code>400</code> with the errors, shown at the top of <strong>Under the hood</strong>, and nothing is stored.</li>
+    <li>Send tampered responses straight to the endpoint, bypassing the form, with <strong>An unknown choice</strong>, <strong>A wrong type</strong> or <strong>A missing required answer</strong>. Each answers <code>400</code> with the errors, shown at the top of <strong>Requests</strong>, and nothing is stored.</li>
 @endsection
 
 @section('actions')

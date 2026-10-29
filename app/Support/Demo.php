@@ -78,23 +78,6 @@ final class Demo
     }
 
     /**
-     * The step page's live links (resources/js/page-tabs.js): one per endpoint that host.js logs (under
-     * /api/ or /ws/), then one per section of the Stored panel, by title.
-     *
-     * @return list<array{kind: 'endpoint'|'stored', label: string}>
-     */
-    public static function liveLinks(array $step, Request $request): array
-    {
-        $endpoints = array_filter($step['endpoints'], fn (string $endpoint) => preg_match('~^[A-Z]+ /(api|ws)/~', $endpoint) === 1);
-        $stored = array_keys(self::stored($step['slug'], $request) ?? []);
-
-        return [
-            ...array_map(fn (string $label) => ['kind' => 'endpoint', 'label' => $label], array_values($endpoints)),
-            ...array_map(fn (string $label) => ['kind' => 'stored', 'label' => $label], $stored),
-        ];
-    }
-
-    /**
      * Find every `#region sjs:<id>` in a file.
      *
      * @return array<string, array{start: int, end: int, code: string}> start/end are 1-based lines of the code inside the markers

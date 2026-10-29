@@ -4,7 +4,7 @@
 
 @section('try')
     <li>About 200 seeded feedback responses, spread over the last 90 days, render in the Dashboard.</li>
-    <li>Change <strong>From</strong>: a new <code>GET /api/responses?formId=feedback&amp;from=…</code> appears in <strong>Under the hood › Requests</strong>, and <strong>Under the hood › Stored</strong> shows, in <code>since from</code>, how many responses the server has since that date.</li>
+    <li>Change <strong>From</strong>: a new <code>GET /api/responses?formId=feedback&amp;from=…</code> appears in <strong>Requests</strong>, and <strong>Stored</strong> shows, in <code>since from</code>, how many responses the server has since that date.</li>
     <li>The definition comes from <code>GET /api/forms/feedback</code>.</li>
 @endsection
 

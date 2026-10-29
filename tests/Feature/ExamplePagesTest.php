@@ -88,42 +88,30 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_every_step_page_has_the_three_tabs_and_no_dock(string $id, string $slug): void
+    public function test_every_step_page_has_the_side_panel_and_the_main_tabs(string $id, string $slug): void
     {
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
 
-        $this->assertStringContainsString('role="tablist" aria-label="Step views"', $html);
-        foreach (['demo', 'description', 'hood'] as $tab) {
+        $this->assertMatchesRegularExpression('~<aside id="side-panel"~', $html);
+        $this->assertMatchesRegularExpression('~<button type="button" id="panel-toggle" aria-controls="side-panel" aria-expanded="true"~', $html);
+        $this->assertStringContainsString('id="panel-close"', $html);
+        $this->assertStringContainsString('id="panel-tabs" role="tablist" aria-label="Description, requests and stored data"', $html);
+        foreach (['description', 'requests', 'stored'] as $tab) {
+            $this->assertMatchesRegularExpression('~<button type="button" role="tab" id="panel-tab-'.$tab.'"[^>]*aria-controls="panel-'.$tab.'"~', $html);
+            $this->assertMatchesRegularExpression('~id="panel-'.$tab.'" role="tabpanel" aria-labelledby="panel-tab-'.$tab.'"~', $html);
+        }
+        $this->assertStringContainsString('id="page-tabs" role="tablist" aria-label="Step views"', $html);
+        foreach (['demo', 'code'] as $tab) {
             $this->assertMatchesRegularExpression('~<button type="button" role="tab" id="tab-'.$tab.'"[^>]*aria-controls="panel-'.$tab.'"~', $html);
             $this->assertMatchesRegularExpression('~<div id="panel-'.$tab.'" role="tabpanel" aria-labelledby="tab-'.$tab.'"~', $html);
         }
-        foreach (['code', 'requests', 'stored'] as $section) {
-            $this->assertMatchesRegularExpression('~role="tab" id="hood-tab-'.$section.'"[^>]*aria-controls="hood-'.$section.'"~', $html);
-            $this->assertStringContainsString('<section id="hood-'.$section.'" role="tabpanel"', $html);
+        foreach (['id="requests"', 'id="stored"', 'id="notes"', 'id="hood"', '<template id="request-row">', '<template id="stored-section">', '<template id="note">'] as $kept) {
+            $this->assertStringContainsString($kept, $html, "{$slug} has no {$kept}");
         }
-        foreach (['data-request', 'data-stored', 'data-dock-open', 'id="dock"', 'dock.js'] as $gone) {
+        $this->assertStringContainsString('id="hood"', $this->between($html, '<aside id="side-panel"', '</aside>'));
+        foreach (['id="live-links"', 'id="live-more"', 'data-live=', 'id="panel-hood"', 'id="hood-badge"', '>Endpoint<', '>Endpoints<', '>Files<', 'Under the hood',
+            'data-request', 'data-stored', 'data-dock-open', 'id="dock"', 'dock.js'] as $gone) {
             $this->assertStringNotContainsString($gone, $html, "{$slug} still has {$gone}");
-        }
-    }
-
-    #[DataProvider('steps')]
-    public function test_the_header_links_each_logged_endpoint_and_stored_section(string $id, string $slug): void
-    {
-        $step = Demo::manifest()['steps'][$id];
-        $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
-        $nav = $this->between($html, 'id="live-links"', '</nav>');
-
-        $endpoints = array_values(array_filter($step['endpoints'], fn ($e) => preg_match('~^[A-Z]+ /(api|ws)/~', $e)));
-        $stored = array_keys($this->getJson("/demo/stored/{$slug}")->json());
-        preg_match_all('~data-live="(endpoint|stored)" data-label="([^"]*)"~', $nav, $links, PREG_SET_ORDER);
-
-        $this->assertSame(
-            [...array_map(fn ($e) => ['endpoint', $e], $endpoints), ...array_map(fn ($s) => ['stored', $s], $stored)],
-            array_map(fn ($m) => [$m[1], html_entity_decode($m[2])], $links),
-        );
-        $this->assertNotEmpty($links, "{$slug} has no live links");
-        if ($slug === 'load-definition-variables-data') {
-            $this->assertStringNotContainsString('GET /claim', $nav);   // not under /api/: host.js never logs it
         }
     }
 
@@ -131,16 +119,19 @@ class ExamplePagesTest extends TestCase
     public function test_description_holds_try_this_and_demo_holds_the_component(string $id, string $slug): void
     {
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
-        $demo = $this->between($html, 'id="panel-demo"', 'id="panel-description"');
-        $description = $this->between($html, 'id="panel-description"', 'id="panel-hood"');
-        $hood = $this->between($html, 'id="panel-hood"', '<template id="request-row">');
+        $panel = $this->between($html, '<aside id="side-panel"', '</aside>');
+        $description = $this->between($panel, 'id="panel-description"', 'id="panel-requests"');
+        $requests = $this->between($panel, 'id="panel-requests"', 'id="panel-stored"');
+        $demo = $this->between($html, 'id="panel-demo"', 'id="panel-code"');
 
         $this->assertStringContainsString('id="component"', $demo);
         $this->assertStringNotContainsString('id="try"', $demo);
         $this->assertStringNotContainsString('id="notes"', $demo);
         $this->assertStringContainsString('id="try"', $description);
         $this->assertStringContainsString('<li', $this->between($description, 'id="try"', '</ol>'));
-        $this->assertStringContainsString('id="notes"', $hood);
+        $this->assertStringNotContainsString('data-open-tab="demo"', $description);   // the demo is beside the panel
+        $this->assertStringContainsString('id="notes"', $requests);
+        $this->assertStringContainsString('id="readouts"', $requests);
 
         // "Try this" names controls; it holds none
         $try = $this->between($description, 'id="try"', '</ol>');

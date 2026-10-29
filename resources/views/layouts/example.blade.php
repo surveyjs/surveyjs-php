@@ -1,7 +1,8 @@
-{{-- Demo only: the frame around every step page. A sticky header with three tabs (resources/js/page-tabs.js):
-     Demo (the action row and the component), Description (what to try, the endpoints and the files) and
-     Under the hood (the code that ran, the requests and what the server stored). The explanation is in the
-     docs; the integration code is in the step's files. --}}
+{{-- Demo only: the frame around every step page (resources/js/page-tabs.js). A sticky header, then two columns:
+     a side panel with Description (what to try), Requests and Stored (what the server got and kept), and the main
+     column with Demo (the action row and the component) and Code (the code that ran). From 768px the panel is docked
+     on the left; narrower, it opens as a full-screen sheet. The explanation is in the docs; the integration code is
+     in the step's files. --}}
 @php
     $manifest = \App\Support\Demo::manifest();
     $config = \App\Support\Demo::pageConfig($stepId, $step);
@@ -9,14 +10,18 @@
     $commercial = str_starts_with($step['licence'], 'Commercial');
     $theme = trim($__env->yieldContent('theme', 'survey'));
     $blob = config('surveyjs.github').'/blob/'.$manifest['branch'];
-    $links = \App\Support\Demo::liveLinks($step, request());
     $hasActions = count($users) > 1 || trim($__env->yieldContent('actions')) !== '';
     $hasReadouts = trim($__env->yieldContent('readouts')) !== '';
-    $licence = Str::contains($step['licence'], ',') ? Str::before($step['licence'], ',').' licence,'.Str::after($step['licence'], ',') : $step['licence'].' licence';
-    $tabs = [
-        'demo' => ['Demo', '<polygon points="6 4 20 12 6 20 6 4"/>'],
+    // The tab buttons of both columns (design 02's header tabs)
+    $tabClass = 'flex h-11 shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap border-0 bg-transparent px-3.5 text-[15px] font-semibold text-gray-600 shadow-[inset_0_-3px_0_transparent] [font-family:inherit] hover:text-gray-900 aria-selected:text-gray-900 aria-selected:shadow-[inset_0_-3px_0_var(--color-sjs)]';
+    $panelTabs = [
         'description' => ['Description', '<path d="M4 5h16M4 10h16M4 15h10M4 20h7"/>'],
-        'hood' => ['Under the hood', '<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>'],
+        'requests' => ['Requests', '<path d="M7 7h13l-3-3M17 17H4l3 3"/>'],
+        'stored' => ['Stored', '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>'],
+    ];
+    $mainTabs = [
+        'demo' => ['Demo', '<polygon points="6 4 20 12 6 20 6 4"/>'],
+        'code' => ['Code', '<polyline points="8 7 3 12 8 17"/><polyline points="16 7 21 12 16 17"/>'],
     ];
 @endphp
 <!DOCTYPE html>
@@ -32,48 +37,13 @@
 </head>
 <body class="min-h-screen bg-gray-50 font-sans text-gray-800 antialiased">
 <header id="page-header" class="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
-    <div class="mx-auto flex min-w-0 max-w-screen-2xl items-center gap-3 px-3 pb-0.5 pt-2.5 sm:px-6">
+    <div class="mx-auto flex min-w-0 max-w-screen-2xl items-center gap-3 px-3 py-2.5 sm:px-6">
         <a href="{{ route('catalog') }}" class="flex shrink-0 items-center gap-2 font-semibold text-gray-900 no-underline">
             <span class="rounded bg-sjs px-1.5 py-0.5 text-sm font-bold text-white">SurveyJS</span>
             <span class="max-sm:hidden">Server Integration · PHP / Laravel</span>
         </a>
         <span aria-hidden="true" class="text-gray-300 max-sm:hidden">/</span>
         <h1 class="min-w-0 truncate text-base font-semibold text-gray-900"><span class="font-bold text-sjs-dark">{{ $stepId }}</span> {{ $step['title'] }}</h1>
-    </div>
-
-    {{-- Row 2 never wraps: page-tabs.js moves the live links that don't fit into "More (n)" --}}
-    <div class="mx-auto flex max-w-screen-2xl items-stretch gap-3 px-3 sm:px-6">
-        <div id="page-tabs" role="tablist" aria-label="Step views" class="flex shrink-0 items-stretch gap-1 max-sm:flex-1">
-            @foreach ($tabs as $key => [$label, $icon])
-                <button type="button" role="tab" id="tab-{{ $key }}" data-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}"
-                        class="flex h-11 cursor-pointer items-center gap-2 whitespace-nowrap border-0 bg-transparent px-3.5 text-[15px] font-semibold text-gray-600 shadow-[inset_0_-3px_0_transparent] [font-family:inherit] hover:text-gray-900 aria-selected:text-gray-900 aria-selected:shadow-[inset_0_-3px_0_var(--color-sjs)] max-sm:flex-1 max-sm:justify-center max-sm:gap-1.5 max-sm:px-1 max-sm:text-[13px]">
-                    <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
-                    {{ $label }}
-                    @if ($key === 'hood')
-                        <span id="hood-badge" hidden data-kind="ok" class="min-w-5 rounded-full bg-sjs-dark px-1.5 text-center text-xs leading-5 text-white data-[kind=error]:bg-red-600"></span>
-                    @endif
-                </button>
-            @endforeach
-        </div>
-
-        {{-- One link per logged endpoint and per stored section; page-tabs.js keeps their status pills current --}}
-        <nav id="live-links" aria-label="Requests and stored data" class="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto max-md:hidden data-[fit]:overflow-hidden [&>:first-child]:ml-auto">
-            @foreach ($links as $link)
-                @include('examples.partials.live-link', ['link' => $link])
-            @endforeach
-        </nav>
-        <div id="live-more" hidden class="relative flex shrink-0 items-center max-md:hidden">
-            <button type="button" id="live-more-button" aria-expanded="false" aria-controls="live-more-list"
-                    class="flex h-8 cursor-pointer items-center gap-1 rounded-md border-0 bg-transparent px-2 text-sm font-semibold text-gray-600 [font-family:inherit] hover:bg-gray-100 hover:text-gray-900 aria-expanded:bg-gray-100">
-                <span>More (<span data-more-count>0</span>)</span>
-                <svg aria-hidden="true" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
-            <ul id="live-more-list" hidden class="absolute right-0 top-full z-50 m-0 mt-1 flex min-w-max list-none flex-col gap-0.5 rounded-lg border border-gray-200 bg-white p-1.5 shadow-lg">
-                @foreach ($links as $link)
-                    <li hidden data-more-item>@include('examples.partials.live-link', ['link' => $link])</li>
-                @endforeach
-            </ul>
-        </div>
     </div>
 
     @if (config('surveyjs.demo_mode'))
@@ -86,139 +56,70 @@
     @endif
 </header>
 
-<main>
-    {{-- DEMO: setup warnings, the action row and the component, full width minus the gutter --}}
-    <div id="panel-demo" role="tabpanel" aria-labelledby="tab-demo" class="space-y-3 px-4 py-3 sm:px-6">
-        @yield('banner')
+<div class="flex">
+    {{-- THE SIDE PANEL: docked from 768px (open by default), a full-screen sheet below (closed by default).
+         Its three tab panels scroll inside it. --}}
+    <aside id="side-panel" aria-label="Description, requests and stored data"
+           class="box-border flex flex-col bg-white max-md:fixed max-md:inset-0 max-md:z-50 max-md:hidden max-md:data-[sheet]:flex md:sticky md:top-[var(--header-h)] md:h-[calc(100dvh-var(--header-h))] md:w-[300px] md:shrink-0 md:self-start md:border-r md:border-gray-200 lg:w-[350px]">
+        <div class="flex h-10 shrink-0 items-center justify-end px-2 md:hidden">
+            <button type="button" id="panel-close" aria-label="Close the panel"
+                    class="flex h-8 cursor-pointer items-center gap-1 rounded-md border-0 bg-transparent px-2 text-sm font-semibold text-gray-600 [font-family:inherit] hover:bg-gray-100 hover:text-gray-900 aria-expanded:bg-gray-100">
+                <svg aria-hidden="true" class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+        </div>
 
-        @if ($hasActions)
-            <div id="actions" class="flex flex-wrap items-center gap-2 text-sm">
-                @if (count($users) > 1)
-                    <label class="flex items-center gap-2">
-                        <span class="text-gray-600">Demo user</span>
-                        <select id="demo-user" class="box-border h-9 rounded-md border border-gray-300 bg-white px-2 text-sm">
-                            @foreach ($users as $key)
-                                <option value="{{ $key }}" @selected($key === $config['demoUser'])>{{ \App\Http\Middleware\DemoUser::LABELS[$key] }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+        {{-- The tabs never wrap: the row scrolls, and page-tabs.js sets data-fade-start / data-fade-end where tabs are cut --}}
+        <div class="shrink-0 border-b border-gray-200">
+            <div id="panel-tabs" role="tablist" aria-label="Description, requests and stored data"
+                 class="flex scroll-px-4 items-stretch gap-3 overflow-x-auto px-4 py-2 [scrollbar-width:none] md:px-5 lg:px-6 data-[fade-start]:[mask-image:linear-gradient(to_right,transparent,#000_16px)] data-[fade-end]:[mask-image:linear-gradient(to_left,transparent,#000_16px)] data-[fade-start]:data-[fade-end]:[mask-image:linear-gradient(to_right,transparent,#000_16px,#000_calc(100%-16px),transparent)]">
+                @foreach ($panelTabs as $key => [$label, $icon])
+                    <button type="button" role="tab" id="panel-tab-{{ $key }}" data-panel-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
+                        <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
+                        {{ $label }}
+                        @if ($key === 'requests')
+                            {{-- Figma .counter, style=positive / style=negative --}}
+                            <span id="requests-count" hidden data-kind="ok" class="box-border inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-sjs-15 px-[5px] py-px text-sm/4 font-semibold whitespace-nowrap text-sjs tabular-nums data-[kind=error]:bg-sjs-red-15 data-[kind=error]:text-sjs-red"></span>
+                        @elseif ($key === 'stored')
+                            {{-- Figma .counter, size=xsmall --}}
+                            <span id="stored-dot" hidden class="size-1.5 rounded-full bg-sjs"></span>
+                        @endif
+                    </button>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- shared/client/host.js fills #notes, #requests and #stored by id and by the templates below, also while hidden --}}
+        <div id="hood" class="flex min-h-0 flex-1 flex-col">
+            {{-- DESCRIPTION: the reading matter --}}
+            <div id="panel-description" role="tabpanel" aria-labelledby="panel-tab-description" class="min-h-0 flex-1 space-y-6 overflow-y-auto px-4 pb-12 pt-8 md:px-5 lg:px-6">
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ $step['title'] }}</h2>
+                    <p><strong class="text-gray-900">You need this:</strong> {{ $step['need'] }}</p>
+                    <p><a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl($step) }}">Read this step in the docs</a></p>
+                </div>
+
+                <section class="space-y-3 rounded-lg border border-gray-200 bg-white p-5">
+                    <h3 class="text-sm font-bold uppercase tracking-wide text-gray-600">Try this</h3>
+                    <ol id="try" class="m-0 list-decimal space-y-2 pl-5 text-[15px] [&_a]:text-sjs-dark [&_a]:underline [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:text-[13px]">
+                        @yield('try')
+                    </ol>
+                </section>
+
+                @hasSection('about')
+                    <div class="space-y-2 text-sm text-gray-600">@yield('about')</div>
                 @endif
-                @yield('actions')
-            </div>
-        @endif
 
-        <div id="component" class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-            {{-- The form's padding is the card's: the app layer in survey.css zeroes SurveyJS's own side padding.
-                 Creator, the Dashboard and IV.3's list replace this section and fill the card. --}}
-            @section('form')
-                <div id="form" class="p-4 sm:p-6"></div>
-            @show
-        </div>
-    </div>
-
-    {{-- DESCRIPTION: the reading matter --}}
-    <div id="panel-description" role="tabpanel" aria-labelledby="tab-description" hidden class="mx-auto max-w-[880px] space-y-6 px-4 pb-12 pt-8 sm:px-6">
-        <div class="space-y-2">
-            <p class="text-sm font-bold uppercase tracking-wide text-sjs-dark">{{ $stepId }} · {{ $licence }}</p>
-            <h2 class="text-2xl font-bold text-gray-900 sm:text-3xl">{{ $step['title'] }}</h2>
-            <p><strong class="text-gray-900">You need this:</strong> {{ $step['need'] }}</p>
-            <p><a class="text-sjs-dark underline" href="{{ \App\Support\Demo::docsUrl($step) }}">Read this step in the docs</a></p>
-        </div>
-
-        @if ($commercial)
-            <p class="text-sm text-gray-600">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner.</p>
-        @endif
-
-        <section class="space-y-3 rounded-lg border border-gray-200 bg-white p-5">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-                <h3 class="text-sm font-bold uppercase tracking-wide text-gray-600">Try this</h3>
-                <button type="button" data-open-tab="demo" class="flex h-9 cursor-pointer items-center gap-1.5 rounded-md border-0 bg-sjs-dark px-3.5 text-sm font-semibold text-white [font-family:inherit] hover:bg-sjs-dark/90">
-                    Open the demo
-                    <svg aria-hidden="true" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-                </button>
-            </div>
-            <ol id="try" class="m-0 list-decimal space-y-2 pl-5 text-[15px] [&_a]:text-sjs-dark [&_a]:underline [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_code]:text-[13px]">
-                @yield('try')
-            </ol>
-        </section>
-
-        <div class="grid gap-3 sm:grid-cols-2">
-            <section class="space-y-1.5 rounded-lg border border-gray-200 bg-white p-4">
-                <h3 class="text-sm font-bold uppercase tracking-wide text-gray-600">{{ Str::plural('Endpoint', count($step['endpoints'])) }}</h3>
-                <ul class="m-0 list-none space-y-1 p-0">
-                    @foreach ($step['endpoints'] as $endpoint)
-                        <li><code class="font-mono text-[13px]">{{ $endpoint }}</code></li>
-                    @endforeach
-                </ul>
-            </section>
-            <section class="space-y-1.5 rounded-lg border border-gray-200 bg-white p-4">
-                <h3 class="text-sm font-bold uppercase tracking-wide text-gray-600">Files</h3>
-                <ul class="m-0 list-none space-y-1 p-0">
-                    @foreach (array_unique($step['files']) as $path)
-                        <li class="min-w-0 break-all"><a class="font-mono text-[13px] text-sjs-dark underline" href="{{ $blob }}/{{ $path }}">{{ $path }}</a></li>
-                    @endforeach
-                </ul>
-            </section>
-        </div>
-
-        @hasSection('about')
-            <div class="space-y-2 text-sm text-gray-600">@yield('about')</div>
-        @endif
-    </div>
-
-    {{-- UNDER THE HOOD: fills the viewport below the header; the sections scroll inside it.
-         shared/client/host.js fills #notes, #requests and #stored by id and by the templates below, also while hidden. --}}
-    <div id="panel-hood" role="tabpanel" aria-labelledby="tab-hood" hidden class="mx-auto box-border flex h-[calc(100dvh-var(--header-h,6rem))] max-w-screen-2xl flex-col px-4 py-3 text-sm sm:px-6">
-        <div id="hood" class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-            {{-- Read-outs and notes: bounded, the newest note on top, so the switcher below always stays on screen --}}
-            <div id="readouts" @unless ($hasReadouts) hidden @endunless class="max-h-[10rem] shrink-0 space-y-1.5 overflow-y-auto border-b border-gray-200 p-3 max-sm:max-h-[8rem]">
-                @yield('readouts')
-                <ul id="notes" hidden class="m-0 list-none space-y-1 p-0 text-sm"></ul>
+                @if ($commercial)
+                    <p class="text-sm text-gray-600">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner.</p>
+                @endif
             </div>
 
-            <div class="flex shrink-0 items-center gap-3 border-b border-gray-200 px-3 py-2">
-                <div id="hood-sections" role="tablist" aria-label="Code, requests and stored data" class="flex gap-0.5 rounded-lg bg-gray-100 p-[3px]">
-                    @foreach (['code' => 'Code', 'requests' => 'Requests', 'stored' => 'Stored'] as $key => $label)
-                        <button type="button" role="tab" id="hood-tab-{{ $key }}" data-section="{{ $key }}" aria-controls="hood-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}"
-                                class="flex h-8 cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-3 text-sm font-semibold text-gray-600 [font-family:inherit] hover:text-gray-900 aria-selected:bg-white aria-selected:text-gray-900 aria-selected:shadow-sm">
-                            {{ $label }}
-                            @if ($key === 'requests')
-                                <span id="requests-count" class="font-medium text-gray-500"></span>
-                            @endif
-                        </button>
-                    @endforeach
+            {{-- REQUESTS: read-outs and notes (bounded, the newest note on top), then the log, which scrolls --}}
+            <section id="panel-requests" role="tabpanel" aria-labelledby="panel-tab-requests" hidden class="flex min-h-0 flex-1 flex-col text-sm">
+                <div id="readouts" @unless ($hasReadouts) hidden @endunless class="max-h-[10rem] shrink-0 space-y-1.5 overflow-y-auto border-b border-gray-200 p-3 max-sm:max-h-[8rem]">
+                    @yield('readouts')
+                    <ul id="notes" hidden class="m-0 list-none space-y-1 p-0 text-sm"></ul>
                 </div>
-            </div>
-
-            <section id="hood-code" role="tabpanel" aria-labelledby="hood-tab-code" tabindex="0" class="min-h-0 flex-1 overflow-y-auto p-4">
-                <p class="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
-                    <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source on GitHub</a>
-                    @isset($step['files']['definition'])
-                        <span>Definition: <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definition'] }}"><code>{{ $step['files']['definition'] }}</code></a>@isset($step['files']['definitionV2']), <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definitionV2'] }}"><code>{{ $step['files']['definitionV2'] }}</code></a>@endisset</span>
-                    @endisset
-                    @if ($commercial)
-                        <span class="text-gray-500">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner</span>
-                    @endif
-                </p>
-                <div class="grid gap-4">
-                    @foreach (\App\Support\Demo::codePanel($step) as $region)
-                        <figure class="min-w-0 overflow-hidden rounded-lg border border-gray-800 bg-[#0d1117]">
-                            <figcaption class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-800 px-4 py-2 text-xs text-gray-300">
-                                <span>
-                                    <span class="font-semibold text-white">{{ ucfirst($region['role']) }}</span> · <code>{{ $region['path'] }}</code> · <code>sjs:{{ $region['id'] }}</code>
-                                    @if ($region['run'])
-                                        · run <code class="text-white">{{ $region['run']['command'] }}</code> (port {{ $region['run']['port'] }})
-                                    @endif
-                                </span>
-                                <a class="text-sjs underline" href="{{ $region['url'] }}">View on GitHub</a>
-                            </figcaption>
-                            <pre class="m-0 overflow-x-auto p-0 text-[12.5px] leading-relaxed"><code class="language-{{ $region['language'] }} block !bg-transparent p-4">{{ $region['code'] }}</code></pre>
-                        </figure>
-                    @endforeach
-                </div>
-            </section>
-
-            <section id="hood-requests" role="tabpanel" aria-labelledby="hood-tab-requests" hidden class="flex min-h-0 flex-1 flex-col">
                 <div class="flex shrink-0 items-center justify-end gap-3 border-b border-gray-100 px-4 py-1.5 text-xs text-gray-500">
                     <label class="flex items-center gap-1"><input id="show-demo-requests" type="checkbox"> show demo requests</label>
                     <button id="clear-requests" type="button" class="cursor-pointer border-0 bg-transparent p-0 text-xs text-gray-500 underline [font-family:inherit]">clear</button>
@@ -227,7 +128,8 @@
                 <ol id="requests" class="m-0 min-h-0 flex-1 list-none divide-y divide-gray-100 overflow-y-auto p-0 font-mono text-xs"></ol>
             </section>
 
-            <section id="hood-stored" role="tabpanel" aria-labelledby="hood-tab-stored" hidden class="flex min-h-0 flex-1 flex-col">
+            {{-- STORED: what the server stored, which scrolls --}}
+            <section id="panel-stored" role="tabpanel" aria-labelledby="panel-tab-stored" hidden class="flex min-h-0 flex-1 flex-col text-sm">
                 <div class="flex shrink-0 items-center justify-between gap-2 border-b border-gray-100 px-4 py-1.5 text-xs text-gray-500">
                     <span>What the server stored</span>
                     <span id="stored-updated" class="text-gray-400"></span>
@@ -235,8 +137,87 @@
                 <div id="stored" class="min-h-0 flex-1 space-y-3 overflow-y-auto p-4"></div>
             </section>
         </div>
-    </div>
-</main>
+    </aside>
+
+    <main class="min-w-0 flex-1">
+        {{-- The panel's toggle, then Demo and Code. Sticky under the header; the page scrolls under it. --}}
+        <div id="main-tabs" class="sticky top-[var(--header-h)] z-30 flex items-center gap-6 border-b border-gray-200 bg-white/95 px-4 py-2 backdrop-blur lg:px-6">
+            {{-- Figma "sidebar button", state=default / state=hovered, with its badge --}}
+            <button type="button" id="panel-toggle" aria-controls="side-panel" aria-expanded="true" aria-label="Hide the panel"
+                    class="relative box-border inline-flex size-[42px] shrink-0 cursor-pointer items-center justify-center rounded-lg border border-solid border-gray-200 bg-white p-2 hover:bg-gray-50 focus-visible:bg-gray-50 focus-visible:outline-2 focus-visible:outline-sjs">
+                <svg aria-hidden="true" class="size-6" width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" fill="#505050" d="M19 2.25C20.5188 2.25 21.75 3.48122 21.75 5V19C21.75 20.5188 20.5188 21.75 19 21.75H5C3.48122 21.75 2.25 20.5188 2.25 19V5C2.25 3.48122 3.48122 2.25 5 2.25H19ZM9.75 20.25H19C19.6904 20.25 20.25 19.6904 20.25 19V5C20.25 4.30964 19.6904 3.75 19 3.75H9.75V20.25ZM5 3.75C4.30964 3.75 3.75 4.30964 3.75 5V19C3.75 19.6904 4.30964 20.25 5 20.25H8.25V3.75H5Z"/></svg>
+                {{-- At 36,0 of the button's outer box: the offsets are from inside its 1px border --}}
+                <span id="panel-dot" hidden class="absolute -top-px left-[35px] size-1.5 rounded-full bg-sjs ring-2 ring-white"></span>
+            </button>
+            <div id="page-tabs" role="tablist" aria-label="Step views" class="flex min-w-0 items-stretch gap-3">
+                @foreach ($mainTabs as $key => [$label, $icon])
+                    <button type="button" role="tab" id="tab-{{ $key }}" data-tab="{{ $key }}" aria-controls="panel-{{ $key }}" aria-selected="{{ $loop->first ? 'true' : 'false' }}" tabindex="{{ $loop->first ? 0 : -1 }}" class="{{ $tabClass }}">
+                        <svg aria-hidden="true" class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{!! $icon !!}</svg>
+                        {{ $label }}
+                    </button>
+                @endforeach
+            </div>
+        </div>
+
+        {{-- DEMO: setup warnings, the action row and the component, the column's width minus the gutter --}}
+        <div id="panel-demo" role="tabpanel" aria-labelledby="tab-demo" class="space-y-3 p-4 lg:p-6">
+            @yield('banner')
+
+            @if ($hasActions)
+                <div id="actions" class="flex flex-wrap items-center gap-2 text-sm">
+                    @if (count($users) > 1)
+                        <label class="flex items-center gap-2">
+                            <span class="text-gray-600">Demo user</span>
+                            <select id="demo-user" class="box-border h-9 rounded-md border border-gray-300 bg-white px-2 text-sm">
+                                @foreach ($users as $key)
+                                    <option value="{{ $key }}" @selected($key === $config['demoUser'])>{{ \App\Http\Middleware\DemoUser::LABELS[$key] }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    @endif
+                    @yield('actions')
+                </div>
+            @endif
+
+            <div id="component" class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+                {{-- The form's padding is the card's: the app layer in survey.css zeroes SurveyJS's own side padding.
+                     Creator, the Dashboard and IV.3's list replace this section and fill the card. --}}
+                @section('form')
+                    <div id="form" class="p-4 sm:p-6"></div>
+                @show
+            </div>
+        </div>
+
+        {{-- CODE: the step's regions at the column's width; it scrolls with the page --}}
+        <div id="panel-code" role="tabpanel" aria-labelledby="tab-code" hidden class="p-4 text-sm lg:p-6">
+            <p class="mb-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600">
+                <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['server'] ?? $step['files']['client'] }}">Source on GitHub</a>
+                @isset($step['files']['definition'])
+                    <span>Definition: <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definition'] }}"><code>{{ $step['files']['definition'] }}</code></a>@isset($step['files']['definitionV2']), <a class="text-sjs-dark underline" href="{{ $blob }}/{{ $step['files']['definitionV2'] }}"><code>{{ $step['files']['definitionV2'] }}</code></a>@endisset</span>
+                @endisset
+                @if ($commercial)
+                    <span class="text-gray-500">{{ Str::before($step['licence'], ',') }} licence: without <code class="rounded bg-gray-100 px-1">SURVEYJS_LICENSE_KEY</code> the component shows a licence banner</span>
+                @endif
+            </p>
+            <div class="grid gap-4">
+                @foreach (\App\Support\Demo::codePanel($step) as $region)
+                    <figure class="min-w-0 overflow-hidden rounded-lg border border-gray-800 bg-[#0d1117]">
+                        <figcaption class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-800 px-4 py-2 text-xs text-gray-300">
+                            <span>
+                                <span class="font-semibold text-white">{{ ucfirst($region['role']) }}</span> · <code>{{ $region['path'] }}</code> · <code>sjs:{{ $region['id'] }}</code>
+                                @if ($region['run'])
+                                    · run <code class="text-white">{{ $region['run']['command'] }}</code> (port {{ $region['run']['port'] }})
+                                @endif
+                            </span>
+                            <a class="text-sjs underline" href="{{ $region['url'] }}">View on GitHub</a>
+                        </figcaption>
+                        <pre class="m-0 overflow-x-auto p-0 text-[12.5px] leading-relaxed"><code class="language-{{ $region['language'] }} block !bg-transparent p-4">{{ $region['code'] }}</code></pre>
+                    </figure>
+                @endforeach
+            </div>
+        </div>
+    </main>
+</div>
 
 {{-- Rows that shared/client/host.js clones and fills by data-field. The two body slots switch on its body capture. --}}
 <template id="request-row">
@@ -249,7 +230,8 @@
             <span class="text-right"><span data-field="status" class="font-semibold"></span> <span data-field="time" class="text-gray-400"></span></span>
             <span data-field="headers" class="col-span-3 col-start-2 truncate text-[11px] text-sjs-dark empty:hidden"></span>
         </button>
-        <div data-row-bodies hidden class="grid gap-3 pb-3 pl-10 pr-4 md:grid-cols-2">
+        {{-- One column: the panel is 300–350px wide, or a phone --}}
+        <div data-row-bodies hidden class="grid gap-3 pb-3 pl-10 pr-4">
             <div class="min-w-0">
                 <p class="mb-1 font-sans text-[11px] font-bold uppercase tracking-wide text-gray-500">Request body</p>
                 <pre data-field="request-body" class="m-0 max-h-80 overflow-auto rounded border border-gray-200 bg-white p-2 font-mono text-xs leading-snug text-gray-800 empty:before:text-gray-400 empty:before:content-['(none)']"></pre>

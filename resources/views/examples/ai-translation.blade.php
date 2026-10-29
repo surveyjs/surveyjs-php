@@ -12,10 +12,10 @@
 
 @section('try')
     <li>The <strong>Translations</strong> tab opens with Deutsch, Français and Español added, and Español selected. Press <strong>Auto-translate All</strong> (the language list is in the side panel, <strong>Languages</strong>), or tick another language to translate into it too.</li>
-    <li>Open <strong>Under the hood › Requests</strong> and expand <code>POST /api/translate</code>: it carries the strings and the locales, and it is the only outbound request.</li>
-    <li>Without <code>AI_API_KEY</code>, the endpoint answers <code>501</code>, and <strong>Under the hood</strong> shows its message.</li>
+    <li>Open <strong>Requests</strong> and expand <code>POST /api/translate</code>: it carries the strings and the locales, and it is the only outbound request.</li>
+    <li>Without <code>AI_API_KEY</code>, the endpoint answers <code>501</code>, and <strong>Requests</strong> shows its message.</li>
 @endsection
 
 @section('form')
-    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,6rem)_-_var(--demo-above,1rem)_-_0.875rem)] min-h-[640px]"></div>
+    <div id="creator" class="h-[calc(100dvh_-_var(--header-h,3.5rem)_-_var(--tabs-h,3.5rem)_-_var(--demo-above,1rem)_-_1.5rem)] min-h-[640px]"></div>
 @endsection

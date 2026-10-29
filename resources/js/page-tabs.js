@@ -1,123 +1,196 @@
-// Demo only: the three tabs of a step page (layouts/example.blade.php): Demo, Description and Under
-// the hood, with its Code, Requests and Stored sections, the live links in the header, the badge
-// and the highlights. It works from the DOM alone: shared/client/host.js fills #requests, #stored
-// and #notes, and MutationObservers here watch them, so host.js doesn't know the tabs exist.
+// Demo only: the two tab sets of a step page (layouts/example.blade.php): the side panel with
+// Description, Requests and Stored, and the main column with Demo and Code, plus the panel's toggle,
+// its badge and the highlights. It works from the DOM alone: shared/client/host.js fills #requests,
+// #stored and #notes, and MutationObservers here watch them, so host.js doesn't know the tabs exist.
 //
-// - The URL hash holds the tab: none or #demo opens Demo, #description Description, and #code,
-//   #requests or #stored Under the hood on that section. Choosing a tab replaces the hash (no new
-//   history entry). Nothing else picks the tab: a page without a hash always opens on Demo.
-// - The last section chosen is remembered in localStorage; the hash overrides it.
-// - The badge on "Under the hood" counts what the reader hasn't seen: each non-demo request that
-//   finishes, each Stored section whose text changes after its first render and each new note.
-//   Showing the panel clears it. An unseen error (row or note) turns it red.
-// - The live links show the latest matching non-demo request's status, or whether a Stored section
-//   changed, and open their place in Under the hood. Row 2 never wraps: the links that don't fit
-//   move, from the end, into "More (n)".
+// - The two sets are independent: choosing a tab in one never changes the other.
+// - The URL hash holds the last choice: none or #demo shows Demo, #code Code, and #description,
+//   #requests or #stored open the panel on that tab (the sheet on a phone). Choosing a tab replaces
+//   the hash (no new history entry); closing the panel drops a panel tab's hash.
+// - From 768px the panel is docked: open unless the reader closed it, remembered in localStorage.
+//   Narrower, it is a full-screen sheet that starts closed; Escape and × close it. Crossing 768px
+//   doesn't change the remembered choice. The panel's last tab is remembered too; the hash overrides it.
+// - What is unseen: a non-demo request that finished or a note that arrived while Requests wasn't
+//   showing, and a Stored section whose text changed after its first render while Stored wasn't
+//   showing. A tab shows when the panel is open on it, and showing it clears its flag. The badge on
+//   the toggle shows while the panel is closed and a flag is set; the Stored dot while Stored's is.
+//   The Requests counter counts the shown rows and turns red once a shown non-demo request failed.
 
-const tablist = document.getElementById("page-tabs");
-if (tablist) setUpPageTabs();
+const panel = document.getElementById("side-panel");
+if (panel) setUpPageTabs();
 
 function setUpPageTabs() {
-  const TABS = ["demo", "description", "hood"];
-  const SECTIONS = ["code", "requests", "stored"];
-  const STORAGE_KEY = "surveyjs-hood-section";
+  const MAIN = ["demo", "code"];
+  const PANEL = ["description", "requests", "stored"];
+  const TAB_KEY = "surveyjs-panel-tab";
+  const OPEN_KEY = "surveyjs-panel-open";
 
   const header = document.getElementById("page-header");
+  const main = document.querySelector("main");
+  const mainRow = document.getElementById("main-tabs");
   const demoPanel = document.getElementById("panel-demo");
   const component = document.getElementById("component");
   const requests = document.getElementById("requests");
   const stored = document.getElementById("stored");
   const notes = document.getElementById("notes");
   const readouts = document.getElementById("readouts");
-  const badge = document.getElementById("hood-badge");
+  const toggle = document.getElementById("panel-toggle");
+  const badge = document.getElementById("panel-dot");
   const requestsCount = document.getElementById("requests-count");
-  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
-  const sectionTabs = [...document.querySelectorAll('#hood-sections [role="tab"]')];
-  const tabOf = (name) => tabs.find((tab) => tab.dataset.tab === name);
-  const sectionTabOf = (name) => sectionTabs.find((tab) => tab.dataset.section === name);
+  const storedDot = document.getElementById("stored-dot");
+  const panelTablist = document.getElementById("panel-tabs");
+  const mainTabs = [...document.querySelectorAll('#page-tabs [role="tab"]')];
+  const panelTabs = [...panelTablist.querySelectorAll('[role="tab"]')];
+  const wide = matchMedia("(min-width: 768px)");   // Tailwind's md: docked, not a sheet
 
   // ---------------------------------------------------------------------------------------------
-  // Sizes: the header's height for Under the hood and Creator, and what sits above the component
+  // Sizes: the header and the main tab row for the sticky panel and Creator, what sits above the
+  // component, and the fade on the panel's tab row
 
   function measure() {
     const root = document.documentElement.style;
     root.setProperty("--header-h", `${header.offsetHeight}px`);
+    root.setProperty("--tabs-h", `${mainRow.offsetHeight}px`);
     if (!demoPanel.hidden) root.setProperty("--demo-above", `${component.offsetTop - demoPanel.offsetTop}px`);
   }
-  const sizes = new ResizeObserver(measure);
-  sizes.observe(header);
+
+  function fade() {
+    const { scrollLeft, clientWidth, scrollWidth } = panelTablist;
+    panelTablist.toggleAttribute("data-fade-start", scrollLeft > 0);
+    panelTablist.toggleAttribute("data-fade-end", scrollLeft + clientWidth < scrollWidth - 1);
+  }
+
+  const sizes = new ResizeObserver(() => {
+    measure();
+    fade();
+  });
+  for (const element of [header, mainRow, panelTablist]) sizes.observe(element);
   for (const child of demoPanel.children) if (child !== component) sizes.observe(child);
+  panelTablist.addEventListener("scroll", fade, { passive: true });
+  document.fonts?.ready.then(fade);   // the labels' widths change when the web font arrives
 
   // ---------------------------------------------------------------------------------------------
-  // Tabs, sections and the hash
+  // Tabs, the panel and the hash
 
-  let active = "demo";
-  let section = remembered() ?? "requests";
-  const scrollOf = {};   // each tab keeps its own scroll position
-
-  function remembered() {
+  const read = (key) => {
     try {
-      const value = localStorage.getItem(STORAGE_KEY);
-      return SECTIONS.includes(value) ? value : null;
+      return localStorage.getItem(key);
     } catch {
       return null;
     }
-  }
-  function remember() {
+  };
+  const write = (key, value) => {
     try {
-      localStorage.setItem(STORAGE_KEY, section);
+      localStorage.setItem(key, value);
     } catch {
       // private window or blocked storage: the page works, it just forgets
     }
+  };
+
+  let shown = "demo";   // the main column's tab
+  let tab = PANEL.includes(read(TAB_KEY)) ? read(TAB_KEY) : "description";
+  let dockedOpen = read(OPEN_KEY) !== "false";
+  let sheetOpen = false;
+  let unseenRequests = false;
+  let unseenStored = false;
+  const scrollOf = {};   // each main tab keeps its own scroll position
+
+  const isOpen = () => (wide.matches ? dockedOpen : sheetOpen);
+  const isSheet = () => !wide.matches && sheetOpen;
+  const showing = (name) => isOpen() && tab === name;
+
+  function writeHash(name) {
+    const hash = name === "demo" ? "" : `#${name}`;
+    if (location.hash === hash) return;
+    history.replaceState(history.state, "", hash || location.pathname + location.search);
   }
 
-  const hashFor = () => (active === "demo" ? "" : active === "hood" ? `#${section}` : `#${active}`);
-  function writeHash() {
-    if (location.hash === hashFor() || (!location.hash && !hashFor())) return;
-    history.replaceState(history.state, "", hashFor() || location.pathname + location.search);
+  function selectIn(list, attribute, value) {
+    for (const button of list) {
+      const selected = button.dataset[attribute] === value;
+      button.setAttribute("aria-selected", String(selected));
+      button.tabIndex = selected ? 0 : -1;
+      document.getElementById(button.getAttribute("aria-controls")).hidden = !selected;
+    }
   }
 
   function render() {
-    for (const tab of tabs) {
-      const selected = tab.dataset.tab === active;
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      document.getElementById(tab.getAttribute("aria-controls")).hidden = !selected;
-    }
-    for (const tab of sectionTabs) {
-      const selected = tab.dataset.section === section;
-      tab.setAttribute("aria-selected", String(selected));
-      tab.tabIndex = selected ? 0 : -1;
-      document.getElementById(tab.getAttribute("aria-controls")).hidden = !selected;
-    }
-    if (active === "hood") clearBadge();
+    selectIn(mainTabs, "tab", shown);
+    selectIn(panelTabs, "panelTab", tab);
+    const open = isOpen();
+    panel.hidden = !open;
+    panel.toggleAttribute("data-sheet", isSheet());
+    // The sheet covers the page: the page doesn't scroll under it, and keyboard focus stays in it
+    document.documentElement.classList.toggle("overflow-hidden", isSheet());
+    header.inert = main.inert = isSheet();
+    toggle.setAttribute("aria-expanded", String(open));
+    if (showing("requests")) unseenRequests = false;
+    if (showing("stored")) unseenStored = false;
+    paintUnseen();
     measure();
   }
 
-  function select(name, { sectionName, hash = true } = {}) {
-    if (name !== active) {
-      scrollOf[active] = scrollY;
-      active = name;
+  // The chosen panel tab, fully into view in its scrolling row
+  function reveal() {
+    if (isOpen()) panelTabs.find((button) => button.dataset.panelTab === tab).scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+
+  function selectMain(name, { hash = true } = {}) {
+    if (name !== shown) {
+      scrollOf[shown] = scrollY;
+      shown = name;
       render();
       scrollTo(0, scrollOf[name] ?? 0);
     }
-    if (sectionName && sectionName !== section) {
-      section = sectionName;
-      render();
+    if (hash) writeHash(shown);
+  }
+
+  function openOn(name) {
+    tab = name;
+    if (wide.matches) dockedOpen = true;
+    else sheetOpen = true;
+    render();
+    reveal();
+  }
+
+  function choosePanel(name) {
+    openOn(name);
+    write(TAB_KEY, tab);
+    writeHash(tab);
+  }
+
+  function setOpen(open) {
+    const wasSheet = isSheet();
+    if (wide.matches) {
+      dockedOpen = open;
+      write(OPEN_KEY, String(open));
+    } else {
+      sheetOpen = open;
     }
-    if (hash) writeHash();
+    render();
+    if (open) {
+      reveal();
+      if (isSheet()) panelTabs.find((button) => button.tabIndex === 0).focus();
+    } else {
+      if (PANEL.includes(location.hash.slice(1))) writeHash(shown);
+      if (wasSheet) toggle.focus();
+    }
   }
 
   function fromHash() {
     const name = decodeURIComponent(location.hash.slice(1));
-    if (SECTIONS.includes(name)) select("hood", { sectionName: name, hash: false });
-    else select(name === "description" ? "description" : "demo", { hash: false });
+    if (PANEL.includes(name)) return openOn(name);
+    if (isSheet()) {
+      sheetOpen = false;   // a main tab on a phone: show it, not the sheet over it
+      render();
+    }
+    selectMain(name === "code" ? "code" : "demo", { hash: false });
   }
 
   function keyboard(list, onMove) {
-    for (const tab of list) {
-      tab.addEventListener("keydown", (e) => {
-        const i = list.indexOf(tab);
+    for (const button of list) {
+      button.addEventListener("keydown", (e) => {
+        const i = list.indexOf(button);
         const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: list.length - 1 }[e.key];
         if (next === undefined) return;
         e.preventDefault();
@@ -128,44 +201,50 @@ function setUpPageTabs() {
     }
   }
 
-  for (const tab of tabs) tab.addEventListener("click", () => select(tab.dataset.tab));
-  keyboard(tabs, (tab) => select(tab.dataset.tab));
+  for (const button of mainTabs) button.addEventListener("click", () => selectMain(button.dataset.tab));
+  keyboard(mainTabs, (button) => selectMain(button.dataset.tab));
+  for (const button of panelTabs) button.addEventListener("click", () => choosePanel(button.dataset.panelTab));
+  keyboard(panelTabs, (button) => choosePanel(button.dataset.panelTab));
 
-  function chooseSection(name) {
-    select("hood", { sectionName: name });
-    remember();
-  }
-  for (const tab of sectionTabs) tab.addEventListener("click", () => chooseSection(tab.dataset.section));
-  keyboard(sectionTabs, (tab) => chooseSection(tab.dataset.section));
+  toggle.addEventListener("click", () => setOpen(!isOpen()));
+  document.getElementById("panel-close").addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isSheet()) {
+      e.preventDefault();
+      setOpen(false);
+    }
+  });
 
   document.addEventListener("click", (e) => {
-    const opener = e.target.closest?.("[data-open-tab]");
-    if (opener && TABS.includes(opener.dataset.openTab)) select(opener.dataset.openTab);
+    const name = e.target.closest?.("[data-open-tab]")?.dataset.openTab;
+    if (MAIN.includes(name)) selectMain(name);
+    else if (PANEL.includes(name)) choosePanel(name);
   });
 
   addEventListener("hashchange", fromHash);
 
-  // ---------------------------------------------------------------------------------------------
-  // The badge
+  // A docked panel that is open becomes a closed sheet below 768px, and is open again above
+  wide.addEventListener("change", () => {
+    sheetOpen = false;
+    render();
+  });
 
-  let unseen = 0;
-  let unseenError = false;
-  function bump(error) {
-    if (active === "hood") return;
-    unseen++;
-    unseenError ||= error;
-    paintBadge();
+  // ---------------------------------------------------------------------------------------------
+  // The badge on the toggle and the Stored dot
+
+  function paintUnseen() {
+    const open = isOpen();
+    badge.hidden = open || !(unseenRequests || unseenStored);
+    storedDot.hidden = !unseenStored;
+    const what = [unseenRequests && "new requests", unseenStored && "stored data changed"].filter(Boolean).join(" and ");
+    toggle.setAttribute("aria-label", open ? "Hide the panel" : what ? `Show the panel, ${what}` : "Show the panel");
+    fade();   // the dot changes the row's width
   }
-  function clearBadge() {
-    unseen = 0;
-    unseenError = false;
-    paintBadge();
-  }
-  function paintBadge() {
-    badge.hidden = unseen === 0;
-    badge.textContent = unseen > 99 ? "99+" : String(unseen);
-    badge.dataset.kind = unseenError ? "error" : "ok";
-    tabOf("hood").setAttribute("aria-label", unseen ? `Under the hood, ${unseen} new` : "Under the hood");
+
+  function sawRequest() {
+    if (showing("requests")) return;
+    unseenRequests = true;
+    paintUnseen();
   }
 
   function flash(element) {
@@ -176,139 +255,17 @@ function setUpPageTabs() {
   }
 
   // ---------------------------------------------------------------------------------------------
-  // Live links: endpoints and stored sections, in the header and in "More (n)"
-
-  const liveLinks = [...document.querySelectorAll("[data-live]")];
-  const pattern = (label) => {
-    const [method, path = ""] = label.split(/\s+/);
-    const source = path.split(/\{[^}]+\}/).map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("[^/]+");
-    return { method: method.toUpperCase(), path: new RegExp(`^${source}$`) };
-  };
-  const endpointMatches = (label, info) => {
-    const { method, path } = pattern(label);
-    return method === info.method && path.test(info.path);
-  };
-
-  function setPill(kind, label, text, pillKind) {
-    for (const link of liveLinks) {
-      if (link.dataset.live !== kind || link.dataset.label !== label) continue;
-      const pill = link.querySelector("[data-pill]");
-      pill.textContent = text;
-      pill.dataset.kind = pillKind;
-    }
-    fitSoon();
-  }
-
-  function latestRow(label) {
-    return [...requests.children].find((row) => row.dataset.demo !== "true" && endpointMatches(label, rowInfo(row))) ?? null;
-  }
-
-  function paintEndpoint(label) {
-    const row = latestRow(label);
-    if (!row) return setPill("endpoint", label, "–", "none");
-    const { status } = rowInfo(row);
-    if (row.dataset.state === "pending") return setPill("endpoint", label, "…", "none");
-    setPill("endpoint", label, status, row.dataset.state === "error" ? "error" : "ok");
-  }
-  const endpointLabels = [...new Set(liveLinks.filter((l) => l.dataset.live === "endpoint").map((l) => l.dataset.label))];
-  const paintEndpoints = () => endpointLabels.forEach(paintEndpoint);
-
-  for (const link of liveLinks) {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      closeMore(false);
-      if (link.dataset.live === "endpoint") {
-        select("hood", { sectionName: "requests" });
-        const row = latestRow(link.dataset.label);
-        if (row) {
-          expand(row, true);
-          row.scrollIntoView({ block: "nearest" });
-        }
-      } else {
-        select("hood", { sectionName: "stored" });
-        const target = [...stored.children].find((s) => titleOf(s) === link.dataset.label);
-        target?.scrollIntoView({ block: "start" });
-      }
-    });
-  }
-
-  // Row 2 never wraps: move the links that don't fit, from the end, into "More (n)"
-  const nav = document.getElementById("live-links");
-  const more = document.getElementById("live-more");
-  const moreButton = document.getElementById("live-more-button");
-  const moreList = document.getElementById("live-more-list");
-  const rowLinks = [...nav.querySelectorAll("[data-live]")];
-  const moreItems = [...moreList.querySelectorAll("[data-more-item]")];
-
-  function fit() {
-    nav.dataset.fit = "";
-    if (!nav.offsetParent && getComputedStyle(nav).display === "none") return;   // below 768px: no links
-    rowLinks.forEach((link) => (link.hidden = false));
-    moreItems.forEach((item) => (item.hidden = true));
-    more.hidden = true;
-    if (nav.scrollWidth <= nav.clientWidth) return closeMore(false);
-    more.hidden = false;
-    let hidden = 0;
-    for (let i = rowLinks.length - 1; i >= 0 && nav.scrollWidth > nav.clientWidth; i--) {
-      rowLinks[i].hidden = true;
-      moreItems[i].hidden = false;
-      hidden++;
-      more.querySelector("[data-more-count]").textContent = String(hidden);
-    }
-  }
-  let fitFrame = 0;
-  function fitSoon() {
-    cancelAnimationFrame(fitFrame);
-    fitFrame = requestAnimationFrame(fit);
-  }
-  new ResizeObserver(fitSoon).observe(nav.parentElement);
-  document.fonts?.ready.then(fitSoon);   // the labels' widths change when the web font arrives
-
-  function openMore() {
-    moreList.hidden = false;
-    moreButton.setAttribute("aria-expanded", "true");
-    moreList.querySelector("li:not([hidden]) a")?.focus();
-  }
-  function closeMore(returnFocus) {
-    if (moreList.hidden) return;
-    moreList.hidden = true;
-    moreButton.setAttribute("aria-expanded", "false");
-    if (returnFocus) moreButton.focus();
-  }
-  moreButton.addEventListener("click", () => (moreList.hidden ? openMore() : closeMore(false)));
-  more.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !moreList.hidden) {
-      e.preventDefault();
-      closeMore(true);
-    }
-  });
-  document.addEventListener("pointerdown", (e) => {
-    if (!moreList.hidden && !more.contains(e.target)) closeMore(more.contains(document.activeElement));
-  });
-
-  // ---------------------------------------------------------------------------------------------
-  // Requests: highlights, the badge, the count and the rows' bodies
+  // Requests: highlights, the counter and the rows' bodies
 
   const finished = new WeakSet();
   let current = null;
   let rowIds = 0;
 
-  function rowInfo(row) {
-    const text = (name) => row.querySelector(`[data-field="${name}"]`)?.textContent.trim() ?? "";
-    let path = text("url").split(/[?\s]/)[0];
-    try {
-      path = new URL(path, location.href).pathname;
-    } catch {
-      // keep it as shown
-    }
-    return { method: text("method").toUpperCase(), path, status: text("status") };
-  }
-
   function expand(row, open) {
-    const toggle = row.querySelector("[data-row-toggle]");
+    const button = row.querySelector("[data-row-toggle]");
     const bodies = row.querySelector("[data-row-bodies]");
-    if (!toggle || !bodies) return;
-    toggle.setAttribute("aria-expanded", String(open));
+    if (!button || !bodies) return;
+    button.setAttribute("aria-expanded", String(open));
     bodies.hidden = !open;
   }
 
@@ -320,11 +277,9 @@ function setUpPageTabs() {
       row.querySelector("[data-row-toggle]")?.setAttribute("aria-controls", bodies.id);
     }
     if (row.dataset.demo === "true") return;
-    const info = rowInfo(row);
-    for (const label of endpointLabels) if (endpointMatches(label, info)) paintEndpoint(label);
     if (finished.has(row) || (row.dataset.state !== "ok" && row.dataset.state !== "error")) return;
     finished.add(row);
-    bump(row.dataset.state === "error");
+    sawRequest();
 
     current?.removeAttribute("data-hood-current");
     current = row;
@@ -334,8 +289,11 @@ function setUpPageTabs() {
   }
 
   function countRows() {
-    const shown = [...requests.children].filter((row) => !row.hidden).length;
-    requestsCount.textContent = shown ? String(shown) : "";
+    const rows = [...requests.children].filter((row) => !row.hidden);
+    requestsCount.hidden = rows.length === 0;
+    requestsCount.textContent = String(rows.length);
+    requestsCount.dataset.kind = rows.some((row) => row.dataset.demo !== "true" && row.dataset.state === "error") ? "error" : "ok";
+    fade();
   }
 
   new MutationObserver((records) => {
@@ -346,19 +304,17 @@ function setUpPageTabs() {
         record.addedNodes.forEach(onRow);
       }
     }
-    if (records.some((r) => r.type === "childList")) paintEndpoints();
     countRows();
   }).observe(requests, { childList: true, attributes: true, subtree: true, attributeFilter: ["data-state", "hidden"] });
 
   requests.addEventListener("click", (e) => {
-    const toggle = e.target.closest("[data-row-toggle]");
-    if (toggle) expand(toggle.closest("li"), toggle.getAttribute("aria-expanded") !== "true");
+    const button = e.target.closest("[data-row-toggle]");
+    if (button) expand(button.closest("li"), button.getAttribute("aria-expanded") !== "true");
   });
 
   // ---------------------------------------------------------------------------------------------
   // Stored: first render, changes, highlights and <mark> on new entries
 
-  const first = new Map();      // section title → its text at the first render
   const previous = new Map();   // section title → its text at the last render
   let marks = new Map();        // section title → { text, fresh } to keep highlighted across re-renders
   const IDENTITY = ["id", "key", "claim_id"];
@@ -418,8 +374,6 @@ function setUpPageTabs() {
       const title = titleOf(section);
       const pre = section.querySelector('[data-field="json"]');
       const text = pre?.textContent ?? "";
-      if (!first.has(title)) first.set(title, text);
-      setPill("stored", title, text === first.get(title) ? "unchanged" : "updated", text === first.get(title) ? "none" : "ok");
       const before = previous.get(title);
       previous.set(title, text);
       if (before === undefined) continue;   // the first render is the baseline
@@ -432,23 +386,20 @@ function setUpPageTabs() {
     if (!changed.length) return;
 
     marks = new Map(changed.map(({ title, text, fresh }) => [title, { text, fresh }]));
-    for (const { section, pre, text, fresh } of changed) {
-      highlight(section, pre, text, fresh, true);
-      bump(false);
+    for (const { section, pre, text, fresh } of changed) highlight(section, pre, text, fresh, true);
+    if (!showing("stored")) {
+      unseenStored = true;
+      paintUnseen();
     }
   }
 
   new MutationObserver(onStoredRender).observe(stored, { childList: true });
 
   // ---------------------------------------------------------------------------------------------
-  // Notes: each new one counts; the read-outs block shows once there is one
+  // Notes: each new one is unseen until Requests shows; the read-outs block shows once there is one
 
   new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) bump(node.dataset.kind === "error");
-      }
-    }
+    if (records.some((record) => [...record.addedNodes].some((node) => node instanceof HTMLElement))) sawRequest();
     readouts.hidden = false;
   }).observe(notes, { childList: true });
 
@@ -457,9 +408,8 @@ function setUpPageTabs() {
   requests.querySelectorAll(":scope > li").forEach(onRow);   // in case host.js logged before this ran
   if (notes.children.length) readouts.hidden = false;
   onStoredRender();
-  paintEndpoints();
   countRows();
   fromHash();
   render();
-  fit();
+  reveal();
 }
