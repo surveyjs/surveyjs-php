@@ -16,7 +16,7 @@
     --color-sjs: #19b394;
     --color-sjs-dark: #12957a;
 
-    /* The adapter's host contract (resources/css/surveyjs-tailwind-adapter.css): the form's brand and
+    /* The adapter's host contract (survey-core/themes/adapters/tailwind4.css): the form's brand and
        text come from the page's own values. The other slots keep the adapter's Tailwind defaults. */
     --color-primary: var(--color-sjs);
     --color-primary-hover: var(--color-sjs-dark);

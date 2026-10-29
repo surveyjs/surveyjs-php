@@ -1,8 +1,8 @@
 /* The Form Library theme, for step pages that run a form: SurveyJS's theme, then the
-   SurveyJS Tailwind adapter, then this demo's own layer. Never call model.applyTheme(). */
+   SurveyJS Tailwind adapter that survey-core ships, then this demo's own layer. Never call model.applyTheme(). */
 @import 'survey-core/survey-core.css';
 @import 'survey-core/collaboration.css';
-@import './surveyjs-tailwind-adapter.css';
+@import 'survey-core/themes/adapters/tailwind4.css';
 
 /* Demo only: the step page pads the form inside its card (#form, p-4 sm:p-6 in layouts/example.blade.php),
    so the survey title, page titles, fields and navigation buttons all start at the card's padding edge.

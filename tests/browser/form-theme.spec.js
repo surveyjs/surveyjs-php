@@ -1,4 +1,4 @@
-// The Form Library pages wear the SurveyJS Tailwind adapter (resources/css/surveyjs-tailwind-adapter.css)
+// The Form Library pages wear the SurveyJS Tailwind adapter (survey-core/themes/adapters/tailwind4.css)
 // with the demo's colours from app.css's @theme static (design 03, Verify 2 to 4 and 6, on I.1).
 // A Tailwind or survey-core upgrade that drops a variable makes the adapter fall back to its
 // literals silently; these tests fail instead.
@@ -125,7 +125,7 @@ test('6. a required-field error is Tailwind red; its text stays the body colour'
     await expect(email.locator('xpath=ancestor::*[contains(@class, "sd-formbox")][1]')).toHaveCSS('box-shadow', new RegExp(`^${red.replace(/[().]/g, '\\$&')} `));
     await expect(message).toHaveCSS('background-color', await resolveColor(page, 'rgb(from var(--color-red-600) r g b / 0.1)'));
 
-    // survey-core 3.2.1 colours the message text with fg-basic-primary and only its icon with
+    // survey-core 3.2.3 colours the message text with fg-basic-primary and only its icon with
     // fg-alert-primary (red-700): the adapter's darker shade of the Tailwind red, not stock #C30935
     await expect(message).toHaveCSS('color', await resolveColor(page, 'var(--color-gray-800)'));
     const alert = await resolveColor(page, 'var(--sjs2-color-fg-alert-primary)');
