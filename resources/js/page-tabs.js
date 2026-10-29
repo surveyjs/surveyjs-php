@@ -9,7 +9,8 @@
 //   the hash (no new history entry); closing the panel drops a panel tab's hash.
 // - From 768px the panel is docked: open unless the reader closed it, remembered in localStorage.
 //   Narrower, it is a full-screen sheet that starts closed; Escape and × close it. Crossing 768px
-//   doesn't change the remembered choice. The panel's last tab is remembered too; the hash overrides it.
+//   doesn't change the remembered choice. The panel opens on Description unless the hash names a tab:
+//   its last tab isn't remembered across loads or examples.
 // - What is unseen: a non-demo request that finished or a note that arrived while Requests wasn't
 //   showing, and a Stored section whose text changed after its first render while Stored wasn't
 //   showing. A tab shows when the panel is open on it, and showing it clears its flag. The badge on
@@ -23,7 +24,6 @@ if (panel) setUpPageTabs();
 function setUpPageTabs() {
   const MAIN = ["demo", "code"];
   const PANEL = ["description", "requests", "stored"];
-  const TAB_KEY = "surveyjs-panel-tab";
   const OPEN_KEY = "surveyjs-panel-open";
 
   const header = document.getElementById("page-header");
@@ -89,7 +89,7 @@ function setUpPageTabs() {
   };
 
   let shown = "demo";   // the main column's tab
-  let tab = PANEL.includes(read(TAB_KEY)) ? read(TAB_KEY) : "description";
+  let tab = "description";
   let dockedOpen = read(OPEN_KEY) !== "false";
   let sheetOpen = false;
   let unseenRequests = false;
@@ -160,7 +160,6 @@ function setUpPageTabs() {
 
   function choosePanel(name) {
     openOn(name);
-    write(TAB_KEY, tab);
     writeHash(tab);
   }
 

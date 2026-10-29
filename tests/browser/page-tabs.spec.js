@@ -48,14 +48,19 @@ test('1. the default state: open on Description at 1440, closed at 390; the togg
     await page.reload();
     await expectPanel(page, 'description');
 
-    // The panel's last tab is remembered; Demo/Code never change it
+    // Demo/Code never change the panel's tab; the next load of this or another example opens on Description
     await panelTab(page, 'stored').click();
     await mainTab(page, 'code').click();
     await expectPanel(page, 'stored');
     await page.goto('about:blank');
     await page.goto('/examples/save-response');
-    await expectPanel(page, 'stored');
+    await expectPanel(page, 'description');
     await expectMain(page, 'demo');
+    await panelTab(page, 'stored').click();
+    await page.goto('/examples/validate-response');
+    await expectPanel(page, 'description');
+    await page.goto('/examples/save-response');
+    await panelTab(page, 'stored').click();
 
     // 900: docked at 300px
     await page.setViewportSize({ width: 900, height: 1000 });
