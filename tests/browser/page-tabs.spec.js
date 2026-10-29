@@ -198,10 +198,12 @@ test('4. the badge: while closed, on a request and on a Stored change; it clears
     expect([dot.x - button.x, dot.y - button.y, dot.width, dot.height]).toEqual([36, 0, 6, 6]);
     await expect(badge(page)).toHaveCSS('background-color', 'rgb(25, 179, 148)');
 
-    // Requests seen: the Stored change still counts
+    // Requests seen: its counter clears, the Stored change still counts
     await toggle(page).click();
     await expect(badge(page)).toBeHidden();
     await panelTab(page, 'requests').click();
+    await expect(page.locator('#requests-count')).toBeHidden();
+    await expect(page.locator('#stored-dot')).toBeVisible();
     await toggle(page).click();
     await expect(badge(page)).toBeVisible();
     await expect(toggle(page)).toHaveAttribute('aria-label', 'Show the panel, stored data changed');
@@ -225,7 +227,7 @@ test('4. the badge: while closed, on a request and on a Stored change; it clears
     await expect(badge(page)).toBeHidden();
 });
 
-test('5. the counter counts the shown rows, green while they succeed and red after a failure', async ({ page }) => {
+test('5. the counter counts the unseen requests, green while they succeed and red after a failure; Requests clears it', async ({ page }) => {
     await page.goto('/examples/validate-response');
     const counter = page.locator('#requests-count');
     await expect(counter).toBeHidden();
@@ -252,9 +254,20 @@ test('5. the counter counts the shown rows, green while they succeed and red aft
     await expect(counter).toHaveAttribute('data-kind', 'error');
     expect(await colours(counter)).toEqual(['rgb(251, 218, 226)', 'rgb(229, 10, 62)']);   // sjs-red-15, sjs-red
 
+    // Seen: cleared, and a request while Requests shows doesn't count
     await panelTab(page, 'requests').click();
-    await page.locator('#clear-requests').click();
     await expect(counter).toBeHidden();
+    await page.getByRole('button', { name: 'A wrong type' }).click();
+    await expect(page.locator('#requests > li:not([hidden])')).toHaveCount(3);
+    await expect(counter).toBeHidden();
+
+    // Unseen again from the next one, green while the unseen ones succeed
+    await page.unroute('**/api/responses');
+    await page.route('**/api/responses', (route) => route.fulfill({ status: 201, contentType: 'application/json', body: '{"id":2}' }));
+    await panelTab(page, 'description').click();
+    await page.getByRole('button', { name: 'A wrong type' }).click();
+    await expect(counter).toHaveText('1');
+    await expect(counter).toHaveAttribute('data-kind', 'ok');
 });
 
 test('6. at 900 the panel tabs scroll and fade where they are cut; both tab rows are one height', async ({ page }) => {

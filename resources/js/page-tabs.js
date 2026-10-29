@@ -14,7 +14,8 @@
 //   showing, and a Stored section whose text changed after its first render while Stored wasn't
 //   showing. A tab shows when the panel is open on it, and showing it clears its flag. The badge on
 //   the toggle shows while the panel is closed and a flag is set; the Stored dot while Stored's is.
-//   The Requests counter counts the shown rows and turns red once a shown non-demo request failed.
+//   The Requests counter counts the unseen requests still in the log, red once one of them failed;
+//   showing Requests clears it.
 
 const panel = document.getElementById("side-panel");
 if (panel) setUpPageTabs();
@@ -92,6 +93,7 @@ function setUpPageTabs() {
   let dockedOpen = read(OPEN_KEY) !== "false";
   let sheetOpen = false;
   let unseenRequests = false;
+  let unseenRows = [];   // the finished non-demo rows that arrived while Requests wasn't showing
   let unseenStored = false;
   const scrollOf = {};   // each main tab keeps its own scroll position
 
@@ -124,7 +126,10 @@ function setUpPageTabs() {
     document.documentElement.classList.toggle("overflow-hidden", isSheet());
     header.inert = main.inert = isSheet();
     toggle.setAttribute("aria-expanded", String(open));
-    if (showing("requests")) unseenRequests = false;
+    if (showing("requests")) {
+      unseenRequests = false;
+      unseenRows = [];
+    }
     if (showing("stored")) unseenStored = false;
     paintUnseen();
     measure();
@@ -230,20 +235,25 @@ function setUpPageTabs() {
   });
 
   // ---------------------------------------------------------------------------------------------
-  // The badge on the toggle and the Stored dot
+  // The badge on the toggle, the Requests counter and the Stored dot
 
   function paintUnseen() {
     const open = isOpen();
     badge.hidden = open || !(unseenRequests || unseenStored);
     storedDot.hidden = !unseenStored;
+    const rows = unseenRows.filter((row) => row.isConnected && !row.hidden);   // Clear empties the log
+    requestsCount.hidden = rows.length === 0;
+    requestsCount.textContent = String(rows.length);
+    requestsCount.dataset.kind = rows.some((row) => row.dataset.state === "error") ? "error" : "ok";
     const what = [unseenRequests && "new requests", unseenStored && "stored data changed"].filter(Boolean).join(" and ");
     toggle.setAttribute("aria-label", open ? "Hide the panel" : what ? `Show the panel, ${what}` : "Show the panel");
-    fade();   // the dot changes the row's width
+    fade();   // the counter and the dot change the row's width
   }
 
-  function sawRequest() {
+  function sawRequest(row) {
     if (showing("requests")) return;
     unseenRequests = true;
+    if (row) unseenRows.push(row);
     paintUnseen();
   }
 
@@ -279,21 +289,13 @@ function setUpPageTabs() {
     if (row.dataset.demo === "true") return;
     if (finished.has(row) || (row.dataset.state !== "ok" && row.dataset.state !== "error")) return;
     finished.add(row);
-    sawRequest();
+    sawRequest(row);
 
     current?.removeAttribute("data-hood-current");
     current = row;
     row.dataset.hoodCurrent = "true";
     flash(row);
     if (!requests.closest("[hidden]")) row.scrollIntoView({ block: "nearest" });
-  }
-
-  function countRows() {
-    const rows = [...requests.children].filter((row) => !row.hidden);
-    requestsCount.hidden = rows.length === 0;
-    requestsCount.textContent = String(rows.length);
-    requestsCount.dataset.kind = rows.some((row) => row.dataset.demo !== "true" && row.dataset.state === "error") ? "error" : "ok";
-    fade();
   }
 
   new MutationObserver((records) => {
@@ -304,7 +306,7 @@ function setUpPageTabs() {
         record.addedNodes.forEach(onRow);
       }
     }
-    countRows();
+    paintUnseen();   // a row removed or hidden leaves the counter
   }).observe(requests, { childList: true, attributes: true, subtree: true, attributeFilter: ["data-state", "hidden"] });
 
   requests.addEventListener("click", (e) => {
@@ -408,7 +410,6 @@ function setUpPageTabs() {
   requests.querySelectorAll(":scope > li").forEach(onRow);   // in case host.js logged before this ran
   if (notes.children.length) readouts.hidden = false;
   onStoredRender();
-  countRows();
   fromHash();
   render();
   reveal();
