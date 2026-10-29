@@ -10,17 +10,72 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* The SurveyJS site's design (Figma "General", page "Backend Integration examples page + demo"), for every page:
+   Lato, neutral grays and the SurveyJS colours. The forms take the same values through the adapter. */
 @theme static {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-sjs: #19b394;
-    --color-sjs-dark: #12957a;
 
-    /* The adapter's host contract (survey-core/themes/adapters/tailwind4.css): the form's brand and
-       text come from the page's own values. The other slots keep the adapter's Tailwind defaults. */
+    /* Tailwind's gray scale, made neutral: the design's grays where it has one, Tailwind's neutral scale
+       between them. Pages styled with gray-* utilities take the design's grays with no markup change. */
+    --color-gray-50: #f7f7f7;   /* general/backcolor-gray */
+    --color-gray-100: #efefef;  /* general/backcolor-gray-2 */
+    --color-gray-200: #e5e5e5;  /* general/line */
+    --color-gray-300: #d4d4d4;  /* the SurveyJS border, sjs2/color/border/basic/secondary */
+    --color-gray-400: #a3a3a3;
+    --color-gray-500: #737373;  /* not general/forecolor-50 (#8a8a8a): 3.4:1 on white is too light for small text */
+    --color-gray-600: #505050;  /* general/forecolor-75 */
+    --color-gray-700: #404040;
+    --color-gray-800: #262626;
+    --color-gray-900: #161616;  /* general/forecolor */
+    --color-gray-950: #0a0a0a;
+
+    /* The design's own colours, under its names */
+    --color-sjs: #19b394;       /* primary/primary, special/green */
+    --color-sjs-dark: #12957a;
+    --color-sjs-10: #e7f7f4;    /* special/green-10 */
+    --color-sjs-15: #ddf4ef;    /* primary/primary-15 */
+    --color-sjs-fg: var(--color-gray-900);          /* general/forecolor */
+    --color-sjs-fg-75: var(--color-gray-600);       /* general/forecolor-75 */
+    --color-sjs-fg-50: #8a8a8a;                     /* general/forecolor-50: large text only (24px and up) */
+    --color-sjs-line: var(--color-gray-200);        /* general/line */
+    --color-sjs-back-gray: var(--color-gray-50);    /* general/backcolor-gray */
+    --color-sjs-back-gray-2: var(--color-gray-100); /* general/backcolor-gray-2 */
+    --color-sjs-blue: #437fd9;      /* special/blue: links */
+    --color-sjs-blue-10: #ecf2fb;   /* special/blue-10 */
+    --color-sjs-yellow: #ff9814;    /* special/yellow, secondary/secondary */
+    --color-sjs-yellow-10: #fff4e7; /* special/yellow-10 */
+    --color-sjs-red: #e50a3e;       /* special/red */
+    --color-sjs-red-15: #fbdae2;    /* special/red-15 */
+
+    /* The design's type styles: article/titles/* and article/paragraphs/* */
+    --text-sjs-title-2xl: 4rem;     /* titles/xx-large, 64/72 */
+    --text-sjs-title-2xl--line-height: 4.5rem;
+    --text-sjs-title-xl: 3rem;      /* titles/x-large, 48/56 */
+    --text-sjs-title-xl--line-height: 3.5rem;
+    --text-sjs-title-lg: 2rem;      /* titles/large, 32/40 */
+    --text-sjs-title-lg--line-height: 2.5rem;
+    --text-sjs-title-sm: 1.25rem;   /* titles/small, 20/28 */
+    --text-sjs-title-sm--line-height: 1.75rem;
+    --text-sjs-para-lg: 1.5rem;     /* paragraphs/large, 24/36 */
+    --text-sjs-para-lg--line-height: 2.25rem;
+    --text-sjs-para-md: 1.25rem;    /* paragraphs/medium, 20/28 */
+    --text-sjs-para-md--line-height: 1.75rem;
+    --text-sjs-para-sm: 1rem;       /* paragraphs/small, 16/28 */
+    --text-sjs-para-sm--line-height: 1.75rem;
+    --text-sjs-para-xs: 0.875rem;   /* paragraphs/x-small, 14/24 */
+    --text-sjs-para-xs--line-height: 1.5rem;
+
+    /* The design's content column: 1080px between 160px gutters at 1400 */
+    --container-sjs-content: 67.5rem;
+
+    /* The adapter's host contract (survey-core/themes/adapters/tailwind4.css): the form's brand, text and
+       error colour come from the values above. Muted text, borders and inputs follow the gray scale through
+       the adapter's Tailwind defaults (gray-500, gray-200, gray-300). */
     --color-primary: var(--color-sjs);
     --color-primary-hover: var(--color-sjs-dark);
     --color-foreground: var(--color-gray-800);
+    --color-destructive: var(--color-sjs-red);
 }
 
 /* The few resets this app's own markup needs; SurveyJS markup is left alone */

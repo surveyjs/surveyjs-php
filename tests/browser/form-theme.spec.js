@@ -31,7 +31,7 @@ test.beforeEach(async ({ page }) => {
     await expect(page.locator('.sd-root-modern')).toBeVisible();
 });
 
-test('2. brand and font: the demo green, Instrument Sans at 14px in gray-800', async ({ page }) => {
+test('2. brand and font: the demo green, Lato at 14px in gray-800', async ({ page }) => {
     expect(await readVariables(page, ['--sjs2-color-project-brand-600', '--sjs2-color-project-brand-700'], '.sd-root-modern')).toEqual({
         '--sjs2-color-project-brand-600': '#19b394',
         '--sjs2-color-project-brand-700': '#12957a',
@@ -44,7 +44,7 @@ test('2. brand and font: the demo green, Instrument Sans at 14px in gray-800', a
 
     const gray800 = await resolveColor(page, 'var(--color-gray-800)');
     for (const text of [page.locator('.sd-question__title').first(), email]) {
-        await expect(text).toHaveCSS('font-family', /^"Instrument Sans"/);
+        await expect(text).toHaveCSS('font-family', /^Lato,/);
         await expect(text).toHaveCSS('font-size', '14px');
         await expect(text).toHaveCSS('color', gray800);
     }
@@ -53,8 +53,8 @@ test('2. brand and font: the demo green, Instrument Sans at 14px in gray-800', a
 test('3. no literal fallback: the Tailwind variables exist and the adapter resolves to them', async ({ page }) => {
     const tailwind = await readVariables(page, [
         '--spacing', '--font-sans', '--text-xs', '--text-sm', '--text-base', '--radius-sm', '--radius-md', '--radius-lg',
-        '--color-white', '--color-gray-200', '--color-gray-300', '--color-gray-500', '--color-gray-800', '--color-red-600',
-        '--color-sjs', '--color-primary', '--color-primary-hover', '--color-foreground',
+        '--color-white', '--color-gray-200', '--color-gray-300', '--color-gray-500', '--color-gray-800', '--color-sjs-red',
+        '--color-sjs', '--color-primary', '--color-primary-hover', '--color-foreground', '--color-destructive',
     ]);
     for (const [name, value] of Object.entries(tailwind)) {
         expect(value, `${name} on :root`).not.toBe('');
@@ -72,7 +72,7 @@ test('3. no literal fallback: the Tailwind variables exist and the adapter resol
         '--sjstw-border': tailwind['--color-gray-200'],
         '--sjstw-surface': tailwind['--color-white'],
         '--sjstw-primary-foreground': tailwind['--color-white'],
-        '--sjstw-destructive': tailwind['--color-red-600'],
+        '--sjstw-destructive': tailwind['--color-sjs-red'],
         '--sjstw-ring': adapter['--sjstw-primary'],
         '--sjstw-space': tailwind['--spacing'],
     });
@@ -110,25 +110,25 @@ for (const width of [1440, 390]) {
     });
 }
 
-test('6. a required-field error is Tailwind red; its text stays the body colour', async ({ page }) => {
+test('6. a required-field error is the design red; its text stays the body colour', async ({ page }) => {
     await page.getByRole('button', { name: 'Complete' }).click();
     const message = page.locator('.sd-question__erbox').first();
     await expect(message).toBeVisible();
 
     const { '--sjs2-palette-red-600': red600 } = await readVariables(page, ['--sjs2-palette-red-600'], '.sd-root-modern');
-    const { '--color-red-600': tailwindRed } = await readVariables(page, ['--color-red-600']);
-    expect(red600).toBe(tailwindRed);
+    const { '--color-sjs-red': designRed } = await readVariables(page, ['--color-sjs-red']);
+    expect(red600).toBe(designRed);
 
-    // The invalid field's ring and the message's tint come from red-600
-    const red = await resolveColor(page, 'var(--color-red-600)');
+    // The invalid field's ring and the message's tint come from the design red (--color-destructive)
+    const red = await resolveColor(page, 'var(--color-sjs-red)');
     const email = page.getByRole('textbox', { name: /Your email/ });
     await expect(email.locator('xpath=ancestor::*[contains(@class, "sd-formbox")][1]')).toHaveCSS('box-shadow', new RegExp(`^${red.replace(/[().]/g, '\\$&')} `));
-    await expect(message).toHaveCSS('background-color', await resolveColor(page, 'rgb(from var(--color-red-600) r g b / 0.1)'));
+    await expect(message).toHaveCSS('background-color', await resolveColor(page, 'rgb(from var(--color-sjs-red) r g b / 0.1)'));
 
     // survey-core 3.2.3 colours the message text with fg-basic-primary and only its icon with
-    // fg-alert-primary (red-700): the adapter's darker shade of the Tailwind red, not stock #C30935
+    // fg-alert-primary (red-700): the adapter's darker shade of the design red, not stock #C30935
     await expect(message).toHaveCSS('color', await resolveColor(page, 'var(--color-gray-800)'));
     const alert = await resolveColor(page, 'var(--sjs2-color-fg-alert-primary)');
-    expect(alert).toBe(await resolveColor(page, 'hsl(from var(--color-red-600) h s calc(l * 0.85))'));
+    expect(alert).toBe(await resolveColor(page, 'hsl(from var(--color-sjs-red) h s calc(l * 0.85))'));
     expect(alert).not.toBe(await resolveColor(page, '#C30935'));
 });
