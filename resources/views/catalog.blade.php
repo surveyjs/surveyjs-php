@@ -37,9 +37,9 @@
     <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-20">
         <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Build a PHP Backend for Your SurveyJS Forms</h1>
         <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-pretty text-sjs-fg-50">
-            The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">Integrate SurveyJS with PHP</a>,
-            as a Laravel application. Each step runs the real SurveyJS component against these routes and shows the code that just ran.
-            SurveyJS has no backend of its own, so treat these as starting points.
+            Learn how to connect SurveyJS components to a PHP backend using Laravel.
+            These working examples accompany the <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">PHP integration guide</a> and show the code behind each request.
+            SurveyJS does not include a backend, so use these examples as a starting point for your application.
         </p>
     </div>
 
