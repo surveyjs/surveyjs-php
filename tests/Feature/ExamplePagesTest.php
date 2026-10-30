@@ -32,6 +32,26 @@ class ExamplePagesTest extends TestCase
         }
     }
 
+    public function test_every_catalog_card_shows_its_licence_and_no_step_number(): void
+    {
+        $html = (string) $this->withoutVite()->get('/')->assertOk()->getContent();
+        preg_match_all('~<article.*?</article>~s', $html, $cards);
+        $steps = Demo::manifest()['steps'];
+
+        $this->assertCount(count($steps), $cards[0]);
+
+        foreach ($cards[0] as $card) {
+            $this->assertMatchesRegularExpression('~>(MIT|Commercial)</span>~', $card);
+            $this->assertDoesNotMatchRegularExpression('~>\d(\.\d)?</span>~', $card);
+        }
+        $this->assertSame(
+            collect($steps)->filter(fn ($step) => str_contains($step['licence'], 'needs an AI provider'))->count(),
+            substr_count($html, '>Needs an AI provider</span>'),
+        );
+        // The licence moved from the section headers to the cards
+        $this->assertSame(count($steps), preg_match_all('~>(MIT|Commercial)</span>~', $html));
+    }
+
     #[DataProvider('steps')]
     public function test_every_step_page_renders_and_loads_its_client_module(string $id, string $slug): void
     {

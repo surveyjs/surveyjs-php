@@ -42,10 +42,10 @@
     --color-sjs-back-gray: var(--color-gray-50);    /* general/backcolor-gray */
     --color-sjs-back-gray-2: var(--color-gray-100); /* general/backcolor-gray-2 */
     --color-sjs-border: #dedede;                    /* border-effect/default: the outline of white buttons */
-    --color-sjs-blue: #437fd9;      /* special/blue: links */
-    --color-sjs-blue-10: #ecf2fb;   /* special/blue-10 */
     --color-sjs-yellow: #ff9814;    /* special/yellow, secondary/secondary */
     --color-sjs-yellow-10: #fff4e7; /* special/yellow-10 */
+    --color-sjs-violet: #8b76f9;    /* special/violet */
+    --color-sjs-violet-10: #f3f1fe; /* special/violet-10 */
     --color-sjs-red: #e50a3e;       /* special/red */
     --color-sjs-red-15: #fbdae2;    /* special/red-15 */
     --color-sjs-scrollbar: rgb(17 16 20 / 0.15);    /* sjs2/color/utility/scrollbar: the thumb */

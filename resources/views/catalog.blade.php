@@ -11,13 +11,11 @@
     // The manifest's licence reads "MIT", "Commercial" or "Commercial client", optionally followed by ", needs an AI provider"
     $licence = fn (array $step) => str_starts_with($step['licence'], 'MIT') ? 'MIT' : 'Commercial';
     $needsAi = fn (array $step) => str_contains($step['licence'], 'needs an AI provider');
-    // Section badges: 20px on white, the tint of the licence colour; on a gray section, white
-    $sectionBadge = 'rounded-lg px-4 py-3 text-xl/6 font-semibold';
     $cardBadge = 'rounded-lg px-3 py-1 text-base/6 font-semibold';
-    $badgeText = ['MIT' => 'text-sjs-blue', 'Commercial' => 'text-sjs'];
-    $badgeTint = ['MIT' => 'bg-sjs-blue-10', 'Commercial' => 'bg-sjs-10'];
-    $siteLink = 'text-base/6 font-semibold text-sjs-blue underline decoration-dotted [text-underline-position:from-font] hover:decoration-solid';
-    $whiteButton = 'inline-block rounded-lg bg-white px-6 py-3 text-base/6 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
+    $licenceBadge = ['MIT' => 'bg-sjs-10 text-sjs', 'Commercial' => 'bg-sjs-yellow-10 text-sjs-yellow'];
+    // Site Button, medium: primary and tertiary neutral
+    $blackButton = 'rounded-lg bg-sjs-fg px-6 py-3 text-center text-base/6 font-semibold text-white no-underline hover:bg-gray-700';
+    $whiteButton = 'inline-block rounded-lg bg-white px-6 py-3 text-center text-base/6 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
     $column = 'mx-auto max-w-sjs-content px-4 md:px-6';
     $number = 0;
 @endphp
@@ -55,42 +53,31 @@
 
     @foreach ($sections as $id => [$title, $intro])
         @continue(! $steps->has($id))
-        @php
-            $gray = $number++ % 2 === 0;
-            $licences = $steps[$id]->map($licence)->unique()->values();
-        @endphp
-        <section @class(['border-t border-sjs-line pb-12 md:pb-16 xl:pb-24', 'bg-sjs-back-gray' => $gray])>
+        <section @class(['border-t border-sjs-line pb-12 md:pb-16 xl:pb-24', 'bg-sjs-back-gray' => $number++ % 2 === 0])>
             <div class="{{ $column }} pt-16 pb-12 xl:pt-24">
-                <div class="flex flex-wrap items-center gap-6">
-                    <h2 class="text-sjs-title-lg font-bold md:text-sjs-title-xl">{{ $title }}</h2>
-                    <div class="flex gap-3">
-                        @foreach ($licences as $kind)
-                            <span class="{{ $sectionBadge }} {{ $badgeText[$kind] }} {{ $gray ? 'bg-white' : $badgeTint[$kind] }}">{{ $kind }}</span>
-                        @endforeach
-                    </div>
-                </div>
+                <h2 class="text-sjs-title-lg font-bold md:text-sjs-title-xl">{{ $title }}</h2>
                 <p class="mt-3 mb-0 text-sjs-para-lg font-medium text-sjs-fg-50">{{ $intro }}</p>
             </div>
             <div class="{{ $column }} grid gap-3 md:grid-cols-2">
-                @foreach ($steps[$id] as $stepId => $step)
-                    <article class="flex flex-col gap-10 rounded-3xl border border-sjs-line bg-white p-6">
-                        <div class="flex flex-1 flex-col gap-3">
+                @foreach ($steps[$id] as $step)
+                    {{-- A card alone in its row takes the full width. Phones: stacked, full-width buttons --}}
+                    <article class="flex flex-col gap-10 rounded-3xl border border-sjs-line bg-white p-4 md:p-6 md:odd:last:col-span-2">
+                        <div class="flex flex-1 flex-col gap-6 p-2 md:p-0">
                             <div class="flex flex-wrap gap-3">
-                                <span class="{{ $cardBadge }} bg-sjs-back-gray text-sjs-fg-75">{{ $stepId }}</span>
-                                @if ($licences->count() > 1)
-                                    <span class="{{ $cardBadge }} {{ $badgeText[$licence($step)] }} {{ $badgeTint[$licence($step)] }}">{{ $licence($step) }}</span>
-                                @endif
+                                <span class="{{ $cardBadge }} {{ $licenceBadge[$licence($step)] }}">{{ $licence($step) }}</span>
                                 @if ($needsAi($step))
-                                    <span class="{{ $cardBadge }} bg-sjs-yellow-10 text-sjs-yellow">Needs an AI provider</span>
+                                    <span class="{{ $cardBadge }} bg-sjs-violet-10 text-sjs-violet">Needs an AI provider</span>
                                 @endif
                             </div>
-                            <h3 class="text-sjs-para-lg font-semibold">{{ $step['title'] }}</h3>
-                            <p class="m-0 text-sjs-para-md text-sjs-fg-75">{{ $step['need'] }}</p>
+                            <div class="flex flex-col gap-3">
+                                <h3 class="text-sjs-para-lg font-semibold">{{ $step['title'] }}</h3>
+                                <p class="m-0 text-sjs-para-md text-sjs-fg-75">{{ $step['need'] }}</p>
+                            </div>
                         </div>
-                        <p class="m-0 flex flex-wrap items-center gap-x-5 gap-y-2">
-                            <a class="rounded-lg bg-sjs-back-gray-2 px-6 py-3 text-base/6 font-semibold text-sjs-fg no-underline hover:bg-gray-200" href="{{ url($step['page']) }}">Run</a>
-                            <a class="{{ $siteLink }}" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}" target="_blank">Source ↗&#xFE0E;</a>
-                            <a class="{{ $siteLink }}" href="{{ \App\Support\Demo::docsUrl($step) }}" target="_blank">On the page ↗&#xFE0E;</a>
+                        <p class="m-0 flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
+                            <a class="{{ $blackButton }}" href="{{ url($step['page']) }}">Run</a>
+                            <a class="{{ $whiteButton }}" href="{{ config('surveyjs.github') }}/blob/{{ $manifest['branch'] }}/{{ $step['files']['server'] ?? $step['files']['client'] }}" target="_blank">Source ↗&#xFE0E;</a>
+                            <a class="{{ $whiteButton }}" href="{{ \App\Support\Demo::docsUrl($step) }}" target="_blank">On the page ↗&#xFE0E;</a>
                         </p>
                     </article>
                 @endforeach
