@@ -7,10 +7,10 @@ namespace App\Integration;
 use Illuminate\Support\Facades\Http;
 
 /**
- * 3.3: asks any OpenAI-compatible /chat/completions endpoint (AI_BASE_URL, AI_API_KEY, AI_MODEL)
+ * Asks any OpenAI-compatible /chat/completions endpoint (AI_BASE_URL, AI_API_KEY, AI_MODEL)
  * to translate Creator's strings. Your provider and your key: nothing goes to SurveyJS. Swap this
  * file for your provider's SDK if you like; the route only needs an array back. When you copy
- * 3.3, copy this file too.
+ * ai-translation, copy this file too.
  */
 final class AiTranslation
 {

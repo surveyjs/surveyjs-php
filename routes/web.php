@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn () => view('catalog', ['manifest' => Demo::manifest()]))->name('catalog');
 
 Route::get('/examples/{slug}', function (Request $request, string $slug) {
-    [$id, $step] = Demo::step($slug) ?? abort(404);
+    $step = Demo::step($slug) ?? abort(404);
     DemoUser::signInForPage($slug, $request);
 
-    return view('examples.'.$slug, ['stepId' => $id, 'step' => $step]);
+    return view('examples.'.$slug, ['step' => $step]);
 })->where('slug', '[a-z0-9-]+')->name('example');
 
 // Shared client modules, definitions and samples live outside public/: serve only those three folders

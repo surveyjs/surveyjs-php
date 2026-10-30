@@ -1,10 +1,10 @@
-// 4.4 Extract Responses from Documents
+// Extract Responses from Documents
 import { mountSurvey, note, page, show } from "./host.js";
 import { Model } from "survey-core";
 
 const survey = mountSurvey(new Model(page.definition));   // the work order form
 
-// #region sjs:4.4.client
+// #region sjs:extract-from-paper.client
 // Upload the scan; open the draft in the form for review
 async function extract(file) {
   const body = new FormData();

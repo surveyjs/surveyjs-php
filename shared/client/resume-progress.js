@@ -1,11 +1,11 @@
-// 1.3 Resume Progress
+// Resume Progress
 import { mountSurvey, onRequest, page, show, setStoredQuery } from "./host.js";
 import { Model } from "survey-core";
 
 const formId = "onboarding";   // real code keys progress by user and form
 const survey = mountSurvey(new Model(page.definition));
 
-// #region sjs:1.3.client
+// #region sjs:resume-progress.client
 import debounce from "lodash/debounce";
 
 // On return: restore both — the user continues on the same page, in the same input.

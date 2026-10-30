@@ -345,7 +345,7 @@ test('6. at 900 the tabs have no icons and fit; cut, the panel tabs scroll and f
     expect(mainRow.y + mainRow.height - 1 - (button.y + button.height)).toBeGreaterThanOrEqual(8);   // 1: the row's bottom border
 });
 
-test('7. 1.6 at 768 with the panel open: no horizontal page scroll', async ({ page }) => {
+test('7. async-functions at 768 with the panel open: no horizontal page scroll', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/examples/async-functions');
     await expectPanel(page, 'description');

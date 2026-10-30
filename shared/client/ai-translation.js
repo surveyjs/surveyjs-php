@@ -1,4 +1,4 @@
-// 3.3 Translate with AI
+// Translate with AI
 import { mountCreator, note, onRequest } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 import "survey-core/i18n/german";
@@ -9,7 +9,7 @@ const formId = "support";
 const creator = new SurveyCreator({ showTranslationTab: true });
 creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;
 
-// #region sjs:3.3.client
+// #region sjs:ai-translation.client
 // Creator asks for machine translation; your server calls the AI provider
 creator.onMachineTranslate.add(async (_, options) => {
   const res = await fetch("/api/translate", {

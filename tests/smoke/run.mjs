@@ -5,16 +5,16 @@
 // copy (the weekly and release pipelines: .github/workflows/smoke.yml). Platform-neutral: the steps,
 // titles and pages come from surveyjs-integration.json; the request shapes and error texts from run.mjs.
 //
-//   BASE_URL=https://surveyjs-php.demos.surveyjs.io node tests/smoke/run.mjs [--steps 1.1,1.5]
+//   BASE_URL=https://surveyjs-php.demos.surveyjs.io node tests/smoke/run.mjs [--steps save-response,choices-from-web]
 //
 // Options (environment), as in shared/contract-tests/run.mjs:
 //   BASE_URL             the app (default http://127.0.0.1:8000)
-//   SERVICE=off|on       Section 4 service: off expects 503 "not running"
-//   AI=off|stub          3.3 and 4.4: off expects 501 / 503, stub expects answers
-//   VALIDATE_RESPONSES   true when the app runs 4.1 in place of 1.1
-//   LINT_DEFINITIONS     true when the app runs 4.2 in place of the 3.1 PUT
-//   RELAY_URL            ws://… of the 1.8 fill relay (without it, 1.8's endpoint check is skipped)
-//   EDIT_RELAY_URL       ws://… of the 3.5 edit relay (without it, 3.5's endpoint check is skipped)
+//   SERVICE=off|on       SurveyJS service: off expects 503 "not running"
+//   AI=off|stub          ai-translation and extract-from-paper: off expects 501 / 503, stub expects answers
+//   VALIDATE_RESPONSES   true when the app runs validate-response in place of save-response
+//   LINT_DEFINITIONS     true when the app runs lint-definition in place of the creator-load-save PUT
+//   RELAY_URL            ws://… of the fill-together relay (without it, fill-together's endpoint check is skipped)
+//   EDIT_RELAY_URL       ws://… of the edit-together relay (without it, edit-together's endpoint check is skipped)
 //   MANIFEST             path of surveyjs-integration.json (default: the one in the current directory)
 //
 // It sends demo_user=alice and keeps the demo_sid cookie the server sets, so a run against the hosted
@@ -40,8 +40,8 @@ const manifest = JSON.parse(readFileSync(manifestFile, "utf8"));
 const readRepo = (path) => readFileSync(resolve(dirname(manifestFile), path));   // shared/samples/… next to the manifest
 
 const stepsArg = process.argv.slice(2).join(" ").match(/--steps[= ]([^\s]+)/)?.[1];
-const SELECTED = stepsArg ? stepsArg.split(",").map((s) => s.trim()).filter(Boolean) : Object.keys(manifest.steps).sort((a, b) => a.localeCompare(b, "en", { numeric: true }));   // JS lists the integer key "2" first
-for (const s of SELECTED) if (!manifest.steps[s]) { console.error(`Unknown step ${s}`); process.exit(2); }
+const SELECTED = stepsArg ? stepsArg.split(",").map((s) => s.trim()).filter(Boolean) : manifest.steps.map((step) => step.slug);
+for (const s of SELECTED) if (!manifest.steps.some((step) => step.slug === s)) { console.error(`Unknown step ${s}`); process.exit(2); }
 
 const unique = (prefix) => `${prefix}-${randomBytes(4).toString("hex")}`;
 
@@ -111,86 +111,86 @@ const files = () => {
 // The main endpoint of each step: [what it calls, the check]
 
 const ENDPOINTS = {
-  "1.1": ["POST /api/responses", async () => {
-    if (VALIDATE) skip("VALIDATE_RESPONSES replaces 1.1 with 4.1");
+  "save-response": ["POST /api/responses", async () => {
+    if (VALIDATE) skip("VALIDATE_RESPONSES replaces save-response with validate-response");
     const r = await http("POST", "/api/responses", { json: { formId: "contact", data: { email: "smoke@example.com" } } });
     expectStatus(r, 201, "POST /api/responses");
   }],
-  "1.2": ["GET /claim, GET /api/forms/claim-request", async () => {
+  "load-definition-variables-data": ["GET /claim, GET /api/forms/claim-request", async () => {
     expectStatus(await http("GET", "/claim"), 200, "GET /claim");
     const r = await http("GET", "/api/forms/claim-request");
     expectStatus(r, 200, "GET /api/forms/claim-request");
     expect(isObject(r.data?.definition), `expected a definition object, got ${r.text().slice(0, 200)}`);
   }],
-  "1.3": ["PUT /api/progress/:formId", async () => {
+  "resume-progress": ["PUT /api/progress/:formId", async () => {
     expectStatus(await http("PUT", `/api/progress/${unique("smoke")}`, { json: {} }), 204, "PUT /api/progress");
   }],
-  "1.4": ["POST /api/files", async () => {
+  "store-files": ["POST /api/files", async () => {
     const r = await http("POST", "/api/files", { body: files() });
     expectStatus(r, 200, "POST /api/files");
     expect(Array.isArray(r.data) && r.data.length === 1, `expected an array of 1 id, got ${r.text().slice(0, 200)}`);
   }],
-  "1.5": ["GET /api/offices, GET /api/countries", async () => {
+  "choices-from-web": ["GET /api/offices, GET /api/countries", async () => {
     for (const path of ["/api/offices?region=europe", "/api/countries"]) {
       const r = await http("GET", path);
       expectStatus(r, 200, `GET ${path}`);
       expect(Array.isArray(r.data) && r.data.length > 0, `GET ${path}: expected a non-empty array, got ${r.text().slice(0, 200)}`);
     }
   }],
-  "1.6": ["GET /api/customers/exists", async () => {
+  "async-functions": ["GET /api/customers/exists", async () => {
     const r = await http("GET", "/api/customers/exists?email=taken%40example.com");
     expectStatus(r, 200, "GET /api/customers/exists");
     expect(r.data?.exists === true, `expected { "exists": true }, got ${r.text()}`);
   }],
-  "1.7": ["POST /api/claims", async () => {
+  "relational-storage": ["POST /api/claims", async () => {
     const r = await http("POST", "/api/claims", { json: { data: { customer_email: "smoke@example.com", amount: 1 }, definitionVersion: "v1" } });
     expectStatus(r, 201, "POST /api/claims");
     expect(Number.isInteger(r.data?.id), `expected { id }, got ${r.text()}`);
   }],
-  "1.8": ["WS /ws/rooms/:id", async () => {
+  "fill-together": ["WS /ws/rooms/:id", async () => {
     if (!RELAY_URL) skip("RELAY_URL is not set");
     await opens(`${RELAY_URL}/ws/rooms/${unique("smoke")}?name=Smoke`);
   }],
-  "2": ["GET /api/responses", async () => {
+  "dashboard": ["GET /api/responses", async () => {
     const r = await http("GET", "/api/responses?formId=feedback&limit=1");
     expectStatus(r, 200, "GET /api/responses");
     expect(Array.isArray(r.data), `expected an array, got ${r.text().slice(0, 200)}`);
   }],
-  "3.1": ["PUT /api/forms/:id", async () => {
+  "creator-load-save": ["PUT /api/forms/:id", async () => {
     const r = await http("PUT", `/api/forms/${unique("smoke")}`, { json: definition });
     if (!LINT) return expectStatus(r, 204, "PUT /api/forms");
     if (SERVICE === "off") return expectError(r, 503, "PUT /api/forms (LINT_DEFINITIONS)", "not running");
     expectStatus(r, [200, 204], "PUT /api/forms (LINT_DEFINITIONS)");
   }],
-  "3.2": ["POST /api/files", async () => {
+  "creator-uploads": ["POST /api/files", async () => {
     expectStatus(await http("POST", "/api/files", { body: files() }), 200, "POST /api/files");
   }],
-  "3.3": ["POST /api/translate", async () => {
+  "ai-translation": ["POST /api/translate", async () => {
     const r = await http("POST", "/api/translate", { json: { strings: ["Hello"], from: "en", to: "de" } });
     if (AI === "off") return expectError(r, 501, "POST /api/translate without a key", "Set AI_API_KEY to enable translation");
     expectStatus(r, 200, "POST /api/translate");
     expect(Array.isArray(r.data) && r.data.length === 1, `expected an array of 1, got ${r.text().slice(0, 200)}`);
   }],
-  "3.4": ["PUT /api/variable-presets/:formId", async () => {
+  "variable-presets": ["PUT /api/variable-presets/:formId", async () => {
     expectStatus(await http("PUT", `/api/variable-presets/${unique("smoke")}`, { json: {} }), 204, "PUT /api/variable-presets");
   }],
-  "3.5": ["WS /ws/forms/:id", async () => {
+  "edit-together": ["WS /ws/forms/:id", async () => {
     if (!EDIT_RELAY_URL) skip("EDIT_RELAY_URL is not set");
     await opens(`${EDIT_RELAY_URL}/ws/forms/${unique("smoke")}?name=Smoke`);
   }],
-  "4.1": ["POST /api/responses (validated)", async () => {
+  "validate-response": ["POST /api/responses (validated)", async () => {
     if (!VALIDATE) skip("VALIDATE_RESPONSES is off");
     const r = await http("POST", "/api/responses", { json: { formId: "claim", data: claimData } });
     if (SERVICE === "off") return expectError(r, 503, "POST /api/responses", "not running");
     expectStatus(r, 201, "POST /api/responses");
   }],
-  "4.2": ["PUT /api/forms/:id (linted)", async () => {
+  "lint-definition": ["PUT /api/forms/:id (linted)", async () => {
     if (!LINT) skip("LINT_DEFINITIONS is off");
     const r = await http("PUT", `/api/forms/${unique("smoke")}`, { json: definition });
     if (SERVICE === "off") return expectError(r, 503, "PUT /api/forms", "not running");
     expectStatus(r, 204, "PUT /api/forms");
   }],
-  "4.3": ["GET /api/claims/:id/pdf", async () => {
+  "server-pdf": ["GET /api/claims/:id/pdf", async () => {
     const claim = await http("POST", "/api/claims", { json: { data: claimData, definitionVersion: "v1" } });
     expectStatus(claim, 201, "POST /api/claims (the fixture)");
     const r = await http("GET", `/api/claims/${claim.data.id}/pdf`);
@@ -198,7 +198,7 @@ const ENDPOINTS = {
     expectStatus(r, 200, "GET /api/claims/:id/pdf");
     expect((r.headers.get("content-type") ?? "").startsWith("application/pdf"), `Content-Type ${r.headers.get("content-type")}`);
   }],
-  "4.4": ["POST /api/work-orders/extract", async () => {
+  "extract-from-paper": ["POST /api/work-orders/extract", async () => {
     const form = new FormData();
     form.append("scan", new Blob([readRepo("shared/samples/work-order-scan.png")], { type: "image/png" }), "work-order-scan.png");
     const r = await http("POST", "/api/work-orders/extract", { body: form });
@@ -241,11 +241,11 @@ async function run(name, fn) {
   }
 }
 
-for (const id of SELECTED) {
-  const step = manifest.steps[id];
-  await run(`${id} page ${step.page}`, () => pageLoads(step));
-  const [what, check] = ENDPOINTS[id] ?? [step.endpoints?.join(", ") ?? "endpoint", () => skip("no smoke request for this step")];
-  await run(`${id} ${what}`, check);
+for (const slug of SELECTED) {
+  const step = manifest.steps.find((s) => s.slug === slug);
+  await run(`${slug} page ${step.page}`, () => pageLoads(step));
+  const [what, check] = ENDPOINTS[slug] ?? [step.endpoints?.join(", ") ?? "endpoint", () => skip("no smoke request for this step")];
+  await run(`${slug} ${what}`, check);
 }
 
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped in ${((performance.now() - started) / 1000).toFixed(1)} s`);

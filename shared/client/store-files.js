@@ -1,11 +1,11 @@
-// 1.4 Store Files Separately
+// Store Files Separately
 import { mountSurvey, note, onRequest, page, show } from "./host.js";
 import { Model } from "survey-core";
 
 // In the definition: { "type": "file", "name": "receipt", "storeDataAsText": false, "allowMultiple": true }
 const survey = new Model(page.definition);
 
-// #region sjs:1.4.client
+// #region sjs:store-files.client
 // Upload: your server stores the files and returns an id (or a URL) for each
 survey.onUploadFiles.add(async (_, options) => {
   const body = new FormData();
@@ -25,7 +25,7 @@ survey.onDownloadFile.add(async (_, options) => {
 });
 // #endregion
 
-// Saving the finished response is 1.1
+// Saving the finished response is in save-response
 survey.onComplete.add(async (sender) => {
   await fetch("/api/responses", {
     method: "POST",

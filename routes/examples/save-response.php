@@ -6,7 +6,7 @@ use App\Integration\StoredJson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:1.1.server
+// #region sjs:save-response.server
 // POST /api/responses — store the answers exactly as they arrive
 // bootstrap/app.php turns off TrimStrings and ConvertEmptyStringsToNull for /api/*: they would change "  a " and ""
 Route::post('/api/responses', function (Request $request) {

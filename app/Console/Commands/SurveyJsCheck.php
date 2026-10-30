@@ -20,7 +20,9 @@ class SurveyJsCheck extends Command
 
     protected $description = 'Check the manifest, the snippet regions, shared/ and the SurveyJS versions';
 
-    private const STEPS = ['1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8', '2', '3.1', '3.2', '3.3', '3.4', '3.5', '4.1', '4.2', '4.3', '4.4'];
+    private const STEPS = ['save-response', 'load-definition-variables-data', 'resume-progress', 'store-files', 'choices-from-web', 'async-functions',
+        'relational-storage', 'fill-together', 'dashboard', 'creator-load-save', 'creator-uploads', 'ai-translation', 'variable-presets', 'edit-together',
+        'validate-response', 'lint-definition', 'server-pdf', 'extract-from-paper'];
 
     private const REGION_SOURCES = ['routes', 'app/Relay', 'shared/client'];
 
@@ -46,7 +48,7 @@ class SurveyJsCheck extends Command
         $this->checkReadmeDocsLinks();
 
         if ($this->option('complete')) {
-            foreach (array_diff(self::STEPS, array_keys($manifest['steps'])) as $missing) {
+            foreach (array_diff(self::STEPS, array_column($manifest['steps'], 'slug')) as $missing) {
                 $this->errors[] = "Step {$missing} is missing from surveyjs-integration.json";
             }
         }
@@ -128,14 +130,14 @@ class SurveyJsCheck extends Command
 
     private function checkManifest(array $manifest): void
     {
-        foreach ($manifest['steps'] as $id => $step) {
+        foreach ($manifest['steps'] as $step) {
             foreach ($step['files'] ?? [] as $role => $path) {
                 if (! is_file(base_path($path))) {
-                    $this->errors[] = "{$id}: {$role} file {$path} is missing";
+                    $this->errors[] = "{$step['slug']}: {$role} file {$path} is missing";
                 }
             }
             if (! in_array($step['status'], ['done', 'not-in-repo'], true)) {
-                $this->errors[] = "{$id}: unknown status {$step['status']}";
+                $this->errors[] = "{$step['slug']}: unknown status {$step['status']}";
             }
         }
     }
@@ -170,13 +172,13 @@ class SurveyJsCheck extends Command
             }
         }
 
-        foreach ($manifest['steps'] as $stepId => $step) {
+        foreach ($manifest['steps'] as $step) {
             foreach ($step['regions'] as $id) {
                 $files = $found[$id] ?? [];
                 if (count($files) !== 1) {
-                    $this->errors[] = "{$stepId}: region sjs:{$id} found ".count($files).' times, expected exactly once';
+                    $this->errors[] = "{$step['slug']}: region sjs:{$id} found ".count($files).' times, expected exactly once';
                 } elseif (! in_array($files[0], [$step['files']['client'] ?? null, $step['files']['server'] ?? null], true)) {
-                    $this->errors[] = "{$stepId}: region sjs:{$id} is in {$files[0]}, not in the step's client or server file";
+                    $this->errors[] = "{$step['slug']}: region sjs:{$id} is in {$files[0]}, not in the step's client or server file";
                 }
             }
         }

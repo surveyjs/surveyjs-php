@@ -12,14 +12,14 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Timer;
 
 /**
- * 3.5 Edit Forms Together: the relay behind CollaborationPlugin from survey-creator-core/collaboration.
+ * Edit Forms Together: the relay behind CollaborationPlugin from survey-creator-core/collaboration.
  * Wire protocol: https://github.com/surveyjs/collaborative-form-editing (PROTOCOL.md).
  * Started by `php artisan relay:edit` (app/Console/Commands/RelayEdit.php).
  */
 final class EditRelay
 {
-    // #region sjs:3.5.server
-    // The same kind of relay as 1.8, keeping an append-only log instead of a value map:
+    // #region sjs:edit-together.server
+    // The same kind of relay as Fill Forms Together, keeping an append-only log instead of a value map:
     // Creator records must be replayed in order. Run as its own process: php artisan relay:edit
     private array $rooms = [];   // room key => EditRoom { seed, log, clients }
 
@@ -33,7 +33,7 @@ final class EditRelay
 
             return;
         }
-        $room = $this->rooms[$roomKey] ??= new EditRoom($this->savedDefinition($formId));   // seed = saved definition (3.1)
+        $room = $this->rooms[$roomKey] ??= new EditRoom($this->savedDefinition($formId));   // seed = saved definition
         $room->cancelDrop();                                                  // back within 2 s: keep the room
         $c->context->roomKey = $roomKey;
         $c->context->id = bin2hex(random_bytes(8));
@@ -95,8 +95,8 @@ final class EditRelay
     }
 
     /**
-     * Demo only: the demo_user cookie stands in for your real session check here. Like the
-     * 3.1 save, editing is for editors (Gate "edit-forms" in AppServiceProvider).
+     * Demo only: the demo_user cookie stands in for your real session check here. Like saving
+     * in creator-load-save, editing is for editors (Gate "edit-forms" in AppServiceProvider).
      */
     private function editor(Request $request): ?object
     {
@@ -112,7 +112,7 @@ final class EditRelay
         return preg_match('~^/ws/forms/([A-Za-z0-9_-]{1,64})$~', $request->path(), $m) ? $m[1] : null;
     }
 
-    /** The definition saved through 3.1, or an empty one for a new form. */
+    /** The definition saved through creator-load-save, or an empty one for a new form. */
     private function savedDefinition(string $formId): object
     {
         return json_decode((string) DB::table('forms')->where('key', $formId)->value('json')) ?? new stdClass;

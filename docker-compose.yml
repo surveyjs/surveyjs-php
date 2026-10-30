@@ -17,7 +17,7 @@ x-app-environment: &app-environment
     DEMO_MODE: ${DEMO_MODE:-false}
     RELAY_URL: ${RELAY_URL:-}                           # set both when a proxy serves the relays (README: Behind a proxy)
     EDIT_RELAY_URL: ${EDIT_RELAY_URL:-}
-    SURVEYJS_AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}     # only to tell the 4.4 page whether extraction is configured
+    SURVEYJS_AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}     # only to tell the extract-from-paper page whether extraction is configured
 
 services:
     app:                        # your backend: this Laravel app (migrates and seeds on start)
@@ -27,7 +27,7 @@ services:
         volumes: [storage:/app/storage]
         depends_on: [surveyjs]
 
-    relay:                      # 1.8: the fill-together relay, its own process
+    relay:                      # the fill-together relay, its own process
         build: .
         command: ["php", "artisan", "relay:fill"]
         ports: ["8081:8081"]
@@ -35,7 +35,7 @@ services:
         volumes: [storage:/app/storage]
         depends_on: [app]
 
-    edit-relay:                 # 3.5: the edit-together relay, its own process
+    edit-relay:                 # the edit-together relay, its own process
         build: .
         command: ["php", "artisan", "relay:edit"]
         ports: ["8082:8082"]
@@ -75,7 +75,7 @@ services:
                 COPY --from=build /app/dist ./dist
                 EXPOSE 3000
                 CMD ["npm", "start"]
-        environment:            # 4.4: the AI provider the service extracts with; no licence key (this revision ignores it)
+        environment:            # the AI provider the service extracts with; no licence key (this revision ignores it)
             AI_PROVIDER: ${SURVEYJS_AI_PROVIDER:-}
             AI_MODEL: ${SURVEYJS_AI_MODEL:-}
             OLLAMA_BASE_URL: ${SURVEYJS_OLLAMA_BASE_URL:-}

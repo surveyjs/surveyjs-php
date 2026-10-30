@@ -24,16 +24,16 @@ class DisplayedRegionsTest extends TestCase
     public static function pitfalls(): array
     {
         return [
-            '1.1.server' => ['routes/examples/save-response.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED, 'TrimStrings', 'ConvertEmptyStringsToNull', 'bootstrap/app.php']],
-            '1.2.server' => ['routes/examples/load-definition-variables-data.php', ['previous answers, or {}']],
-            '1.3.server' => ['routes/examples/resume-progress.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            '1.4.server' => ['routes/examples/store-files.php', ['field "files[]": PHP keeps only the last of several "files"', '404, not 403', 'nosniff', 'sandbox']],
-            '1.7.server' => ['routes/examples/relational-storage.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            '2.server' => ['routes/examples/dashboard.php', ['documents as stored, not re-encoded']],
-            '3.1.server' => ['routes/examples/creator-load-save.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            '3.4.server' => ['routes/examples/variable-presets.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
-            '4.1.server' => ['routes/examples/validate-response.php', ['the raw body keeps {} as {} (see 1.1)', self::DECODE, self::AS_IT_ARRIVED]],
-            '4.2.server' => ['routes/examples/lint-definition.php', ['the raw body keeps {} as {} (see 3.1)', self::DECODE, self::AS_IT_ARRIVED]],
+            'save-response.server' => ['routes/examples/save-response.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED, 'TrimStrings', 'ConvertEmptyStringsToNull', 'bootstrap/app.php']],
+            'load-definition-variables-data.server' => ['routes/examples/load-definition-variables-data.php', ['previous answers, or {}']],
+            'resume-progress.server' => ['routes/examples/resume-progress.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            'store-files.server' => ['routes/examples/store-files.php', ['field "files[]": PHP keeps only the last of several "files"', '404, not 403', 'nosniff', 'sandbox']],
+            'relational-storage.server' => ['routes/examples/relational-storage.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            'dashboard.server' => ['routes/examples/dashboard.php', ['documents as stored, not re-encoded']],
+            'creator-load-save.server' => ['routes/examples/creator-load-save.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            'variable-presets.server' => ['routes/examples/variable-presets.php', [self::RAW_BODY, self::DECODE, self::AS_IT_ARRIVED]],
+            'validate-response.server' => ['routes/examples/validate-response.php', ['the raw body keeps {} as {} (see Save Responses)', self::DECODE, self::AS_IT_ARRIVED]],
+            'lint-definition.server' => ['routes/examples/lint-definition.php', ['the raw body keeps {} as {} (see Load and Save Form JSON Schemas)', self::DECODE, self::AS_IT_ARRIVED]],
         ];
     }
 

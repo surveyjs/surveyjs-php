@@ -23,18 +23,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Saving definitions (3.1, 4.2) and variable presets (3.4) is an admin action.
+        // Saving definitions (creator-load-save, lint-definition) and variable presets is an admin action.
         // Your real permission check goes here: roles, teams, form ownership…
-        // The deny message is the { error } of the 403, which Creator shows (3.1).
+        // The deny message is the { error } of the 403, which Creator shows (creator-load-save).
         Gate::define('edit-forms', fn (User $user) => $user->is_editor
             ? Response::allow()
             : Response::deny("You don't have editor rights: only editors can change forms"));
 
-        // Private files (1.4) go through this check before GET /api/files/{id} returns them.
+        // Private files (store-files) go through this check before GET /api/files/{id} returns them.
         // Real apps check ownership here, for example $file->owner_id === $user->id.
         Gate::define('read-file', fn (?User $user, object $file) => $user !== null);
 
-        // `composer dev` also starts the 1.8 and 3.5 relays next to the server, queue and Vite
+        // `composer dev` also starts the fill-together and edit-together relays next to the server, queue and Vite
         DevCommands::artisan('relay:fill', 'relay');
         DevCommands::artisan('relay:edit', 'edit-relay');
     }

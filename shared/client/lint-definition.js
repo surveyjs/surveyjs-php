@@ -1,4 +1,4 @@
-// 4.2 Lint JSON Schemas
+// Lint JSON Schemas
 import { mountCreator, note } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 
@@ -6,7 +6,7 @@ const formId = "support";
 const creator = new SurveyCreator({ showTranslationTab: true });
 creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;
 
-// #region sjs:4.2.client
+// #region sjs:lint-definition.client
 // Creator: surface the server's lint report instead of a silent failure
 async function saveDefinition(definition) {
   const res = await fetch(`/api/forms/${formId}`, {

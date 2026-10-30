@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-// #region sjs:1.6.server
+// #region sjs:async-functions.server
 // GET /api/customers/exists?email= — answers emailExists()
 Route::get('/api/customers/exists', function (Request $request) {
     $email = Str::lower(trim((string) $request->query('email')));

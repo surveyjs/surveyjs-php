@@ -5,7 +5,7 @@
      in the step's files. --}}
 @php
     $manifest = \App\Support\Demo::manifest();
-    $config = \App\Support\Demo::pageConfig($stepId, $step);
+    $config = \App\Support\Demo::pageConfig($step);
     $users = \App\Http\Middleware\DemoUser::forPage($step['slug']);
     $commercial = str_starts_with($step['licence'], 'Commercial');
     $theme = trim($__env->yieldContent('theme', 'survey'));
@@ -22,7 +22,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $stepId }} {{ $step['title'] }} · SurveyJS + Laravel</title>
+    <title>{{ $step['title'] }} · SurveyJS + Laravel</title>
     <script>window.SURVEYJS_PAGE = {{ Js::from($config) }};</script>
     @yield('head')
     @fonts
@@ -36,7 +36,7 @@
             <span class="max-lg:hidden">{{ \App\Support\Demo::TITLE }}</span>
         </a>
         <span aria-hidden="true" class="text-gray-300 max-lg:hidden">/</span>
-        <h1 class="min-w-0 truncate text-base font-semibold text-gray-900"><span class="font-bold text-sjs-dark">{{ $stepId }}</span> {{ $step['title'] }}</h1>
+        <h1 class="min-w-0 truncate text-base font-semibold text-gray-900">{{ $step['title'] }}</h1>
     </div>
 
     @if (request()->attributes->get('demo_join_failed'))
@@ -174,7 +174,7 @@
 
             <div id="component" class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
                 {{-- The form's padding is the card's: the app layer in survey.css zeroes SurveyJS's own side padding.
-                     Creator, the Dashboard and 4.3's list replace this section and fill the card. --}}
+                     Creator, the Dashboard and server-pdf's list replace this section and fill the card. --}}
                 @section('form')
                     <div id="form" class="p-4 sm:p-6"></div>
                 @show

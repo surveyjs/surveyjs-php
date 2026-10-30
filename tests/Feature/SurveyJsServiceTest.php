@@ -28,7 +28,7 @@ class SurveyJsServiceTest extends TestCase
 
     private const SERVICE = 'http://surveyjs.test:3000';
 
-    /** routes/examples.php picks the 4.1 and 4.2 route files at boot, so the switches are set before routes load. */
+    /** routes/examples.php picks the validate-response and lint-definition route files at boot, so the switches are set before routes load. */
     public function createApplication()
     {
         $app = require Application::inferBasePath().'/bootstrap/app.php';
@@ -65,7 +65,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // 4.1 POST /api/responses
+    // validate-response POST /api/responses
 
     public function test_iv1_valid_answers_are_saved(): void
     {
@@ -114,7 +114,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // 4.2 PUT /api/forms/{id}
+    // lint-definition PUT /api/forms/{id}
 
     private const DEFINITION = ['elements' => [['type' => 'text', 'name' => 'q1']]];
 
@@ -173,7 +173,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // 4.3 GET /api/claims/{id}/pdf
+    // server-pdf GET /api/claims/{id}/pdf
 
     private function claimId(): int
     {
@@ -219,7 +219,7 @@ class SurveyJsServiceTest extends TestCase
     }
 
     // ---------------------------------------------------------------------------------------------
-    // 4.4 POST /api/work-orders/extract
+    // extract-from-paper POST /api/work-orders/extract
 
     private function extract()
     {

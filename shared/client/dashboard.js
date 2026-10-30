@@ -1,12 +1,12 @@
-// 2 Analyze Results with Dashboard
+// Analyze Results with Dashboard
 import { setStoredQuery } from "./host.js";
 
-// #region sjs:2.client
+// #region sjs:dashboard.client
 import { Model } from "survey-core";
 import { VisualizationPanel } from "survey-analytics";
 
 async function showDashboard(from) {
-  const { definition } = await fetch("/api/forms/feedback").then(r => r.json());   // .definition: the 1.2 endpoint
+  const { definition } = await fetch("/api/forms/feedback").then(r => r.json());   // .definition: GET /api/forms/{id}
   const responses = await fetch(`/api/responses?formId=feedback&from=${from}`).then(r => r.json());
 
   const survey = new Model(definition);

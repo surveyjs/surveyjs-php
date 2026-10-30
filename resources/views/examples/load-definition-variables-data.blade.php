@@ -1,6 +1,6 @@
 @php
     // Demo only: this view also serves Option A (GET /claim in routes/examples/load-definition-variables-data.php)
-    [$stepId, $step] = \App\Support\Demo::step('load-definition-variables-data');
+    $step = \App\Support\Demo::step('load-definition-variables-data');
     $optionA = isset($definition);
     $record = request()->query('record', '');
     $records = \App\Support\Demo::records('claim', 'customer_email');

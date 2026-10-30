@@ -1,7 +1,7 @@
-// 4.3 Generate PDFs
+// Generate PDFs
 import { note } from "./host.js";
 
-// #region sjs:4.3.client
+// #region sjs:server-pdf.client
 // Ask your server for the filled form as a PDF
 async function openPdf(id) {
   const tab = window.open("", "_blank");             // open the tab in the click itself: after an await, browsers block pop-ups

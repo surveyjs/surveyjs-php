@@ -12,7 +12,7 @@
 #         edit-relay-url: wss://surveyjs-php.demos.surveyjs.io
 #
 # For a deployed URL, service, ai, validate-responses and lint-definitions must match the deployment:
-# the expected statuses of 1.1, 3.1, 4.1 and 4.2 depend on them.
+# the expected statuses of save-response, creator-load-save, validate-response and lint-definition depend on them.
 name: Smoke
 
 on:
@@ -25,27 +25,27 @@ on:
         type: string
         default: ""
       service:
-        description: "Section 4 service: off | on"
+        description: "SurveyJS service: off | on"
         type: string
         default: "off"
       ai:
-        description: "3.3 and 4.4: off | stub"
+        description: "ai-translation and extract-from-paper: off | stub"
         type: string
         default: "off"
       validate-responses:
-        description: "The app runs 4.1 in place of 1.1"
+        description: "The app runs validate-response in place of save-response"
         type: boolean
         default: false
       lint-definitions:
-        description: "The app runs 4.2 in place of the 3.1 PUT"
+        description: "The app runs lint-definition in place of the creator-load-save PUT"
         type: boolean
         default: false
       relay-url:
-        description: "ws(s):// origin of the 1.8 relay (empty: skip its check; a local run starts its own)"
+        description: "ws(s):// origin of the fill-together relay (empty: skip its check; a local run starts its own)"
         type: string
         default: ""
       edit-relay-url:
-        description: "ws(s):// origin of the 3.5 relay (empty: skip its check; a local run starts its own)"
+        description: "ws(s):// origin of the edit-together relay (empty: skip its check; a local run starts its own)"
         type: string
         default: ""
   workflow_call:

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-// #region sjs:1.2.server
+// #region sjs:load-definition-variables-data.server
 // Option A — render the definition into the page: no database, no extra request
 Route::get('/claim', function () {
     $definition = json_decode(file_get_contents(base_path('shared/definitions/load-definition-variables-data.json')));

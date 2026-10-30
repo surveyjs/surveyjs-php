@@ -6,11 +6,12 @@
   "branch": "master",
   "live": "https://surveyjs-php.demos.surveyjs.io",
   "surveyjsVersion": "3.2.3",
-  "section4": "service",
+  "serverSideWorkflows": "service",
   "surveyjsService": "surveyjs/surveyjs-server@db1ac24b5f984511bbac463c890b6b0a3ebd2dc9",
-  "steps": {
-    "1.1": {
+  "steps": [
+    {
       "slug": "save-response",
+      "section": "Run Forms",
       "anchor": "save-responses",
       "title": "Save Responses",
       "status": "done",
@@ -27,12 +28,13 @@
         "page": "resources/views/examples/save-response.blade.php"
       },
       "regions": [
-        "1.1.client",
-        "1.1.server"
+        "save-response.client",
+        "save-response.server"
       ]
     },
-    "1.2": {
+    {
       "slug": "load-definition-variables-data",
+      "section": "Run Forms",
       "anchor": "load-json-schemas-variables-and-answers",
       "title": "Load JSON Schemas, Variables, and Answers",
       "status": "done",
@@ -50,12 +52,13 @@
         "page": "resources/views/examples/load-definition-variables-data.blade.php"
       },
       "regions": [
-        "1.2.client",
-        "1.2.server"
+        "load-definition-variables-data.client",
+        "load-definition-variables-data.server"
       ]
     },
-    "1.3": {
+    {
       "slug": "resume-progress",
+      "section": "Run Forms",
       "anchor": "resume-progress",
       "title": "Resume Progress",
       "status": "done",
@@ -73,12 +76,13 @@
         "page": "resources/views/examples/resume-progress.blade.php"
       },
       "regions": [
-        "1.3.client",
-        "1.3.server"
+        "resume-progress.client",
+        "resume-progress.server"
       ]
     },
-    "1.4": {
+    {
       "slug": "store-files",
+      "section": "Run Forms",
       "anchor": "store-files-separately",
       "title": "Store Files Separately",
       "status": "done",
@@ -96,12 +100,13 @@
         "page": "resources/views/examples/store-files.blade.php"
       },
       "regions": [
-        "1.4.client",
-        "1.4.server"
+        "store-files.client",
+        "store-files.server"
       ]
     },
-    "1.5": {
+    {
       "slug": "choices-from-web",
+      "section": "Run Forms",
       "anchor": "load-choices-from-web",
       "title": "Load Choices from Web",
       "status": "done",
@@ -119,12 +124,13 @@
         "page": "resources/views/examples/choices-from-web.blade.php"
       },
       "regions": [
-        "1.5.client",
-        "1.5.server"
+        "choices-from-web.client",
+        "choices-from-web.server"
       ]
     },
-    "1.6": {
+    {
       "slug": "async-functions",
+      "section": "Run Forms",
       "anchor": "async-calculations-and-validation",
       "title": "Async Calculations and Validation",
       "status": "done",
@@ -142,12 +148,13 @@
         "page": "resources/views/examples/async-functions.blade.php"
       },
       "regions": [
-        "1.6.client",
-        "1.6.server"
+        "async-functions.client",
+        "async-functions.server"
       ]
     },
-    "1.7": {
+    {
       "slug": "relational-storage",
+      "section": "Run Forms",
       "anchor": "use-relational-storage",
       "title": "Use Relational Storage",
       "status": "done",
@@ -165,12 +172,13 @@
         "definitionV2": "shared/definitions/relational-storage.v2.json"
       },
       "regions": [
-        "1.7.client",
-        "1.7.server"
+        "relational-storage.client",
+        "relational-storage.server"
       ]
     },
-    "1.8": {
+    {
       "slug": "fill-together",
+      "section": "Run Forms",
       "anchor": "fill-forms-together",
       "title": "Fill Forms Together",
       "status": "done",
@@ -189,13 +197,14 @@
         "command": "app/Console/Commands/RelayFill.php"
       },
       "regions": [
-        "1.8.client",
-        "1.8.server"
+        "fill-together.client",
+        "fill-together.server"
       ],
       "see": "https://github.com/surveyjs/collaborative-form-filling"
     },
-    "2": {
+    {
       "slug": "dashboard",
+      "section": "Analyze Results with Dashboard",
       "anchor": "analyze-results-with-dashboard",
       "title": "Analyze Results with Dashboard",
       "status": "done",
@@ -212,12 +221,13 @@
         "page": "resources/views/examples/dashboard.blade.php"
       },
       "regions": [
-        "2.client",
-        "2.server"
+        "dashboard.client",
+        "dashboard.server"
       ]
     },
-    "3.1": {
+    {
       "slug": "creator-load-save",
+      "section": "Edit Forms in Survey Creator",
       "anchor": "load-and-save-form-json-schemas",
       "title": "Load and Save Form JSON Schemas",
       "status": "done",
@@ -235,12 +245,13 @@
         "page": "resources/views/examples/creator-load-save.blade.php"
       },
       "regions": [
-        "3.1.client",
-        "3.1.server"
+        "creator-load-save.client",
+        "creator-load-save.server"
       ]
     },
-    "3.2": {
+    {
       "slug": "creator-uploads",
+      "section": "Edit Forms in Survey Creator",
       "anchor": "upload-files",
       "title": "Upload Files",
       "status": "done",
@@ -256,12 +267,13 @@
         "page": "resources/views/examples/creator-uploads.blade.php"
       },
       "regions": [
-        "3.2.client"
+        "creator-uploads.client"
       ],
-      "note": "Client only: reuses POST /api/files from 1.4"
+      "note": "Client only: reuses POST /api/files from store-files"
     },
-    "3.3": {
+    {
       "slug": "ai-translation",
+      "section": "Edit Forms in Survey Creator",
       "anchor": "translate-with-ai",
       "title": "Translate with AI",
       "status": "done",
@@ -278,12 +290,13 @@
         "page": "resources/views/examples/ai-translation.blade.php"
       },
       "regions": [
-        "3.3.client",
-        "3.3.server"
+        "ai-translation.client",
+        "ai-translation.server"
       ]
     },
-    "3.4": {
+    {
       "slug": "variable-presets",
+      "section": "Edit Forms in Survey Creator",
       "anchor": "variable-presets",
       "title": "Variable Presets",
       "status": "done",
@@ -301,12 +314,13 @@
         "page": "resources/views/examples/variable-presets.blade.php"
       },
       "regions": [
-        "3.4.client",
-        "3.4.server"
+        "variable-presets.client",
+        "variable-presets.server"
       ]
     },
-    "3.5": {
+    {
       "slug": "edit-together",
+      "section": "Edit Forms in Survey Creator",
       "anchor": "edit-forms-together",
       "title": "Edit Forms Together",
       "status": "done",
@@ -325,13 +339,14 @@
         "command": "app/Console/Commands/RelayEdit.php"
       },
       "regions": [
-        "3.5.client",
-        "3.5.server"
+        "edit-together.client",
+        "edit-together.server"
       ],
       "see": "https://github.com/surveyjs/collaborative-form-editing"
     },
-    "4.1": {
+    {
       "slug": "validate-response",
+      "section": "Run Server-Side Workflows",
       "anchor": "validate-responses",
       "title": "Validate Responses",
       "status": "done",
@@ -348,12 +363,13 @@
         "page": "resources/views/examples/validate-response.blade.php"
       },
       "regions": [
-        "4.1.client",
-        "4.1.server"
+        "validate-response.client",
+        "validate-response.server"
       ]
     },
-    "4.2": {
+    {
       "slug": "lint-definition",
+      "section": "Run Server-Side Workflows",
       "anchor": "lint-json-schemas",
       "title": "Lint JSON Schemas",
       "status": "done",
@@ -370,12 +386,13 @@
         "page": "resources/views/examples/lint-definition.blade.php"
       },
       "regions": [
-        "4.2.client",
-        "4.2.server"
+        "lint-definition.client",
+        "lint-definition.server"
       ]
     },
-    "4.3": {
+    {
       "slug": "server-pdf",
+      "section": "Run Server-Side Workflows",
       "anchor": "generate-pdfs",
       "title": "Generate PDFs",
       "status": "done",
@@ -392,13 +409,14 @@
         "page": "resources/views/examples/server-pdf.blade.php"
       },
       "regions": [
-        "4.3.client",
-        "4.3.server"
+        "server-pdf.client",
+        "server-pdf.server"
       ],
       "note": "The pinned SurveyJS service applies no licence key, so its PDFs carry the SurveyJS alert banner"
     },
-    "4.4": {
+    {
       "slug": "extract-from-paper",
+      "section": "Run Server-Side Workflows",
       "anchor": "extract-responses-from-documents",
       "title": "Extract Responses from Documents",
       "status": "done",
@@ -415,9 +433,9 @@
         "page": "resources/views/examples/extract-from-paper.blade.php"
       },
       "regions": [
-        "4.4.client",
-        "4.4.server"
+        "extract-from-paper.client",
+        "extract-from-paper.server"
       ]
     }
-  }
+  ]
 }

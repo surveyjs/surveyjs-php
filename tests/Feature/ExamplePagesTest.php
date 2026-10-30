@@ -20,7 +20,7 @@ class ExamplePagesTest extends TestCase
     {
         $manifest = json_decode((string) file_get_contents(__DIR__.'/../../surveyjs-integration.json'), true);
 
-        return collect($manifest['steps'])->mapWithKeys(fn ($step, $id) => [$id => [(string) $id, $step['slug']]])->all();   // the key "2" decodes as int 2
+        return collect($manifest['steps'])->mapWithKeys(fn ($step) => [$step['slug'] => [$step['slug']]])->all();
     }
 
     public function test_the_catalog_lists_every_step(): void
@@ -53,13 +53,13 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_every_step_page_renders_and_loads_its_client_module(string $id, string $slug): void
+    public function test_every_step_page_renders_and_loads_its_client_module(string $slug): void
     {
         $manifestPath = public_path('build/manifest.json');
         if (! is_file($manifestPath)) {
             $this->markTestSkipped('Run `npm run build` first: the page loads its module through Vite.');
         }
-        $client = Demo::manifest()['steps'][$id]['files']['client'];
+        $client = Demo::step($slug)['files']['client'];
         $built = json_decode((string) file_get_contents($manifestPath), true)[$client]['file'] ?? null;
 
         $this->assertNotNull($built, "{$client} is not a Vite entry point");
@@ -67,7 +67,21 @@ class ExamplePagesTest extends TestCase
             ->assertOk()
             ->assertSee('/build/'.$built, false)
             ->assertSee(str_replace('"', '\\'.'u0022', '"slug":"'.$slug.'"'), false)   // window.SURVEYJS_PAGE, escaped by Js::from()
-            ->assertSee("sjs:{$id}.", false);   // the code panel shows the step's regions
+            ->assertSee("sjs:{$slug}.", false);   // the code panel shows the step's regions
+    }
+
+    #[DataProvider('steps')]
+    public function test_every_step_page_goes_by_its_title_alone(string $slug): void
+    {
+        $title = e(Demo::step($slug)['title']);
+        $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
+
+        $this->assertStringContainsString("<title>{$title} · SurveyJS + Laravel</title>", $html);
+        $this->assertMatchesRegularExpression('~<h1[^>]*>'.preg_quote($title, '~').'</h1>~', $html);
+        $this->assertDoesNotMatchRegularExpression(
+            '~(?<![\w.])[1-4]\.[1-8](?![\w.])~',
+            strip_tags($this->between($html, 'id="panel-description"', 'id="panel-requests"')),
+        );
     }
 
     public function test_links_follow_the_scheme_of_a_tls_proxy(): void
@@ -86,7 +100,7 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_the_demo_user_switch_is_only_on_pages_that_show_an_authorization_decision(string $id, string $slug): void
+    public function test_the_demo_user_switch_is_only_on_pages_that_show_an_authorization_decision(string $slug): void
     {
         $response = $this->withoutVite()->get("/examples/{$slug}")->assertOk();
 
@@ -98,9 +112,9 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_every_step_page_links_to_its_docs_section_once(string $id, string $slug): void
+    public function test_every_step_page_links_to_its_docs_section_once(string $slug): void
     {
-        $docs = Demo::docsUrl(Demo::manifest()['steps'][$id]);
+        $docs = Demo::docsUrl(Demo::step($slug));
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
 
         $this->assertSame(1, substr_count($html, 'href="'.e($docs).'"'), "{$slug} links to {$docs} once");
@@ -108,7 +122,7 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_every_step_page_has_the_side_panel_and_the_main_tabs(string $id, string $slug): void
+    public function test_every_step_page_has_the_side_panel_and_the_main_tabs(string $slug): void
     {
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
 
@@ -136,7 +150,7 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_description_holds_try_this_and_demo_holds_the_component(string $id, string $slug): void
+    public function test_description_holds_try_this_and_demo_holds_the_component(string $slug): void
     {
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
         $panel = $this->between($html, '<aside id="side-panel"', '</aside>');
@@ -187,14 +201,14 @@ class ExamplePagesTest extends TestCase
         }
     }
 
-    /** The Form Library examples (1.1–1.7, 4.1, 4.4) have Start over; 1.8 (fill-together) doesn't. */
+    /** Every Form Library example has Start over except fill-together. */
     private const START_OVER = ['save-response', 'load-definition-variables-data', 'resume-progress', 'store-files', 'choices-from-web',
         'async-functions', 'relational-storage', 'validate-response', 'extract-from-paper'];
 
     #[DataProvider('steps')]
-    public function test_start_over_is_on_every_form_library_page_except_fill_together(string $id, string $slug): void
+    public function test_start_over_is_on_every_form_library_page_except_fill_together(string $slug): void
     {
-        $client = (string) file_get_contents(base_path(Demo::manifest()['steps'][$id]['files']['client']));
+        $client = (string) file_get_contents(base_path(Demo::step($slug)['files']['client']));
         $html = $this->withoutVite()->get("/examples/{$slug}")->assertOk()->getContent();
 
         if (in_array($slug, self::START_OVER, true)) {
@@ -242,7 +256,7 @@ class ExamplePagesTest extends TestCase
     }
 
     #[DataProvider('steps')]
-    public function test_the_stored_panel_answers_for_every_step(string $id, string $slug): void
+    public function test_the_stored_panel_answers_for_every_step(string $slug): void
     {
         $this->getJson("/demo/stored/{$slug}")->assertOk();
     }

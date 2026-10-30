@@ -1,7 +1,7 @@
-// 1.2 Load JSON Schemas, Variables, and Answers
+// Load JSON Schemas, Variables, and Answers
 import { mountSurvey, note, onStored } from "./host.js";
 
-// #region sjs:1.2.client
+// #region sjs:load-definition-variables-data.client
 import { Model } from "survey-core";
 
 async function createSurvey(recordId) {
@@ -22,7 +22,7 @@ async function createSurvey(recordId) {
 const recordId = new URLSearchParams(location.search).get("record") ?? "";
 const survey = mountSurvey(await createSurvey(recordId));
 
-// Saving the finished response is 1.1: post survey.data, which holds answers only
+// Saving the finished response is in save-response: post survey.data, which holds answers only
 survey.onComplete.add(async (sender) => {
   await fetch("/api/responses", {
     method: "POST",

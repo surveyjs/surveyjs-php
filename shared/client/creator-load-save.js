@@ -1,17 +1,17 @@
-// 3.1 Load and Save Form JSON Schemas
+// Load and Save Form JSON Schemas
 import { mountCreator, mountSurvey, note } from "./host.js";
 import { Model, Serializer } from "survey-core";
 
 const formId = "support";
 
-// The 1.7 custom property: it shows in the property grid's Data category
+// The relational-storage custom property: it shows in the property grid's Data category
 Serializer.addProperty("question", { name: "dbColumn", category: "data" });
 
-// #region sjs:3.1.client
+// #region sjs:creator-load-save.client
 import { SurveyCreator } from "survey-creator-js";
 
 const creator = new SurveyCreator({ showTranslationTab: true });
-creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;   // the 1.2 endpoint's .definition
+creator.JSON = (await fetch(`/api/forms/${formId}`).then(r => r.json())).definition;   // the .definition of GET /api/forms/{id}
 
 creator.autoSaveEnabled = true;   // save after each change; without it, Creator shows a Save button
 creator.saveSurveyFunc = async (saveNo, callback) => {

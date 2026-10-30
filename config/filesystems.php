@@ -38,7 +38,7 @@ return [
             'report' => false,
         ],
 
-        // 1.4: uploaded files, stored by id and served through GET /api/files/{id}
+        // Uploaded files, stored by id and served through GET /api/files/{id}
         'uploads' => [
             'driver' => 'local',
             'root' => storage_path('app/uploads'),

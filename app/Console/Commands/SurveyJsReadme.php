@@ -20,13 +20,13 @@ class SurveyJsReadme extends Command
     public function handle(): int
     {
         $manifest = Demo::manifest();
-        $rows = ['| Id | Step | Run | Server | Client | Page | Licence |', '|---|---|---|---|---|---|---|'];
+        $rows = ['| Step | Run | Server | Client | Page | Licence |', '|---|---|---|---|---|---|'];
 
-        foreach ($manifest['steps'] as $id => $step) {
+        foreach ($manifest['steps'] as $step) {
             $file = fn (string $role) => isset($step['files'][$role]) ? "[`{$step['files'][$role]}`]({$step['files'][$role]})" : '—';
             $rows[] = sprintf(
-                '| %s | [%s](%s) | [%s](%s%s) | %s | %s | %s | %s |',
-                $id, $step['title'], Demo::docsUrl($step), $step['page'], $manifest['live'], $step['page'],
+                '| [%s](%s) | [%s](%s%s) | %s | %s | %s | %s |',
+                $step['title'], Demo::docsUrl($step), $step['page'], $manifest['live'], $step['page'],
                 $file('server'), $file('client'), $file('page'), $step['licence'],
             );
         }

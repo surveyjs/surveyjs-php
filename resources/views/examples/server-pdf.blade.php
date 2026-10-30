@@ -11,7 +11,7 @@
 
 @section('try')
     <li>Press <strong>Download PDF</strong> next to a claim: <code>GET /api/claims/&lt;id&gt;/pdf</code> answers <code>application/pdf</code>, and the filled form opens in a new tab.</li>
-    <li>New claims from <a href="{{ route('example', 'relational-storage') }}">1.7</a> appear in this list.</li>
+    <li>New claims from <a href="{{ route('example', 'relational-storage') }}">Use Relational Storage</a> appear in this list.</li>
 @endsection
 
 @section('form')
@@ -22,7 +22,7 @@
                 <button type="button" data-claim="{{ $id }}" class="cursor-pointer rounded bg-sjs px-3 py-1.5 font-semibold text-white">Download PDF</button>
             </li>
         @empty
-            <li class="px-4 py-3 text-sm text-gray-500">No claims yet: submit one in 1.7.</li>
+            <li class="px-4 py-3 text-sm text-gray-500">No claims yet: submit one in Use Relational Storage.</li>
         @endforelse
     </ul>
 @endsection

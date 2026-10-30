@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
 class SurveyJsContract extends Command
 {
     protected $signature = 'surveyjs:contract
-        {--steps= : Only these steps, e.g. 1.1,1.5}
+        {--steps= : Only these steps, e.g. save-response,choices-from-web}
         {--smoke : Run the smoke test (tests/smoke/run.mjs) instead of the contract test}';
 
     protected $description = 'Run the shared contract test (or the smoke test) against a fresh database, the app and both relays';

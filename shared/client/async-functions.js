@@ -1,8 +1,8 @@
-// 1.6 Async Calculations and Validation
+// Async Calculations and Validation
 import { mountSurvey, page } from "./host.js";
 import { Model } from "survey-core";
 
-// #region sjs:1.6.client
+// #region sjs:async-functions.client
 import { registerFunction } from "survey-core";
 
 // Validation: does a customer with this email already exist?

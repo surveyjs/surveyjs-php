@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Calls the SurveyJS service (SurveyJS Server, SURVEYJS_SERVICE_URL) for Section 4: 4.1 validates,
- * 4.2 lints, 4.3 prints a PDF and 4.4 extracts. It maps what isn't a service answer to the same
+ * Calls the SurveyJS service (SurveyJS Server, SURVEYJS_SERVICE_URL) for Run Server-Side Workflows:
+ * validate-response validates, lint-definition lints, server-pdf prints a PDF and extract-from-paper extracts. It maps what isn't a service answer to the same
  * { error } bodies on every platform, so the routes only handle the answers they recognize. When you
  * copy one of those steps, copy this file too.
  */

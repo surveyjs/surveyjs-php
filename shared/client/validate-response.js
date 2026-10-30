@@ -1,4 +1,4 @@
-// 4.1 Validate Responses
+// Validate Responses
 import { mountSurvey, note, page } from "./host.js";
 import { Model } from "survey-core";
 
@@ -7,7 +7,7 @@ const survey = new Model(page.definition);   // the stored "claim" definition th
 // The service reports two kinds of error: data errors { type, path } and the form's own errors { text }
 const describe = (e) => e.text || e.locTextValue?.values?.default || `${e.type} at ${e.path}`;
 
-// #region sjs:4.1.client
+// #region sjs:validate-response.client
 // Show the server's verdict in the completion message
 survey.onComplete.add(async (sender, options) => {
   options.showSaveInProgress();

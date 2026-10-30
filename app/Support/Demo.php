@@ -31,16 +31,10 @@ final class Demo
         return self::$manifest ??= json_decode((string) file_get_contents(base_path('surveyjs-integration.json')), true, flags: JSON_THROW_ON_ERROR);
     }
 
-    /** @return array{0: string, 1: array}|null  [step id, step] for a slug from the manifest */
+    /** The manifest's step with this slug */
     public static function step(string $slug): ?array
     {
-        foreach (self::manifest()['steps'] as $id => $step) {
-            if ($step['slug'] === $slug) {
-                return [(string) $id, $step];   // json_decode turns the key "2" into int 2
-            }
-        }
-
-        return null;
+        return collect(self::manifest()['steps'])->firstWhere('slug', $slug);
     }
 
     /** The Server Integration docs (config surveyjs.docs), at the step's anchor when a step is given. */
@@ -50,7 +44,7 @@ final class Demo
     }
 
     /** window.SURVEYJS_PAGE: what shared/client/host.js and the step modules read. */
-    public static function pageConfig(string $stepId, array $step): array
+    public static function pageConfig(array $step): array
     {
         $user = Auth::user();
         $definitions = collect($step['files'])
@@ -58,7 +52,6 @@ final class Demo
             ->map(fn (string $path) => json_decode((string) file_get_contents(base_path($path)), flags: JSON_THROW_ON_ERROR));
 
         return [
-            'step' => $stepId,
             'slug' => $step['slug'],
             'version' => self::manifest()['surveyjsVersion'],
             'licenseKey' => config('surveyjs.license_key'),
@@ -135,7 +128,7 @@ final class Demo
     }
 
     /**
-     * 1.8 and 3.5: how to start the step's relay. The manifest's files.command is the command's
+     * Fill Forms Together and Edit Forms Together: how to start the step's relay. The manifest's files.command is the command's
      * file; its artisan name comes from that class's $signature (relay:fill → surveyjs.relay.fill_port).
      *
      * @return array{command: string, port: int}|null

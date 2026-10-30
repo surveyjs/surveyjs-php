@@ -2,12 +2,12 @@
      (Figma General, page "Backend Integration examples page + demo"; desktop 1400, tablet 900, mobile 375) --}}
 @php
     $sections = [
-        '1' => ['Run Forms', 'SurveyJS Form Library displays a form using a JSON schema and collects the respondent\'s answers. Start integration by adding an endpoint that saves those answers. You can then load data from the server, save progress in unfinished forms, and add the other features described below if your application needs them.'],
-        '2' => ['Analyze Results with Dashboard', 'Once you have collected responses, use SurveyJS Dashboard to display and analyze them. Dashboard runs in the browser and uses the form JSON schema to choose a chart for each question automatically.'],
-        '3' => ['Edit Forms in Survey Creator', 'Survey Creator lets authors build and edit forms in your application. It works with the same form JSON schemas that Form Library displays to respondents. Your backend should load those schemas when the editor opens and save them when an author makes changes.'],
-        '4' => ['Run Server-Side Workflows', 'Some workflows need SurveyJS logic on the server. You may need to check a submission before storing it, find problems in a form JSON schema, create a PDF, or read answers from a document. These operations run in Node.js. A Node.js backend can run the components directly; other backends can call a Node.js service over HTTP.'],
+        'Run Forms' => 'SurveyJS Form Library displays a form using a JSON schema and collects the respondent\'s answers. Start integration by adding an endpoint that saves those answers. You can then load data from the server, save progress in unfinished forms, and add the other features described below if your application needs them.',
+        'Analyze Results with Dashboard' => 'Once you have collected responses, use SurveyJS Dashboard to display and analyze them. Dashboard runs in the browser and uses the form JSON schema to choose a chart for each question automatically.',
+        'Edit Forms in Survey Creator' => 'Survey Creator lets authors build and edit forms in your application. It works with the same form JSON schemas that Form Library displays to respondents. Your backend should load those schemas when the editor opens and save them when an author makes changes.',
+        'Run Server-Side Workflows' => 'Some workflows need SurveyJS logic on the server. You may need to check a submission before storing it, find problems in a form JSON schema, create a PDF, or read answers from a document. These operations run in Node.js. A Node.js backend can run the components directly; other backends can call a Node.js service over HTTP.',
     ];
-    $steps = collect($manifest['steps'])->groupBy(fn ($step, $id) => explode('.', $id)[0], preserveKeys: true);
+    $steps = collect($manifest['steps'])->groupBy('section');
     // The manifest's licence reads "MIT", "Commercial" or "Commercial client", optionally followed by ", needs an AI provider"
     $licence = fn (array $step) => str_starts_with($step['licence'], 'MIT') ? 'MIT' : 'Commercial';
     $needsAi = fn (array $step) => str_contains($step['licence'], 'needs an AI provider');
@@ -51,15 +51,15 @@
         </div>
     </div>
 
-    @foreach ($sections as $id => [$title, $intro])
-        @continue(! $steps->has($id))
+    @foreach ($sections as $title => $intro)
+        @continue(! $steps->has($title))
         <section @class(['border-t border-sjs-line pb-12 md:pb-16 xl:pb-24', 'bg-sjs-back-gray' => $number++ % 2 === 0])>
             <div class="{{ $column }} pt-16 pb-12 xl:pt-24">
                 <h2 class="text-sjs-title-lg font-bold md:text-sjs-title-xl">{{ $title }}</h2>
                 <p class="mt-3 mb-0 text-sjs-para-lg font-medium text-sjs-fg-50">{{ $intro }}</p>
             </div>
             <div class="{{ $column }} grid gap-3 md:grid-cols-2">
-                @foreach ($steps[$id] as $step)
+                @foreach ($steps[$title] as $step)
                     {{-- A card alone in its row takes the full width. Phones: stacked, full-width buttons --}}
                     <article class="flex flex-col gap-10 rounded-3xl border border-sjs-line bg-white p-4 md:p-6 md:odd:last:col-span-2">
                         <div class="flex flex-1 flex-col gap-6 p-2 md:p-0">

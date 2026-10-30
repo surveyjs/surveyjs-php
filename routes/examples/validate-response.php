@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Route;
 // Used in place of save-response.php when VALIDATE_RESPONSES=true (routes/examples.php).
 // The service is SurveyJS Server, next to this app: see docker-compose.yml and config/surveyjs.php.
 
-// #region sjs:4.1.server
+// #region sjs:validate-response.server
 // POST /api/responses — ask the SurveyJS service to validate, then store as usual
 Route::post('/api/responses', function (Request $request) {
-    $body = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);    // the raw body keeps {} as {} (see 1.1)
+    $body = json_decode($request->getContent(), flags: JSON_THROW_ON_ERROR);    // the raw body keeps {} as {} (see Save Responses)
     $definition = DB::table('forms')->where('key', $body->formId ?? null)->value('json') ?? abort(404, 'Unknown form');
     $check = SurveyJsService::post('/response', ['schema' => json_decode($definition), 'response' => $body->data ?? null], timeout: 10);
     if ($check->status() === 422 && $check->json('errors') !== null && ! array_key_exists('warnings', $check->json())) {

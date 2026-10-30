@@ -6,7 +6,7 @@ use App\Integration\SurveyJsService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// #region sjs:4.3.server
+// #region sjs:server-pdf.server
 // GET /api/claims/{id}/pdf — ask the SurveyJS service for the filled form and pass the PDF through
 Route::get('/api/claims/{id}/pdf', function (string $id) {
     $data = DB::table('responses')->where('form_id', 'claim')->where('id', $id)->value('data') ?? abort(404, 'Unknown claim');
