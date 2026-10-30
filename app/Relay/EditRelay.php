@@ -12,7 +12,7 @@ use Workerman\Protocols\Http\Request;
 use Workerman\Timer;
 
 /**
- * 3.5 Edit one form together: the relay behind CollaborationPlugin from survey-creator-core/collaboration.
+ * 3.5 Edit Forms Together: the relay behind CollaborationPlugin from survey-creator-core/collaboration.
  * Wire protocol: https://github.com/surveyjs/collaborative-form-editing (PROTOCOL.md).
  * Started by `php artisan relay:edit` (app/Console/Commands/RelayEdit.php).
  */

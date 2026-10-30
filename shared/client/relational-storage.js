@@ -1,4 +1,4 @@
-// 1.7 Store responses in a relational database
+// 1.7 Use Relational Storage
 import { mountSurvey, note, onStored, page } from "./host.js";
 
 // Demo only: the v1 / v2 switch. v2 renames q_email and q_amount in Creator but keeps their valueName
@@ -34,6 +34,6 @@ onStored((stored) => {
   const response = stored.responses?.[0];
   if (!completed || !claim || !response) return;
   completed = false;
-  note(`Response #${response.id} (definition ${response.definition_version}) → claims row: customer_email = ${claim.customer_email}, amount = ${claim.amount}.`, "ok");
+  note(`Response #${response.id} (JSON schema ${response.definition_version}) → claims row: customer_email = ${claim.customer_email}, amount = ${claim.amount}.`, "ok");
 });
 document.getElementById("start-over")?.addEventListener("click", () => survey.clear(true, true));

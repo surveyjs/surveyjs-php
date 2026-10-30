@@ -11,7 +11,7 @@
 @section('try')
     <li>Press <strong>Open a second window</strong>: it opens the invite link. Both participants appear in the participant bar, with focus rings and cursors.</li>
     <li>Answer a few questions, then press <strong>Open a second window</strong> again for a third: it starts with those answers, from one <code>init</code> message.</li>
-    <li>Type in the same question from two windows: the last write wins.</li>
+    <li>Type in the same question from two windows: the last change wins.</li>
     <li>Press <strong>Complete</strong> in one window: <code>POST /api/responses</code> appears in <strong>Requests</strong>.</li>
     <li><strong>Data</strong> shows the <code>relay room</code>: the room's latest values as the relay keeps them (snapshots are written in demo mode).</li>
 @endsection
@@ -40,6 +40,6 @@
 
 @section('about')
     @if (config('surveyjs.demo_mode'))
-        <p>The invite link carries your sandbox id: whoever opens it works in your copy of the demo data, in the same rooms.</p>
+        <p>The invite link carries your sandbox ID: whoever opens it works in your copy of the demo data, in the same rooms.</p>
     @endif
 @endsection

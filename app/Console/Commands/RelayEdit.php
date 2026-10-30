@@ -21,7 +21,7 @@ class RelayEdit extends Command
 {
     protected $signature = 'relay:edit';
 
-    protected $description = 'Run the 3.5 "Edit one form together" WebSocket relay (EDIT_RELAY_PORT, default 8082)';
+    protected $description = 'Run the 3.5 "Edit Forms Together" WebSocket relay (EDIT_RELAY_PORT, default 8082)';
 
     public function handle(): int
     {

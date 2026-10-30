@@ -7,13 +7,13 @@
 @endsection
 
 @section('try')
-    <li>Save a definition with <strong>An unknown variable in an expression</strong> (<code>visibleIf: "{nosuch} = 1"</code>) or <strong>A question without a name</strong>: Creator's notification shows the <code>422</code> errors, and nothing is saved.</li>
+    <li>Save a JSON schema with <strong>An unknown variable in an expression</strong> (<code>visibleIf: "{nosuch} = 1"</code>) or <strong>A question without a name</strong>: Survey Creator's notification shows the <code>422</code> errors, and nothing is saved.</li>
     <li>Save one with <strong>An unknown property</strong>: it is saved, and the notification shows the <code>200</code> warning.</li>
-    <li><strong>A clean save</strong>, or Creator's own <strong>Save</strong>, returns <code>204</code>.</li>
+    <li><strong>A clean save</strong>, or Survey Creator's own <strong>Save</strong>, returns <code>204</code>.</li>
 @endsection
 
 @section('actions')
-    <span class="text-gray-600">Save a definition with</span>
+    <span class="text-gray-600">Save a JSON schema with</span>
     <button type="button" data-lint="unknown-variable" class="box-border inline-flex h-9 cursor-pointer items-center rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 [font-family:inherit] hover:bg-gray-100">An unknown variable in an expression</button>
     <button type="button" data-lint="no-name" class="box-border inline-flex h-9 cursor-pointer items-center rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 [font-family:inherit] hover:bg-gray-100">A question without a name</button>
     <button type="button" data-lint="unknown-property" class="box-border inline-flex h-9 cursor-pointer items-center rounded-md border border-gray-300 bg-white px-3 text-sm font-semibold text-gray-700 [font-family:inherit] hover:bg-gray-100">An unknown property</button>

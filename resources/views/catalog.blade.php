@@ -2,10 +2,10 @@
      (Figma General, page "Backend Integration examples page + demo"; desktop 1400, tablet 900, mobile 375) --}}
 @php
     $sections = [
-        '1' => ['Run forms', 'The Form Library renders forms in the browser. Your backend needs exactly one thing: an endpoint that stores the response. Everything after the first item is optional — add it when a form needs it.'],
-        '2' => ['See results in a dashboard', 'SurveyJS Dashboard runs in the browser. Your backend returns the stored responses.'],
-        '3' => ['Edit forms in Survey Creator', 'For your backend, a definition is one more JSON document to load and save. Saving definitions is an admin action: authorize it.'],
-        '4' => ['Run SurveyJS on your server', 'Only if you can\'t trust the client: validate, lint, PDF, extraction, through the SurveyJS service next to this app.'],
+        '1' => ['Run Forms', 'SurveyJS Form Library displays a form using a JSON schema and collects the respondent\'s answers. Start integration by adding an endpoint that saves those answers. You can then load data from the server, save progress in unfinished forms, and add the other features described below if your application needs them.'],
+        '2' => ['Analyze Results with Dashboard', 'Once you have collected responses, use SurveyJS Dashboard to display and analyze them. Dashboard runs in the browser and uses the form JSON schema to choose a chart for each question automatically.'],
+        '3' => ['Edit Forms in Survey Creator', 'Survey Creator lets authors build and edit forms in your application. It works with the same form JSON schemas that Form Library displays to respondents. Your backend should load those schemas when the editor opens and save them when an author makes changes.'],
+        '4' => ['Run Server-Side Workflows', 'Some workflows need SurveyJS logic on the server. You may need to check a submission before storing it, find problems in a form JSON schema, create a PDF, or read answers from a document. These operations run in Node.js. A Node.js backend can run the components directly; other backends can call a Node.js service over HTTP.'],
     ];
     $steps = collect($manifest['steps'])->groupBy(fn ($step, $id) => explode('.', $id)[0], preserveKeys: true);
     // The manifest's licence reads "MIT", "Commercial" or "Commercial client", optionally followed by ", needs an AI provider"
@@ -37,7 +37,7 @@
     <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-20">
         <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Build a PHP Backend for Your SurveyJS Forms</h1>
         <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-pretty text-sjs-fg-50">
-            The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">Integrate SurveyJS with your backend</a>,
+            The code behind <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">Integrate SurveyJS with PHP</a>,
             as a Laravel application. Each step runs the real SurveyJS component against these routes and shows the code that just ran.
             SurveyJS has no backend of its own, so treat these as starting points.
         </p>
@@ -46,7 +46,7 @@
     <div class="{{ $column }} pb-12 md:pb-16 xl:pb-24">
         <div class="flex flex-col items-center gap-6 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center">
             <p class="m-0 text-sjs-para-md">
-                Commercial steps (Dashboard, Creator, server-side PDF) run without a licence key and show a licence banner;
+                Commercial steps (Dashboard, Survey Creator, PDF Generator) run without a licence key and show a licence banner;
                 set <code class="font-sans">SURVEYJS_LICENSE_KEY</code> to remove it.
             </p>
             <a class="{{ $whiteButton }}" href="{{ config('surveyjs.github') }}" target="_blank">Source on GitHub</a>
@@ -85,7 +85,7 @@
                                 @endif
                             </div>
                             <h3 class="text-sjs-para-lg font-semibold">{{ $step['title'] }}</h3>
-                            <p class="m-0 text-sjs-para-md text-sjs-fg-75"><strong class="font-bold">You need this:</strong> {{ $step['need'] }}</p>
+                            <p class="m-0 text-sjs-para-md text-sjs-fg-75">{{ $step['need'] }}</p>
                         </div>
                         <p class="m-0 flex flex-wrap items-center gap-x-5 gap-y-2">
                             <a class="rounded-lg bg-sjs-back-gray-2 px-6 py-3 text-base/6 font-semibold text-sjs-fg no-underline hover:bg-gray-200" href="{{ url($step['page']) }}">Run</a>

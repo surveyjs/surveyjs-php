@@ -1,4 +1,4 @@
-// 3.3 Translate strings with AI
+// 3.3 Translate with AI
 import { mountCreator, note, onRequest } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 import "survey-core/i18n/german";

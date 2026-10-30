@@ -1,4 +1,4 @@
-// 3.5 Edit one form together
+// 3.5 Edit Forms Together
 import { inviteLink, mountCreator, note, page, participantName, relayUrl, setStoredQuery } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 import { CollaborationPlugin } from "survey-creator-core/collaboration";

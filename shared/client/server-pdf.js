@@ -1,4 +1,4 @@
-// 4.3 Export forms to PDF on the server
+// 4.3 Generate PDFs
 import { note } from "./host.js";
 
 // #region sjs:4.3.client

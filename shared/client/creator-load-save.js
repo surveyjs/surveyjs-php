@@ -1,4 +1,4 @@
-// 3.1 Load and save definitions
+// 3.1 Load and Save Form JSON Schemas
 import { mountCreator, mountSurvey, note } from "./host.js";
 import { Model, Serializer } from "survey-core";
 
@@ -28,7 +28,7 @@ creator.saveSurveyFunc = async (saveNo, callback) => {
 // Demo only: "Open the form" (?form) renders the saved definition with the Form Library instead
 if (new URLSearchParams(location.search).has("form")) {
   mountSurvey(new Model(creator.JSON), "creator");
-  note("This is the saved definition, as the next page load renders it.", "ok");
+  note("This is the saved JSON schema, as the next page load renders it.", "ok");
 } else {
   mountCreator(creator);
 }

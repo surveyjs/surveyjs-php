@@ -1,4 +1,4 @@
-// 1.3 Resume where the user left off
+// 1.3 Resume Progress
 import { mountSurvey, onRequest, page, show, setStoredQuery } from "./host.js";
 import { Model } from "survey-core";
 

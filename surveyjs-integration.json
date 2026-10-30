@@ -11,11 +11,11 @@
   "steps": {
     "1.1": {
       "slug": "save-response",
-      "anchor": "save",
-      "title": "Save the response",
+      "anchor": "save-responses",
+      "title": "Save Responses",
       "status": "done",
       "page": "/examples/save-response",
-      "need": "Always. This is the whole minimum integration.",
+      "need": "To collect responses, your backend needs an endpoint that accepts and stores answers.",
       "licence": "MIT",
       "endpoints": [
         "POST /api/responses"
@@ -33,11 +33,11 @@
     },
     "1.2": {
       "slug": "load-definition-variables-data",
-      "anchor": "load",
-      "title": "Load the definition, variables and previous answers",
+      "anchor": "load-json-schemas-variables-and-answers",
+      "title": "Load JSON Schemas, Variables, and Answers",
       "status": "done",
       "page": "/examples/load-definition-variables-data",
-      "need": "When the form depends on who is answering, or edits an existing record.",
+      "need": "Your backend can provide the JSON schema, variables, and previous answers needed to prepare the form.",
       "licence": "MIT",
       "endpoints": [
         "GET /claim",
@@ -56,11 +56,11 @@
     },
     "1.3": {
       "slug": "resume-progress",
-      "anchor": "resume",
-      "title": "Resume where the user left off",
+      "anchor": "resume-progress",
+      "title": "Resume Progress",
       "status": "done",
       "page": "/examples/resume-progress",
-      "need": "Long or multi-page forms that people fill in over several sittings.",
+      "need": "With long forms, respondents may need to stop and return later. You can save their answers together with the form's UI state, which includes the current page and focused input field.",
       "licence": "MIT",
       "endpoints": [
         "GET /api/progress/{formId}",
@@ -79,11 +79,11 @@
     },
     "1.4": {
       "slug": "store-files",
-      "anchor": "files",
-      "title": "Store files outside the response",
+      "anchor": "store-files-separately",
+      "title": "Store Files Separately",
       "status": "done",
       "page": "/examples/store-files",
-      "need": "Any form with a file question.",
+      "need": "A File Upload question can store file contents in the response as Base64 strings. This makes responses much larger. Alternatively, you can keep files in a separate storage.",
       "licence": "MIT",
       "endpoints": [
         "POST /api/files",
@@ -102,11 +102,11 @@
     },
     "1.5": {
       "slug": "choices-from-web",
-      "anchor": "choices",
-      "title": "Choices from the web",
+      "anchor": "load-choices-from-web",
+      "title": "Load Choices from Web",
       "status": "done",
       "page": "/examples/choices-from-web",
-      "need": "Lists that live elsewhere: countries, products, users, offices.",
+      "need": "Choice lists often come from data your application already stores, such as products or offices. Use the choicesByUrl property to load those options into a Dropdown, Checkboxes, or Radio Button Group question.",
       "licence": "MIT",
       "endpoints": [
         "GET /api/offices",
@@ -125,11 +125,11 @@
     },
     "1.6": {
       "slug": "async-functions",
-      "anchor": "async",
-      "title": "Async functions: calculations and validation",
+      "anchor": "async-calculations-and-validation",
+      "title": "Async Calculations and Validation",
       "status": "done",
       "page": "/examples/async-functions",
-      "need": "When a value or a rule depends on something only your server knows.",
+      "need": "Some form logic needs information that only your backend has. For example, a validation rule may need to check whether an email address is already registered, or a calculation may need the shipping rate for a postcode.",
       "licence": "MIT",
       "endpoints": [
         "GET /api/customers/exists",
@@ -148,11 +148,11 @@
     },
     "1.7": {
       "slug": "relational-storage",
-      "anchor": "relational",
-      "title": "Store responses in a relational database",
+      "anchor": "use-relational-storage",
+      "title": "Use Relational Storage",
       "status": "done",
       "page": "/examples/relational-storage",
-      "need": "When you report on answers with SQL or join them with your own tables.",
+      "need": "Storing each response as JSON is enough to preserve its answers. If you also need to query those answers with SQL or join them with other application data, copy the relevant values into database columns.",
       "licence": "MIT",
       "endpoints": [
         "POST /api/claims"
@@ -171,11 +171,11 @@
     },
     "1.8": {
       "slug": "fill-together",
-      "anchor": "fill-together",
-      "title": "Fill one form together",
+      "anchor": "fill-forms-together",
+      "title": "Fill Forms Together",
       "status": "done",
       "page": "/examples/fill-together",
-      "need": "When several people complete one record: a dispatcher and a technician on a job sheet, an applicant and an adviser.",
+      "need": "Several people may need to fill out the same record, such as a dispatcher and a technician completing a job sheet. Participants see each other's answers, focus, and cursors.",
       "licence": "MIT",
       "endpoints": [
         "WS /ws/rooms/{recordId}"
@@ -196,11 +196,11 @@
     },
     "2": {
       "slug": "dashboard",
-      "anchor": "dashboard",
-      "title": "See results in a dashboard",
+      "anchor": "analyze-results-with-dashboard",
+      "title": "Analyze Results with Dashboard",
       "status": "done",
       "page": "/examples/dashboard",
-      "need": "When people need to see answers, not just store them.",
+      "need": "Load the JSON schema and request the saved responses for that form. The backend should return the answers as a JSON array, which the client passes to Dashboard along with the schema.",
       "licence": "Commercial client",
       "endpoints": [
         "GET /api/responses"
@@ -218,11 +218,11 @@
     },
     "3.1": {
       "slug": "creator-load-save",
-      "anchor": "creator-save",
-      "title": "Load and save definitions",
+      "anchor": "load-and-save-form-json-schemas",
+      "title": "Load and Save Form JSON Schemas",
       "status": "done",
       "page": "/examples/creator-load-save",
-      "need": "When anyone other than a developer should change forms.",
+      "need": "When the author clicks Save, Survey Creator calls saveSurveyFunc. Use this function to send the updated JSON schema to your backend.",
       "licence": "Commercial client",
       "endpoints": [
         "GET /api/forms/{id}",
@@ -241,11 +241,11 @@
     },
     "3.2": {
       "slug": "creator-uploads",
-      "anchor": "creator-files",
-      "title": "Upload images and files from Creator",
+      "anchor": "upload-files",
+      "title": "Upload Files",
       "status": "done",
       "page": "/examples/creator-uploads",
-      "need": "When form authors add logos, images or files to a form.",
+      "need": "Authors may need to add a logo, image, or file to a form. You can keep these files in your storage and save their URLs in the JSON schema to keep it small.",
       "licence": "Commercial client",
       "endpoints": [
         "POST /api/files"
@@ -262,11 +262,11 @@
     },
     "3.3": {
       "slug": "ai-translation",
-      "anchor": "creator-translate",
-      "title": "Translate strings with AI",
+      "anchor": "translate-with-ai",
+      "title": "Translate with AI",
       "status": "done",
       "page": "/examples/ai-translation",
-      "need": "Multilingual forms.",
+      "need": "For multilingual forms, you can integrate AI in Survey Creator's Translations tab so that authors can translate titles, choices, and other form text semi-automatically.",
       "licence": "Commercial client, needs an AI provider",
       "endpoints": [
         "POST /api/translate"
@@ -284,11 +284,11 @@
     },
     "3.4": {
       "slug": "variable-presets",
-      "anchor": "creator-presets",
-      "title": "Variable presets",
+      "anchor": "variable-presets",
+      "title": "Variable Presets",
       "status": "done",
       "page": "/examples/variable-presets",
-      "need": "When form logic depends on variables your application supplies at runtime.",
+      "need": "Form logic may depend on variables supplied by your application, such as a customer's subscription plan. Authors need sample values to test that logic before the form is used. Variable presets allow them to do that by providing named sets of those values in Survey Creator.",
       "licence": "Commercial client",
       "endpoints": [
         "GET /api/variable-presets/{formId}",
@@ -307,11 +307,11 @@
     },
     "3.5": {
       "slug": "edit-together",
-      "anchor": "edit-together",
-      "title": "Edit one form together",
+      "anchor": "edit-forms-together",
+      "title": "Edit Forms Together",
       "status": "done",
       "page": "/examples/edit-together",
-      "need": "When several people author the same form: a team building a large questionnaire, or reviewers editing alongside the author.",
+      "need": "Several authors can work on the same form. Participants see each other's edits, selection, and cursors, and cannot edit survey elements that another participant is editing.",
       "licence": "Commercial client",
       "endpoints": [
         "WS /ws/forms/{formId}"
@@ -332,11 +332,11 @@
     },
     "4.1": {
       "slug": "validate-response",
-      "anchor": "validate",
-      "title": "Validate the response against the definition",
+      "anchor": "validate-responses",
+      "title": "Validate Responses",
       "status": "done",
       "page": "/examples/validate-response",
-      "need": "When clients aren't trusted: public forms, APIs, compliance.",
+      "need": "Browser validation helps respondents correct their answers while filling out a form. Your API can also receive requests that bypass the form, so you need to repeat validation on the server before storing a response.",
       "licence": "MIT",
       "endpoints": [
         "POST /api/responses"
@@ -354,11 +354,11 @@
     },
     "4.2": {
       "slug": "lint-definition",
-      "anchor": "lint",
-      "title": "Lint definitions before saving",
+      "anchor": "lint-json-schemas",
+      "title": "Lint JSON Schemas",
       "status": "done",
       "page": "/examples/lint-definition",
-      "need": "When non-developers edit forms in Creator.",
+      "need": "A form JSON schema can contain mistakes that stop its questions or logic from working as intended. For example, a condition may refer to a question that does not exist.",
       "licence": "MIT",
       "endpoints": [
         "PUT /api/forms/{id}"
@@ -376,11 +376,11 @@
     },
     "4.3": {
       "slug": "server-pdf",
-      "anchor": "pdf",
-      "title": "Export forms to PDF on the server",
+      "anchor": "generate-pdfs",
+      "title": "Generate PDFs",
       "status": "done",
       "page": "/examples/server-pdf",
-      "need": "When the PDF must be produced server-side (archiving, email attachments) rather than in the user's browser.",
+      "need": "A backend workflow may need a PDF for an archive or email attachment. SurveyJS PDF Generator can create the document on the server without opening a browser.",
       "licence": "Commercial",
       "endpoints": [
         "GET /api/claims/{id}/pdf"
@@ -399,11 +399,11 @@
     },
     "4.4": {
       "slug": "extract-from-paper",
-      "anchor": "extract",
-      "title": "Turn paper, PDF and images into responses",
+      "anchor": "extract-responses-from-documents",
+      "title": "Extract Responses from Documents",
       "status": "done",
       "page": "/examples/extract-from-paper",
-      "need": "When forms still arrive on paper, as scans or as filled PDFs.",
+      "need": "Some responses arrive as completed paper forms, scans, or PDFs. AI Form Response Extractor can use your form JSON schema to read those documents and return answers in the same format as an online response.",
       "licence": "MIT, needs an AI provider",
       "endpoints": [
         "POST /api/work-orders/extract"

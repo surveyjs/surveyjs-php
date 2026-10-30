@@ -1,4 +1,4 @@
-// 1.8 Fill one form together
+// 1.8 Fill Forms Together
 import { inviteLink, mountSurvey, note, page, participantName, relayUrl, setStoredQuery, show } from "./host.js";
 
 const recordId = new URLSearchParams(location.search).get("record") ?? String(page.record ?? "new");

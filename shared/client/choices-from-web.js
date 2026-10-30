@@ -1,4 +1,4 @@
-// 1.5 Choices from the web
+// 1.5 Load Choices from Web
 import { mountSurvey, page } from "./host.js";
 import { Model } from "survey-core";
 

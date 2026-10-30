@@ -1,4 +1,4 @@
-// 4.1 Validate the response against the definition
+// 4.1 Validate Responses
 import { mountSurvey, note, page } from "./host.js";
 import { Model } from "survey-core";
 

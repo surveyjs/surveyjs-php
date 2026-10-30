@@ -1,4 +1,4 @@
-// 1.2 Load the definition, variables and previous answers
+// 1.2 Load JSON Schemas, Variables, and Answers
 import { mountSurvey, note, onStored } from "./host.js";
 
 // #region sjs:1.2.client

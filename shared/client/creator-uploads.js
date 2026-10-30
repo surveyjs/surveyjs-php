@@ -1,4 +1,4 @@
-// 3.2 Upload images and files from Creator
+// 3.2 Upload Files
 import { mountCreator, note } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 
@@ -30,4 +30,4 @@ creator.onUploadFile.add(async (_, options) => {
 mountCreator(creator);
 
 // Demo only
-creator.onUploadFile.add(() => setTimeout(() => note("The logo is stored by 1.4; the definition keeps its URL, not base64. See the stored panel.", "ok"), 1500));
+creator.onUploadFile.add(() => setTimeout(() => note("The logo is stored by 1.4; the JSON schema keeps its URL, not Base64. See the Data tab.", "ok"), 1500));

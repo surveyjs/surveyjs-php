@@ -1,4 +1,4 @@
-// 4.2 Lint definitions before saving
+// 4.2 Lint JSON Schemas
 import { mountCreator, note } from "./host.js";
 import { SurveyCreator } from "survey-creator-js";
 
@@ -40,6 +40,6 @@ const cases = {
 for (const button of document.querySelectorAll("[data-lint]")) {
   button.addEventListener("click", async () => {
     const saved = await saveDefinition(cases[button.dataset.lint]());
-    note(`${button.textContent}: ${saved ? "saved" : "not saved"}. Creator shows the report as a notification.`, saved ? "ok" : "error");
+    note(`${button.textContent}: ${saved ? "saved" : "not saved"}. Survey Creator shows the report as a notification.`, saved ? "ok" : "error");
   });
 }

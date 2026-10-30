@@ -15,11 +15,11 @@
 @endsection
 
 @section('try')
-    <li><strong>Option A</strong> (<a href="{{ url('/claim') }}">/claim</a>): the title says "Hi {{ \Illuminate\Support\Str::before(auth()->user()->name ?? 'there', ' ') }}" and <strong>Requests</strong> shows no definition request.</li>
-    <li><strong>Option B</strong> (<a href="{{ route('example', 'load-definition-variables-data') }}">this page</a>): one <code>GET /api/forms/claim-request?record=</code> returns the definition, variables and previous answers. Open <strong>Requests</strong> and expand it to see them.</li>
+    <li><strong>Option A</strong> (<a href="{{ url('/claim') }}">/claim</a>): the title says "Hi {{ \Illuminate\Support\Str::before(auth()->user()->name ?? 'there', ' ') }}" and <strong>Requests</strong> shows no JSON schema request.</li>
+    <li><strong>Option B</strong> (<a href="{{ route('example', 'load-definition-variables-data') }}">this page</a>): one <code>GET /api/forms/claim-request?record=</code> returns the JSON schema, variables, and previous answers. Open <strong>Requests</strong> and expand it to see them.</li>
     <li>In Option B, the title shows Alice's name and <strong>premium</strong> plan, and "use priority handling?" shows because Alice is on the <strong>premium</strong> plan.</li>
     <li>Pick a <strong>Record</strong>: the form opens pre-filled and edits that claim instead of starting blank.</li>
-    <li>Press <strong>Complete</strong>: <strong>Data</strong> shows <code>responses</code> with the answers and no variables. Press <strong>Start over</strong> to fill it in again.</li>
+    <li>Press <strong>Complete</strong>: <strong>Data</strong> shows <code>responses</code> with the answers and no variables. Press <strong>Start over</strong> to fill it out again.</li>
 @endsection
 
 @section('actions')

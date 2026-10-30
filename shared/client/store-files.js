@@ -1,4 +1,4 @@
-// 1.4 Store files outside the response
+// 1.4 Store Files Separately
 import { mountSurvey, note, onRequest, page, show } from "./host.js";
 import { Model } from "survey-core";
 
@@ -44,8 +44,8 @@ survey.onUploadFiles.add(async (_, options) => {
   const withBase64 = JSON.stringify({ ...survey.data, receipt: embedded }).length;
   setTimeout(() => {
     const withIds = JSON.stringify(survey.data).length;
-    show("sizes", `With storeDataAsText: true the response would be ${size(withBase64)}; with ids it is ${size(withIds)}.`);
-    note(`The response keeps ${options.files.length} id(s), not the file contents: ${size(withIds)} instead of ${size(withBase64)}.`, "ok");
+    show("sizes", `With storeDataAsText: true the response would be ${size(withBase64)}; with IDs it is ${size(withIds)}.`);
+    note(`The response keeps ${options.files.length} ID(s), not the file contents: ${size(withIds)} instead of ${size(withBase64)}.`, "ok");
   }, 500);
 });
 onRequest(({ method, url, status }) => {

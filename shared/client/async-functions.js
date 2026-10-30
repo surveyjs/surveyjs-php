@@ -1,4 +1,4 @@
-// 1.6 Async functions: calculations and validation
+// 1.6 Async Calculations and Validation
 import { mountSurvey, page } from "./host.js";
 import { Model } from "survey-core";
 

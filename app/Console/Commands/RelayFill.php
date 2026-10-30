@@ -21,7 +21,7 @@ class RelayFill extends Command
 {
     protected $signature = 'relay:fill';
 
-    protected $description = 'Run the 1.8 "Fill one form together" WebSocket relay (RELAY_PORT, default 8081)';
+    protected $description = 'Run the 1.8 "Fill Forms Together" WebSocket relay (RELAY_PORT, default 8081)';
 
     public function handle(): int
     {

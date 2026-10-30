@@ -11,7 +11,7 @@
 
 @section('try')
     <li>Press <strong>Use the sample scan</strong> (<a href="{{ url('/shared/samples/work-order-scan.png') }}" target="_blank">work-order-scan.png</a>) or pick <strong>Your own file</strong>: one <code>POST /api/work-orders/extract</code> fills the form as a draft.</li>
-    <li>Answers read with low confidence are marked "Check this answer"; the unique id (from the QR code) is shown when found.</li>
+    <li>Answers read with low confidence are marked "Check this answer"; the unique ID (from the QR code) is shown when found.</li>
     <li><strong>Data</strong> shows the same <code>row counts</code> before and after: extraction saves nothing.</li>
     <li>Press <strong>Start over</strong> to empty the form before the next scan.</li>
 @endsection

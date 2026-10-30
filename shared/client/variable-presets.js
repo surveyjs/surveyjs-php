@@ -1,4 +1,4 @@
-// 3.4 Variable presets
+// 3.4 Variable Presets
 import { mountCreator, page } from "./host.js";
 
 const formId = "support";

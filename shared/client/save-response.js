@@ -1,4 +1,4 @@
-// 1.1 Save the response
+// 1.1 Save Responses
 import { mountSurvey, note, onStored, show } from "./host.js";
 
 // #region sjs:1.1.client

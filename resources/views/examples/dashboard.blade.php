@@ -3,9 +3,9 @@
 @section('theme', 'dashboard')
 
 @section('try')
-    <li>About 200 seeded feedback responses, spread over the last 90 days, render in the Dashboard.</li>
+    <li>About 200 seeded feedback responses, spread over the last 90 days, render in Dashboard.</li>
     <li>Change <strong>From</strong>: a new <code>GET /api/responses?formId=feedback&amp;from=…</code> appears in <strong>Requests</strong>, and <strong>Data</strong> shows, in <code>since from</code>, how many responses the server has since that date.</li>
-    <li>The definition comes from <code>GET /api/forms/feedback</code>.</li>
+    <li>The JSON schema comes from <code>GET /api/forms/feedback</code>.</li>
 @endsection
 
 @section('actions')

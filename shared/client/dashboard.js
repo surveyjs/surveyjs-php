@@ -1,4 +1,4 @@
-// 2 See results in a dashboard
+// 2 Analyze Results with Dashboard
 import { setStoredQuery } from "./host.js";
 
 // #region sjs:2.client

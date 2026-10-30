@@ -1,4 +1,4 @@
-// 4.4 Turn paper, PDF and images into responses
+// 4.4 Extract Responses from Documents
 import { mountSurvey, note, page, show } from "./host.js";
 import { Model } from "survey-core";
 
@@ -28,7 +28,7 @@ async function run(file) {
       const question = survey.getQuestionByName(c.fieldName);
       if (question) question.description = `⚠ Check this answer: read with ${Math.round(c.confidence * 100)}% confidence`;
     }
-    show("extract-status", `Draft filled from ${file.name}. Unique id: ${uniqueId ?? "none found"}. ${flagged.length} answer(s) flagged for review. Nothing was saved.`);
+    show("extract-status", `Draft filled from ${file.name}. Unique ID: ${uniqueId ?? "none found"}. ${flagged.length} answer(s) flagged for review. Nothing was saved.`);
     note(`Extracted ${file.name}: answers in the form's shape, ${flagged.length} flagged.`, "ok");
   } catch (e) {
     show("extract-status", e.message);
