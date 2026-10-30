@@ -32,6 +32,14 @@ class ExamplePagesTest extends TestCase
         }
     }
 
+    public function test_the_catalog_hero_links_to_the_examples_and_the_repository(): void
+    {
+        $this->withoutVite()->get('/')->assertOk()
+            ->assertSee('href="https://app.demos.surveyjs.io" target="_blank">View examples</a>', false)
+            ->assertSee('href="'.config('surveyjs.github').'" target="_blank">View on GitHub</a>', false)
+            ->assertDontSee('SURVEYJS_LICENSE_KEY');
+    }
+
     public function test_every_catalog_card_shows_its_licence_and_no_step_number(): void
     {
         $html = (string) $this->withoutVite()->get('/')->assertOk()->getContent();

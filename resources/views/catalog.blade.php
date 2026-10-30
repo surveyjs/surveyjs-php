@@ -16,6 +16,8 @@
     // Site Button, medium: primary and tertiary neutral
     $blackButton = 'rounded-lg bg-sjs-fg px-6 py-3 text-center text-base/6 font-semibold text-white no-underline hover:bg-gray-700';
     $whiteButton = 'inline-block rounded-lg bg-white px-6 py-3 text-center text-base/6 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
+    // Site Button, brand: large on tablets and desktops, medium on phones
+    $heroButton = 'rounded-lg px-6 py-3 text-center text-base/6 font-semibold no-underline md:px-8 md:py-4 md:text-xl/6';
     $column = 'mx-auto max-w-sjs-content px-4 md:px-6';
     $number = 0;
 @endphp
@@ -41,14 +43,12 @@
         </p>
     </div>
 
+    {{-- Phones: stacked, full-width buttons --}}
     <div class="{{ $column }} pb-12 md:pb-16 xl:pb-24">
-        <div class="flex flex-col items-center gap-6 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center">
-            <p class="m-0 text-sjs-para-md">
-                Commercial steps (Dashboard, Survey Creator, PDF Generator) run without a licence key and show a licence banner;
-                set <code class="font-sans">SURVEYJS_LICENSE_KEY</code> to remove it.
-            </p>
-            <a class="{{ $whiteButton }}" href="{{ config('surveyjs.github') }}" target="_blank">Source on GitHub</a>
-        </div>
+        <p class="m-0 mt-2.5 flex flex-col gap-3 md:mt-0 md:flex-row md:justify-center md:gap-8">
+            <a class="{{ $heroButton }} bg-sjs text-white hover:bg-sjs-dim" href="https://app.demos.surveyjs.io" target="_blank">View examples</a>
+            <a class="{{ $heroButton }} bg-sjs-15 text-sjs-fg hover:bg-sjs-15-dim" href="{{ config('surveyjs.github') }}" target="_blank">View on GitHub</a>
+        </p>
     </div>
 
     @foreach ($sections as $title => $intro)
