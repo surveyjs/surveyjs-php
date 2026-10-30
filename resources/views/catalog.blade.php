@@ -7,6 +7,13 @@
         'Edit Forms in Survey Creator' => 'Survey Creator lets authors build and edit forms in your application. It works with the same form JSON schemas that Form Library displays to respondents. Your backend should load those schemas when the editor opens and save them when an author makes changes.',
         'Run Server-Side Workflows' => 'Some workflows need SurveyJS logic on the server. You may need to check a submission before storing it, find problems in a form JSON schema, create a PDF, or read answers from a document. These operations run in Node.js. A Node.js backend can run the components directly; other backends can call a Node.js service over HTTP.',
     ];
+    // Hero cards, by the section they link to: the label and the icon. The no-break space keeps the desktop line break
+    $heroLinks = [
+        'Run Forms' => ['Run forms', 'preview'],
+        'Analyze Results with Dashboard' => ["See results in\u{A0}dashboard", 'graph'],
+        'Edit Forms in Survey Creator' => ['Edit forms in Survey Creator', 'embed-creator'],
+        'Run Server-Side Workflows' => ['Run SurveyJS on your server', 'server'],
+    ];
     $steps = collect($manifest['steps'])->groupBy('section');
     // The manifest's licence reads "MIT", "Commercial" or "Commercial client", optionally followed by ", needs an AI provider"
     $licence = fn (array $step) => str_starts_with($step['licence'], 'MIT') ? 'MIT' : 'Commercial';
@@ -16,8 +23,7 @@
     // Site Button, medium: primary and tertiary neutral
     $blackButton = 'rounded-lg bg-sjs-fg px-6 py-3 text-center text-base/6 font-semibold text-white no-underline hover:bg-gray-700';
     $whiteButton = 'inline-block rounded-lg bg-white px-6 py-3 text-center text-base/6 font-semibold text-sjs-fg no-underline shadow-[inset_0_0_0_1px_var(--color-sjs-border)] hover:bg-sjs-back-gray';
-    // Site Button, brand: large on tablets and desktops, medium on phones
-    $heroButton = 'rounded-lg px-6 py-3 text-center text-base/6 font-semibold no-underline md:px-8 md:py-4 md:text-xl/6';
+    $solidUnderline = 'underline [text-decoration-skip-ink:none] [text-underline-position:from-font]';
     $column = 'mx-auto max-w-sjs-content px-4 md:px-6';
     $number = 0;
 @endphp
@@ -34,26 +40,37 @@
 @include('partials.site-header')
 
 <main>
-    <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-20">
-        <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Build a PHP Backend for Your SurveyJS Forms</h1>
+    <div class="{{ $column }} pt-12 pb-12 text-center md:pt-16 xl:pt-24">
+        <h1 class="mx-auto max-w-[880px] text-sjs-title-lg font-bold text-balance md:text-sjs-title-2xl">Build a PHP Backend for&nbsp;Your SurveyJS Forms</h1>
         <p class="mt-6 mb-0 text-sjs-para-lg font-medium text-pretty text-sjs-fg-50">
             Learn how to connect SurveyJS components to a PHP backend using Laravel.
-            These working examples accompany the <a class="text-inherit underline decoration-dotted [text-underline-position:from-font] hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">PHP integration guide</a> and show the code behind each request.
+            These working examples accompany the <a class="{{ $solidUnderline }} text-inherit hover:text-sjs-fg" href="{{ \App\Support\Demo::docsUrl() }}" target="_blank">PHP integration guide</a> and show the code behind each request.
             SurveyJS does not include a backend, so use these examples as a starting point for your application.
         </p>
     </div>
 
-    {{-- Phones: stacked, full-width buttons --}}
-    <div class="{{ $column }} pb-12 md:pb-16 xl:pb-24">
-        <p class="m-0 mt-2.5 flex flex-col gap-3 md:mt-0 md:flex-row md:justify-center md:gap-8">
-            <a class="{{ $heroButton }} bg-sjs text-white hover:bg-sjs-dim" href="https://app.demos.surveyjs.io" target="_blank">View examples</a>
-            <a class="{{ $heroButton }} bg-sjs-15 text-sjs-fg hover:bg-sjs-15-dim" href="{{ config('surveyjs.github') }}" target="_blank">View on GitHub</a>
-        </p>
+    {{-- Phones: one column, tablets: two, desktops: one row --}}
+    <nav class="{{ $column }} mt-2.5 grid gap-3 md:mt-0 md:grid-cols-2 xl:grid-cols-4" aria-label="Sections">
+        @foreach ($heroLinks as $title => [$label, $icon])
+            @continue(! $steps->has($title))
+            <a class="flex flex-col items-start gap-6 rounded-3xl border border-sjs-line bg-white p-6 text-sjs-para-md text-sjs-fg no-underline hover:bg-sjs-back-gray" href="#{{ str($title)->slug() }}">
+                <span class="flex rounded-lg bg-sjs-10 p-2"><img src="{{ asset("images/site/icon-{$icon}.svg") }}" width="24" height="24" alt=""></span>
+                <span class="{{ $solidUnderline }}">{{ $label }}</span>
+            </a>
+        @endforeach
+    </nav>
+
+    <div class="{{ $column }} pt-12 pb-12 md:pb-16 xl:pb-24">
+        <a class="flex items-center gap-3 rounded-xl border border-sjs-line bg-white p-3 text-sjs-title-sm font-bold text-sjs-fg no-underline hover:bg-sjs-back-gray md:rounded-3xl md:py-6 md:pr-5 md:pl-6 md:text-sjs-para-lg" href="{{ config('surveyjs.github') }}" target="_blank">
+            <img src="{{ asset('images/site/icon-github.svg') }}" width="40" height="40" alt="">
+            <span class="flex-1">View on GitHub</span>
+            <img src="{{ asset('images/site/icon-chevron.svg') }}" width="40" height="40" alt="">
+        </a>
     </div>
 
     @foreach ($sections as $title => $intro)
         @continue(! $steps->has($title))
-        <section @class(['border-t border-sjs-line pb-12 md:pb-16 xl:pb-24', 'bg-sjs-back-gray' => $number++ % 2 === 0])>
+        <section id="{{ str($title)->slug() }}" @class(['border-t border-sjs-line pb-12 md:pb-16 xl:pb-24', 'bg-sjs-back-gray' => $number++ % 2 === 0])>
             <div class="{{ $column }} pt-16 pb-12 xl:pt-24">
                 <h2 class="text-sjs-title-lg font-bold md:text-sjs-title-xl">{{ $title }}</h2>
                 <p class="mt-3 mb-0 text-sjs-para-lg font-medium text-sjs-fg-50">{{ $intro }}</p>

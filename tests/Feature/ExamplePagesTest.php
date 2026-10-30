@@ -32,12 +32,24 @@ class ExamplePagesTest extends TestCase
         }
     }
 
-    public function test_the_catalog_hero_links_to_the_examples_and_the_repository(): void
+    public function test_the_catalog_hero_links_to_the_repository_and_every_section(): void
     {
-        $this->withoutVite()->get('/')->assertOk()
-            ->assertSee('href="https://app.demos.surveyjs.io" target="_blank">View examples</a>', false)
-            ->assertSee('href="'.config('surveyjs.github').'" target="_blank">View on GitHub</a>', false)
+        $response = $this->withoutVite()->get('/')->assertOk()
+            ->assertSee('href="'.config('surveyjs.github').'" target="_blank">', false)
+            ->assertSee('View on GitHub')
+            ->assertDontSee('View examples')
             ->assertDontSee('SURVEYJS_LICENSE_KEY');
+
+        $html = (string) $response->getContent();
+        preg_match_all('~<a [^>]*href="#([^"]+)"~', $html, $links);
+
+        $this->assertSame(
+            ['run-forms', 'analyze-results-with-dashboard', 'edit-forms-in-survey-creator', 'run-server-side-workflows'],
+            $links[1],
+        );
+        foreach ($links[1] as $id) {
+            $this->assertStringContainsString('<section id="'.$id.'"', $html);
+        }
     }
 
     public function test_every_catalog_card_shows_its_licence_and_no_step_number(): void
