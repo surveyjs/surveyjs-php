@@ -105,8 +105,8 @@
     <div class="border-t border-sjs-line">
         <div class="{{ $column }} py-12 md:py-16 xl:py-24">
             <div class="flex flex-col items-center justify-center gap-3 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center md:flex-row">
-                <a class="{{ $whiteButton }}" href="https://surveyjs.io/backend-integration/examples" target="_blank">More Backend Integration Examples</a>
-                <a class="{{ $whiteButton }}" href="https://surveyjs.io/use-cases" target="_blank">See SurveyJS in Action</a>
+                <a class="{{ $whiteButton }}" href="https://surveyjs.io/backend-integration/examples" target="_blank">More Backend Integration Examples ↗&#xFE0E;</a>
+                <a class="{{ $whiteButton }}" href="https://surveyjs.io/use-cases" target="_blank">See SurveyJS in Action ↗&#xFE0E;</a>
             </div>
         </div>
     </div>
