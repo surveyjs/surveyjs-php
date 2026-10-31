@@ -104,14 +104,9 @@
 
     <div class="border-t border-sjs-line">
         <div class="{{ $column }} py-12 md:py-16 xl:py-24">
-            <div class="flex flex-col items-center gap-6 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center">
-                <p class="m-0 text-sjs-para-md">
-                    Also on <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nodejs" target="_blank">Node.js ↗&#xFE0E;</a>,
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-aspnet-mvc" target="_blank">ASP.NET Core ↗&#xFE0E;</a>,
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-python-flask" target="_blank">Python ↗&#xFE0E;</a> and
-                    <a class="text-inherit underline decoration-dotted [text-underline-position:from-font]" href="https://github.com/surveyjs/surveyjs-nextjs" target="_blank">Next.js ↗&#xFE0E;</a>
-                </p>
-                <a class="{{ $whiteButton }}" href="https://app.demos.surveyjs.io" target="_blank">See SurveyJS Demos</a>
+            <div class="flex flex-col items-center justify-center gap-3 rounded-3xl bg-sjs-back-gray px-10 py-8 text-center md:flex-row">
+                <a class="{{ $whiteButton }}" href="https://surveyjs.io/backend-integration/examples" target="_blank">More Backend Integration Examples</a>
+                <a class="{{ $whiteButton }}" href="https://surveyjs.io/use-cases" target="_blank">See SurveyJS in Action</a>
             </div>
         </div>
     </div>
